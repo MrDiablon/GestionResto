@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="LienBD/" kind="src" path="GestionResteau/src"/>
+	<classpathentry kind="src" path="GestionResteau/src/LienBD"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="GestionResteau/bin"/>
+</classpath>
