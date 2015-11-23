@@ -11,16 +11,16 @@ public class myPDOTest {
 	
 	@Before
 	public void init(){
-				
+		myPDO.configure("infs3_prj03", "azerty01", "jdbc:mysql://mysql/infs3_prj03");
 	}
 	/*
 	 * test d'un insert
 	 */
-	/@Test
+	@Test
 	public void test() {
-		myPDO test = myPDO.getInstance("root", "", "jdbc:mysql://localhost/projets3");
-		String sql = "INSERT INTO `restaurant` (`NUMRESTO`,`MARGE`,`NBSALLES`,`NBEMPLOYEE`,`ADRESSE`,`PAYS`,`NUMTEL`,`VILLE`,`CP`) VALUES (?,?,?,?,?,?,?,?,?)";
-		test.prepare(sql);
+		myPDO pdo = myPDO.getInstance();
+		String sql = "INSERT INTO `RESTAURANT` (`NUMRESTO`,`MARGE`,`NBSALLES`,`NBEMPLOYEE`,`ADRESSE`,`PAYS`,`NUMTEL`,`VILLE`,`CP`) VALUES (?,?,?,?,?,?,?,?,?)";
+		pdo.prepare(sql);
 		Object[] data = new Object[9];
 		data[0] = null;
 		data[1] = 10;
@@ -31,15 +31,15 @@ public class myPDOTest {
 		data[6] = "0656056560";
 		data[7] = "reims";
 		data[8] = "51100";
-		test.execute(data,true);
+		pdo.execute(data,true);
 	}
-	
+	/*
 	@Test
 	public void testUpdate() {
-		myPDO test = myPDO.getInstance("root", "", "jdbc:mysql://localhost/projets3");
-		String sql = "UPDATE `restaurant` SET `MARGE` = ?,`NBSALLES` = ?,`NBEMPLOYEE` = ?,`ADRESSE` = ?,`PAYS` = ?,`NUMTEL` = ?,`VILLE` = ?,`CP` = ? WHERE `NUMRESTO` = ?";
-		test.prepare(sql);
-		Object[] data = new Object[9];
+		myPDO pdo = myPDO.getInstance();
+		String sql = "UPDATE `RESTAURANT` SET `MARGE` = ?,`NBSALLES` = ?,`NBEMPLOYEE` = ?,`ADRESSE` = ?,`PAYS` = ?,`NUMTEL` = ?,`VILLE` = ?,`CP` = ? WHERE `NUMRESTO` = ?";
+		pdo.prepare(sql);
+		Object[] data = new Object[9 ];
 		data[0] = 15;
 		data[1] = 1;
 		data[2] = 1;
@@ -49,24 +49,24 @@ public class myPDOTest {
 		data[6] = "reims";
 		data[7] = "51100";
 		data[8] = 1;
-		test.execute(data,true);
+		pdo.execute(data,true);
 	}
 	
 	@Test
 	public void testDelete(){
-		myPDO test = myPDO.getInstance("root", "", "jdbc:mysql://localhost/projets3");
-		String sql = "DELETE FROM `restaurant` where NUMRESTO = ?";
-		test.prepare(sql);
+		myPDO pdo = myPDO.getInstance();
+		String sql = "DELETE FROM `RESTAURANT` where NUMRESTO = ?";
+		pdo.prepare(sql);
 		Object[] data = {5};
-		test.execute(data,true);
+		pdo.execute(data,true);
 	}
 	
 	@Test
 	public void testSelect(){
-		myPDO test = myPDO.getInstance("root", "", "jdbc:mysql://localhost/projets3");
+		myPDO pdo = myPDO.getInstance();
 		String sql = "SELECT * FROM `restaurant`";
-		test.prepare(sql);
-		ResultSet res = test.execute();
+		pdo.prepare(sql);
+		ResultSet res = pdo.execute();
 		try {
 			while(res.next()){				
 				System.out.println(res.getObject("NUMRESTO"));
@@ -75,14 +75,14 @@ public class myPDOTest {
 			e.printStackTrace();
 		}
 	}
-	
-	/*@Test
+	*/
+	@Test
 	public void testSelectAtt(){
-		myPDO test = myPDO.getInstance("root", "", "jdbc:mysql://localhost/projets3");
-		String sql = "SELECT * FROM `restaurant` where  `NUMRESTO` = ?";
-		test.prepare(sql);
-		Object[] data= {13};
-		ResultSet res = test.execute(data,false);
+		myPDO pdo = myPDO.getInstance();
+		String sql = "SELECT * FROM `RESTAURANT` where  `NUMRESTO` = ?";
+		pdo.prepare(sql);
+		Object[] data= {1};
+		ResultSet res = pdo.execute(data,false);
 		try {
 			while(res.next()){				
 				System.out.println(res.getObject("MARGE"));
@@ -90,6 +90,6 @@ public class myPDOTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 
 }

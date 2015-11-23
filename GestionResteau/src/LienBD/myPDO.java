@@ -21,23 +21,6 @@ public class myPDO {
 	private static PreparedStatement st;
 	private static ResultSet rs;
 
-	public static void main(String[] args) {
-		myPDO test = myPDO.getInstance("root", "", "jdbc:mysql://localhost/formation");
-		String sql = "select * from javadb";
-		test.prepare(sql);
-		/*
-		Object[] data = new Object [1];
-		data[0] = 1;*/
-		test.execute();
-		try {
-			while (rs.next()){
-				System.out.println(rs.getString("personne"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private myPDO(String login,String passwd ,String url){
 		try {
 			myPDO.login = login;
@@ -45,7 +28,7 @@ public class myPDO {
 			myPDO.url = url;
 			// Etape 1 : chargement du driver
 			Class.forName("com.mysql.jdbc.Driver");
-			// Etape 2 : récupération de la connexion
+			// Etape 2 : rï¿½cupï¿½ration de la connexion
 			myPDO.cn = DriverManager.getConnection(url, login, passwd);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -74,9 +57,7 @@ public class myPDO {
 	 */
 	public ResultSet execute(){
 		try{
-			System.out.println(st);
 			myPDO.rs = myPDO.st.executeQuery();
-			System.out.println(st);
 			//myPDO.rs = st.getResultSet();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -88,7 +69,7 @@ public class myPDO {
 	/**
 	 * methode permettant d'execute des requete sql et de recupere le resulta 
 	 * 
-	 * @param data tableau de donné a introduire dans la methode sql preparé
+	 * @param data tableau de donnï¿½ a introduire dans la methode sql preparï¿½
 	 * @param update dis si le methode sql as pour but insert/update/delete 
 	 * @return le resulta de la requete
 	 */
@@ -107,7 +88,6 @@ public class myPDO {
 					myPDO.st.setObject(i+1, temp);
 				}				
 			}
-			System.out.println(myPDO.st);
 			if(update){
 				myPDO.st.executeUpdate();
 			}else{
@@ -121,18 +101,26 @@ public class myPDO {
 		return myPDO.rs;
 	}
 	
-	public static myPDO getInstance(String login,String passwd ,String url){
-		myPDO pdo = null;
-		try {
-			if(myPDO.instance == null){
-				throw new java.lang.NullPointerException("instance null");
-			}else{
-				pdo = myPDO.instance;
-			}
-		} catch (NullPointerException e){
-			pdo = new myPDO(login, passwd, url );
-		}
+	public static myPDO getInstance(){
+		if(myPDO.instance == null)
+			myPDO.instance = new myPDO(myPDO.login, myPDO.passwd, myPDO.url );
 		
-		return pdo;
+		return myPDO.instance;
+	}
+	
+	public static void configure(String login,String passwd ,String url){
+		myPDO.login = login;
+		myPDO.passwd = passwd;
+		myPDO.url = url;
+	}
+	
+	public static void close(){
+		try {
+			// Etape 5 :libï¿½rer ressources de la mï¿½moire
+			cn.close();
+			st.close();
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
 	}
 }

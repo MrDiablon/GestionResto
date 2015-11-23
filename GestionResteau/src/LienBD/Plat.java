@@ -1,3 +1,5 @@
+package LienBD;
+
 /***********************************************************************
  * Module:  Plat.java
  * Author:  user
@@ -5,67 +7,215 @@
  ***********************************************************************/
 
 import java.util.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-/** @pdOid c20cb882-9180-4a5b-8442-151e2c858fc2 */
 public class Plat {
-   /** @pdOid f41255c6-ab42-4c05-9cd4-17a08756557a */
-   private int numPlat;
-   /** @pdOid 7d15315c-cd77-4d01-b5bf-25adc216256f */
-   private String recette;
-   /** @pdOid d51b5ea4-9c0c-4357-b550-95647bea15e7 */
-   private int prixU;
-   
-   /** @pdRoleInfo migr=no name=Ingredient assc=association12 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Composition */
-   private java.util.Collection<Ingredient> ingredient;
-   
-   
-   /** @pdGenerated default getter */
-   public java.util.Collection<Ingredient> getIngredient() {
-      if (ingredient == null)
-         ingredient = new java.util.HashSet<Ingredient>();
-      return ingredient;
-   }
-   
-   /** @pdGenerated default iterator getter */
-   public java.util.Iterator getIteratorIngredient() {
-      if (ingredient == null)
-         ingredient = new java.util.HashSet<Ingredient>();
-      return ingredient.iterator();
-   }
-   
-   /** @pdGenerated default setter
-     * @param newIngredient */
-   public void setIngredient(java.util.Collection<Ingredient> newIngredient) {
-      removeAllIngredient();
-      for (java.util.Iterator iter = newIngredient.iterator(); iter.hasNext();)
-         addIngredient((Ingredient)iter.next());
-   }
-   
-   /** @pdGenerated default add
-     * @param newIngredient */
-   public void addIngredient(Ingredient newIngredient) {
-      if (newIngredient == null)
-         return;
-      if (this.ingredient == null)
-         this.ingredient = new java.util.HashSet<Ingredient>();
-      if (!this.ingredient.contains(newIngredient))
-         this.ingredient.add(newIngredient);
-   }
-   
-   /** @pdGenerated default remove
-     * @param oldIngredient */
-   public void removeIngredient(Ingredient oldIngredient) {
-      if (oldIngredient == null)
-         return;
-      if (this.ingredient != null)
-         if (this.ingredient.contains(oldIngredient))
-            this.ingredient.remove(oldIngredient);
-   }
-   
-   /** @pdGenerated default removeAll */
-   public void removeAllIngredient() {
-      if (ingredient != null)
-         ingredient.clear();
-   }
+	
+	private int numPlat;
+	private String nomPlat;
+	private String recette;
+	private int prixU;
+
+	private static myPDO instance = myPDO.getInstance();
+
+	/**
+	 * @pdRoleInfo migr=no name=Ingredient assc=association12
+	 *             coll=java.util.Collection impl=java.util.HashSet mult=0..*
+	 *             type=Composition
+	 */
+	private java.util.Collection<Ingredient> ingredient;
+
+	public Plat(int id) throws SQLException {
+		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
+		String sql2 = "SELECT NUMINGREDIENT FROM CONSTITUER WHERE `NUMPLAT`=?";
+		Plat.instance.prepare(sql);
+		Object[] identifiant = { id };
+		ResultSet res = instance.execute(identifiant, false);
+		Plat.instance.prepare(sql2);
+		ResultSet res2 = instance.execute(identifiant, false);
+		if(res.next()){
+			this.recette = (String) res.getObject("NUMPLAT");
+			this.prixU = (int) res.getObject("RECETTE");
+			this.numPlat = (int) res.getObject("PRIXU");
+			while(res2.next()){
+				this.ingredient.add(new Ingredient(res2.getInt("NUMINGREDIENT")));
+			}
+		}
+			
+		
+	}
+
+	public Plat(int numPlat, int prixU,String plat, String recette,
+			java.util.Collection<Ingredient> ingredient) {
+		this.ingredient = ingredient;
+		this.nomPlat=plat;
+		this.numPlat = numPlat;
+		this.prixU = prixU;
+		this.recette = recette;
+		this.create();
+	}
+
+	public int getNumPlat() {
+		return numPlat;
+	}
+
+	public String getNomPlat() {
+		return nomPlat;
+	}
+
+	public void setNomPlat(String nomPlat) {
+		this.nomPlat = nomPlat;
+	}
+
+	public void setNumPlat(int numPlat) {
+		this.numPlat = numPlat;
+	}
+
+	public String getRecette() {
+		return recette;
+	}
+
+	public void setRecette(String recette) {
+		this.recette = recette;
+	}
+	
+
+	public int getPrixU() {
+		return prixU;
+	}
+
+	public void setPrixU(int prixU) {
+		this.prixU = prixU;
+	}
+
+	public void setIngredient(java.util.Collection<Ingredient> ingredient) {
+		this.ingredient = ingredient;
+	}
+
+	public void create() {
+		String sql = "INSERT INTO PLAT(`NUMPLAT`,`NOMPLAT`,`RECETTE`,`PRIXU`) VALUES (?,?,?,?)";
+		String sql2 = "INSERT INTO CONSTITUER(`NUMPLAT`,NUMINGREDIENT) VALUES (?,?)";
+		Plat.instance.prepare(sql);
+		Object[] data = { this.numPlat, this.ingredient, this.prixU,
+				this.recette };
+		Plat.instance.execute(data, true);
+		Plat.instance.prepare(sql2);
+		data = new Object[2];
+			for(Ingredient ing : this.ingredient){
+				data[0] = this.numPlat;
+				data[1] = ing;
+				Plat.instance.execute(data, true);
+			}
+		
+	}
+
+	public void delete(int id) {
+		String sql = "DELETE PLAT WHERE NUMPLAT = ? ";
+		Plat.instance.prepare(sql);
+		Object[] data = { id };
+		Plat.instance.execute(data, true);
+	}
+
+	public void modif() {
+		String sql = "UPDATE `PLAT` SET `NUMPLAT` = ?,`RECETTE` = ?,`PRIXU` = ?";
+		Plat.instance.prepare(sql);
+		Object[] data = { this.numPlat, this.recette, this.prixU
+				};
+		Plat.instance.execute(data, true);
+	}
+
+	public static int getNumPlatByID(int id) {
+		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
+		Plat.instance.prepare(sql);
+		Object[] identifiant = { id };
+		ResultSet res = instance.execute(identifiant, false);
+		Object[] data = new Object[1];
+		try {
+			data[0] = res.getObject("`NUMPLAT`");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return (int) data[0];
+	}
+
+	public static int getPrixUByID(int id) {
+		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
+		Plat.instance.prepare(sql);
+		Object[] identifiant = { id };
+		ResultSet res = instance.execute(identifiant, false);
+		Object[] data = new Object[1];
+		try {
+			data[0] = res.getObject("`PRIXU`");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return (int) data[0];
+	}
+
+	public static String getRecetteByID(int id) {
+		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
+		Plat.instance.prepare(sql);
+		Object[] identifiant = { id };
+		ResultSet res = instance.execute(identifiant, false);
+		Object[] data = new Object[1];
+		try {
+			data[0] = res.getObject("`RECETTE`");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return (String) data[0];
+	}
+	
+	public static String getNomPlatByID(int id){
+		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
+		Plat.instance.prepare(sql);
+		Object[] identifiant = { id };
+		ResultSet res = instance.execute(identifiant, false);
+		Object[] data = new Object[1];
+		try {
+			data[0] = res.getObject("`NOMPLAT`");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return (String) data[0];
+	}
+
+	public static Plat[] getAll() {
+		// on ecrit notre code sql on demande tous les id de la table
+		String sql = "SELECT NUMPLAT FROM PLAT";
+		// on prepare notre requete
+		Plat.instance.prepare(sql);
+		// on l'execute sans parametre car inutile
+		ResultSet res = Plat.instance.execute();
+		// on prepare notre tableau de retour;
+		Plat[] retour = null;
+		try {
+			// on instance notre retour grace a res.getRow() qui donne le nombre
+			// de ligne retourner
+			retour = new Plat[res.getRow()];
+			// on remet le curseur au debut
+			res.beforeFirst();
+			// pour chaque ligne on cree une nouvelle instance grace a l'id
+			for (int i = 0; res.next(); i++) {
+				retour[i] = new Plat(res.getInt(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return retour;
+	}
+
+	/** @pdGenerated default getter */
+	public java.util.Collection<Ingredient> getIngredient() {
+		if (ingredient == null)
+			ingredient = new java.util.HashSet<Ingredient>();
+		return ingredient;
+	}
 
 }
