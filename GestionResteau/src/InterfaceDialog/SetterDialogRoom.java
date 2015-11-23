@@ -113,6 +113,7 @@ public class SetterDialogRoom extends JDialog {
 			this.errorLabel.setText("Remplir le champ \"Nombre de tables\"");
 		}
 		//cree la salles grace aux donnee saisie
+		//rezrezr
 		return retour;
 	}
 
