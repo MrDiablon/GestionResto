@@ -113,6 +113,7 @@ public class SetterDialogRoom extends JDialog {
 			this.errorLabel.setText("Remplir le champ \"Nombre de tables\"");
 		}
 		String nom = this.nomSalleText.getText();
+		int nbTable = (int) this.nbTableSpinner.getValue();
 		//cree la salles grace aux donnee saisie
 		return retour;
 	}
