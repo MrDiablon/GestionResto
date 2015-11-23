@@ -122,19 +122,23 @@ public class Connexion extends JFrame {
 		}
 	}
 	
+/*
 	private void firstConnection() throws IOException{
 		String path = "/home/Projets/infs3_prj03/config.txt";
-		Restaurant restaurant = new Restaurant();
+		File file = new File(path);
 		try{
-			BufferedReader buf = new BufferedReader(new FileReader(path));
+			if(!file.exists())
+			BufferedReader buf = new BufferedReader(new FileReader(file));
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("/home/Projets/infs3_prj03/config.txt")));
 			int fin = 0;
           // on lit le fichier caractère par caractère
           while ((fin = buf.read()) != -1) {
         	  
           }
+        	  
+          }
 	}
-
+*/
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
