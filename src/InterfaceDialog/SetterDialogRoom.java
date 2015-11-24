@@ -3,6 +3,7 @@ package InterfaceDialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -58,8 +59,12 @@ public class SetterDialogRoom extends JDialog {
 		// configuration des boutons
 		this.valider = new JButton("Valider");
 		this.valider.addActionListener(e -> {
-			if (updateSalle()) {
-				this.dispose();
+			try {
+				if (updateSalle()) {
+					this.dispose();
+				}
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(null, "acces a la base de donnée impossible");
 			}
 		});
 
@@ -105,14 +110,24 @@ public class SetterDialogRoom extends JDialog {
 
 	}
 
-	private boolean updateSalle() {
+	private boolean updateSalle() throws SQLException {
 		boolean retour = false;
 		if (this.nomSalleText.getText().equals("")) {
 			this.errorLabel.setText("Remplir le champ \"Nom de la Salle\"");
 		} else if (this.nbTableSpinner.getValue().equals(0)) {
 			this.errorLabel.setText("Remplir le champ \"Nombre de tables\"");
 		}
-		//cree la salles grace aux donnee saisie
+		String nom = this.nomSalleText.getText();
+		int nbTable = (int) this.nbTableSpinner.getValue();
+		Etat etatSalle = Etat.valueOf((String) this.etatBox.getSelectedItem());
+		if (this.salle == null) {
+			this.salle = new Salles(0, nom, nbTable, etatSalle, null);
+		} else {
+			this.salle.setnomSalle(nom);
+			this.salle.setnombreTables(nbTable);
+			this.salle.setetat(etatSalle);
+		}
+		// cree la salles grace aux donnee saisie
 		return retour;
 	}
 

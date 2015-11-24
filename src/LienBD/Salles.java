@@ -21,7 +21,7 @@ public class Salles implements Comparable<Salles> {
 	private static myPDO instance = myPDO.getInstance();
 	private Etat etat;
 	private Restaurant restaurant;
-	private java.util.Collection<Menu> menu;
+	private java.util.Collection<Menu> menus;
 
 	public Salles(int id) {
 		String sql = "SELECT * FROM SALLE WHERE NUMSALLE = ?";
@@ -31,7 +31,7 @@ public class Salles implements Comparable<Salles> {
 		sql = "SELECT * FROM MENU WHERE NUMMENU = ?";
 		Salles.instance.prepare(sql);
 		ResultSet res3 = (ResultSet) Salles.instance.execute(data, false);
-		this.menu = new ArrayList<Menu>();
+		this.menus = new ArrayList<Menu>();
 		try {
 			if (res.next()) {
 				this.numSalle = id;
@@ -42,21 +42,20 @@ public class Salles implements Comparable<Salles> {
 			}
 			this.restaurant = new Restaurant(this.numResto);
 			while (res3.next()) {
-				this.menu.add(new Menu(res3.getInt("NUMMENU")));
+				this.menus.add(new Menu(res3.getInt("NUMMENU")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public Salles(int numResto, String nomSalle, int nombreTables, Etat etat,
-			Restaurant restaurant, Collection<Menu> menu) {
+	public Salles(int numResto, String nomSalle, int nombreTables, Etat etat, Collection<Menu> menu) throws SQLException {
 		this.numResto = numResto;
 		this.nomSalle = nomSalle;
 		this.nombreTables = nombreTables;
 		this.etat = etat;
-		this.restaurant = restaurant;
-		this.menu = menu;
+		this.restaurant = new Restaurant(numResto);
+		this.menus = menu;
 		this.create();
 	}
 
@@ -157,26 +156,33 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public void create() {
-		String sql = "INSERT INTO SALLE(`NUMRESTO`,`NOMSALLE`,`NOMBRETABLES`,`ETAT`,`RESTAURANT`,`MENU`) VALUE (?,?,?,?,?,?)";
-		Object[] data = { this.numResto, this.nomSalle, this.nombreTables,
-				this.etat, this.restaurant, this.menu };
+		String sql = "INSERT INTO SALLE(`NOMSALLE`,`NOMBRETABLES`,`ETATS`,`NUMRESTO`) VALUE (?,?,?,?)";
+		Object[] data = { this.nomSalle, this.nombreTables,
+				this.etat.toString(), this.restaurant.getNumResto() };
 		Salles.instance.prepare(sql);
 		Salles.instance.execute(data, true);
 		sql = "SELECT MAX(NUMPERSO) FROM PERSONNEL";
 		Salles.instance.prepare(sql);
 		ResultSet res = (ResultSet) Salles.instance.execute();
+		if(this.menus != null){
+			for(Menu m : this.menus){
+				
+			}
+		}
 		try {
 			if (res.next())
 				this.numSalle = res.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		
 	}
 
 	public void modif() {
 		String sql = "UPDATE SALLE SET NUMRESTO = ?, NOMSALLE = ?, NOMBRETABLES = ?, ETAT = ?, RESTAURANT = ?, MENU = ? WHERE id = ? ";
 		Object[] data = { this.numResto, this.nomSalle, this.nombreTables,
-				this.etat, this.restaurant, this.menu, this.numSalle };
+				this.etat, this.restaurant, this.menus, this.numSalle };
 		Salles.instance.prepare(sql);
 		Salles.instance.execute(data, true);
 	}
@@ -189,15 +195,15 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public java.util.Collection<Menu> getMenu() {
-		if (menu == null)
-			menu = new java.util.HashSet<Menu>();
-		return menu;
+		if (menus == null)
+			menus = new java.util.HashSet<Menu>();
+		return menus;
 	}
 
 	public java.util.Iterator getIteratorMenu() {
-		if (menu == null)
-			menu = new java.util.HashSet<Menu>();
-		return menu.iterator();
+		if (menus == null)
+			menus = new java.util.HashSet<Menu>();
+		return menus.iterator();
 	}
 
 	public void setMenu(java.util.Collection<Menu> newMenu) {
@@ -209,23 +215,23 @@ public class Salles implements Comparable<Salles> {
 	public void addMenu(Menu newMenu) {
 		if (newMenu == null)
 			return;
-		if (this.menu == null)
-			this.menu = new java.util.HashSet<Menu>();
-		if (!this.menu.contains(newMenu))
-			this.menu.add(newMenu);
+		if (this.menus == null)
+			this.menus = new java.util.HashSet<Menu>();
+		if (!this.menus.contains(newMenu))
+			this.menus.add(newMenu);
 	}
 
 	public void removeMenu(Menu oldMenu) {
 		if (oldMenu == null)
 			return;
-		if (this.menu != null)
-			if (this.menu.contains(oldMenu))
-				this.menu.remove(oldMenu);
+		if (this.menus != null)
+			if (this.menus.contains(oldMenu))
+				this.menus.remove(oldMenu);
 	}
 
 	public void removeAllMenu() {
-		if (menu != null)
-			menu.clear();
+		if (menus != null)
+			menus.clear();
 	}
 
 	/**
