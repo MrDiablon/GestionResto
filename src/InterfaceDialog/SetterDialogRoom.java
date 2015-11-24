@@ -128,6 +128,7 @@ public class SetterDialogRoom extends JDialog {
 			this.salle.setetat(etatSalle);
 		}
 		// cree la salles grace aux donnee saisie
+		//Test
 		return retour;
 	}
 
