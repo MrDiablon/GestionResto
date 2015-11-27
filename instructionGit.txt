@@ -1,0 +1,27 @@
+Lien dossier : https://github.com/MrDiablon/GestionResto.git
+
+Si vous n'avez pas git télécharger le.
+
+recuperation du depot (master):
+	
+	dans le dossier destination(dois etre vide) :
+		git init
+		git remote add origin https://github.com/MrDiablon/GestionResto.git
+		git fetch
+		git pull origin master
+
+recuperation du depot (branch):
+	(des branches portant votre nom on été crée pour vous permetre de travailler vos modification a partire de n'importe ou)
+	
+	si vous n'avez pas de donnée reprennez les deux premiere ligne de master
+	sinon:
+
+		git fetch
+		git pull origin "votre nom"
+
+Sur windows un commit ouvre le system de saisie par defaut (celui du shell):
+		pour saisire fait "i"
+		pour arreter la saisie "echap"
+		pour quitter ":wq"
+
+l'envoie des commit ce fait comme a l'iut
