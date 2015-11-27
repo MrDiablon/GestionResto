@@ -126,6 +126,7 @@ public class SetterDialogRoom extends JDialog {
 			this.salle.setnomSalle(nom);
 			this.salle.setnombreTables(nbTable);
 			this.salle.setetat(etatSalle);
+			this.salle.modif();
 		}
 		// cree la salles grace aux donnee saisie
 		//Test
