@@ -32,9 +32,9 @@ public class ListPanelSalles extends JPanel {
 				"/img/edit.png")));
 		this.supprimer = new JButton(new ImageIcon(getClass().getResource(
 				"/img/delete.png")));
-		this.nouveau.addActionListener(e -> {
-			createRoom();
-		});
+		this.nouveau.addActionListener(e -> createRoom());
+		this.modifer.addActionListener(e -> editSelectedRoom());
+		this.supprimer.addActionListener(e -> delSelectedRoom());
 
 		JToolBar barreOutils = new JToolBar();
 		barreOutils.add(this.nouveau);
@@ -80,9 +80,15 @@ public class ListPanelSalles extends JPanel {
 			if(newSalle != null){
 				this.modelList.remove(select);
 				this.modelList.add(newSalle);
-			}
-			
-			
+			}		
+		}
+	}
+	
+	private void delSelectedRoom(){
+		if(!this.SalleList.isSelectionEmpty()){
+			Salles select = this.SalleList.getSelectedValue();
+			this.modelList.remove(select);
+			select.delete();
 		}
 	}
 }

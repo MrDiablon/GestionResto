@@ -120,8 +120,9 @@ public class SetterDialogRoom extends JDialog {
 		String nom = this.nomSalleText.getText();
 		int nbTable = (int) this.nbTableSpinner.getValue();
 		Etat etatSalle = Etat.valueOf((String) this.etatBox.getSelectedItem());
+		int numResto = this.restoBox.getSelectedIndex();
 		if (this.salle == null) {
-			this.salle = new Salles(0, nom, nbTable, etatSalle, null);
+			this.salle = new Salles(numResto, nom, nbTable, etatSalle, null);
 		} else {
 			this.salle.setnomSalle(nom);
 			this.salle.setnombreTables(nbTable);

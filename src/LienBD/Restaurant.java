@@ -161,7 +161,7 @@ public class Restaurant implements Comparable<Restaurant>{
 
 	public static Restaurant[] getAll() {
 		// on ecrit notre code sql on demande tous les id de la table
-		String sql = "SELECT NUMRESTO FROM RESTAURANT";
+		String sql = "SELECT NUMRESTO FROM RESTAURANT ORDER BY NUMRESTO";
 		// on prepare notre requete
 		Restaurant.instance.prepare(sql);
 		// on l'execute sans parametre car inutile

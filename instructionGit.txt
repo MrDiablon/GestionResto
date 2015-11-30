@@ -8,7 +8,9 @@ recuperation du depot (master):
 		git init
 		git remote add origin https://github.com/MrDiablon/GestionResto.git
 		git fetch
-		git pull origin master
+		git pull -u : origin master
+
+n'hésitez pas a tout suprimer et recommencer si vous rencontré un probléme avec la recuperation des donnée.
 
 recuperation du depot (branch):
 	(des branches portant votre nom on été crée pour vous permetre de travailler vos modification a partire de n'importe ou)
@@ -25,3 +27,10 @@ Sur windows un commit ouvre le system de saisie par defaut (celui du shell):
 		pour quitter ":wq"
 
 l'envoie des commit ce fait comme a l'iut
+
+avec gitHub vou spouvez paramete les id et mdp avec ceci :
+
+git config --global user.name "Julien Tilap LA VINH"
+ git config --global user.email tilap@domain.tld
+
+Je ne les ai pas tester
