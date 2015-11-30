@@ -1,6 +1,8 @@
 package Interface;
 
+import java.awt.Button;
 import java.awt.GridLayout;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
