@@ -25,3 +25,6 @@ Sur windows un commit ouvre le system de saisie par defaut (celui du shell):
 		pour quitter ":wq"
 
 l'envoie des commit ce fait comme a l'iut
+
+pour push sur vos branch :
+	git push origin "nom de la branche"

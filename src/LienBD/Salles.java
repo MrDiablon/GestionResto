@@ -164,9 +164,14 @@ public class Salles implements Comparable<Salles> {
 		sql = "SELECT MAX(NUMPERSO) FROM PERSONNEL";
 		Salles.instance.prepare(sql);
 		ResultSet res = (ResultSet) Salles.instance.execute();
+		//insertion des menu dans la table servir
 		if(this.menus != null){
+			sql = "INSERT INTO SERVIR(NUMSALLE,NUMMENU) VALUE (?,?)";
+			Salles.instance.prepare(sql);
+			data[0] = this.numSalle;
 			for(Menu m : this.menus){
-				
+				data[1] = m.getNumMenu();
+				Salles.instance.execute(data, true);
 			}
 		}
 		try {
@@ -180,9 +185,9 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public void modif() {
-		String sql = "UPDATE SALLE SET NUMRESTO = ?, NOMSALLE = ?, NOMBRETABLES = ?, ETAT = ?, RESTAURANT = ?, MENU = ? WHERE id = ? ";
-		Object[] data = { this.numResto, this.nomSalle, this.nombreTables,
-				this.etat, this.restaurant, this.menus, this.numSalle };
+		String sql = "UPDATE SALLE SET NOMSALLE = ?, NOMBRETABLES = ?, ETATS = ?, NUMRESTO = ? WHERE NUMSALLE = ? ";
+		Object[] data = { this.nomSalle, this.nombreTables,
+				this.etat.toString(), this.restaurant.getNumResto(), this.numSalle };
 		Salles.instance.prepare(sql);
 		Salles.instance.execute(data, true);
 	}
@@ -196,13 +201,13 @@ public class Salles implements Comparable<Salles> {
 
 	public java.util.Collection<Menu> getMenu() {
 		if (menus == null)
-			menus = new java.util.HashSet<Menu>();
+			menus = new ArrayList<Menu>();
 		return menus;
 	}
 
 	public java.util.Iterator getIteratorMenu() {
 		if (menus == null)
-			menus = new java.util.HashSet<Menu>();
+			menus = new ArrayList<Menu>();
 		return menus.iterator();
 	}
 
@@ -213,12 +218,18 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public void addMenu(Menu newMenu) {
-		if (newMenu == null)
-			return;
-		if (this.menus == null)
-			this.menus = new java.util.HashSet<Menu>();
-		if (!this.menus.contains(newMenu))
-			this.menus.add(newMenu);
+		if(newMenu != null){
+			if(this.menus == null){
+				this.menus = new ArrayList<Menu>();
+			}
+			if(!this.menus.contains(newMenu)){
+				this.menus.add(newMenu);
+				String sql = "INSERT INTO SERVIR(NUMSALLE,NUMMENU) VALUE (?,?)";
+				Object[] data = {this.numSalle , newMenu.getNumMenu()};
+				Salles.instance.prepare(sql);
+				Salles.instance.execute(data, true);
+			}
+		}
 	}
 
 	public void removeMenu(Menu oldMenu) {
@@ -237,16 +248,8 @@ public class Salles implements Comparable<Salles> {
 	/**
 	 * @return the numSalle
 	 */
-	public int numSalle() {
+	public int getNumSalle() {
 		return numSalle;
-	}
-
-	/**
-	 * @param numSalle
-	 *            the numSalle to set
-	 */
-	public void setnumSalle(int numSalle) {
-		this.numSalle = numSalle;
 	}
 
 	/**
@@ -262,6 +265,7 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public void setnumResto(int numResto) {
 		this.numResto = numResto;
+		this.modif();
 	}
 
 	/**
@@ -277,6 +281,7 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public void setnomSalle(String nomSalle) {
 		this.nomSalle = nomSalle;
+		this.modif();
 	}
 
 	/**
@@ -292,6 +297,7 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public void setnombreTables(int nombreTables) {
 		this.nombreTables = nombreTables;
+		this.modif();
 	}
 
 	/**
@@ -305,8 +311,9 @@ public class Salles implements Comparable<Salles> {
 	 * @param etat
 	 *            the etat to set
 	 */
-	public void setetat(Etat etat) {
+	public void setEtat(Etat etat) {
 		this.etat = etat;
+		this.modif();
 	}
 
 	/**
@@ -322,6 +329,7 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
+		this.modif();
 	}
 
 	@Override

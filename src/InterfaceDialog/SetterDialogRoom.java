@@ -128,7 +128,7 @@ public class SetterDialogRoom extends JDialog {
 		} else {
 			this.salle.setnomSalle(nom);
 			this.salle.setnombreTables(nbTable);
-			this.salle.setetat(etatSalle);
+			this.salle.setEtat(etatSalle);
 			this.salle.modif();
 			retour = true;
 		}
