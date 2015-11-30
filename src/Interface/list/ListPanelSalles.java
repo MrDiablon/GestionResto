@@ -1,6 +1,8 @@
 package Interface.list;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -25,6 +27,14 @@ public class ListPanelSalles extends JPanel {
 	public ListPanelSalles(JFrame parent) {
 		this.parent = parent;
 		this.setLayout(new BorderLayout());
+		
+		ActionListener edit = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				createRoom();
+			}
+		};
 
 		this.nouveau = new JButton(new ImageIcon(getClass().getResource(
 				"/img/new.png")));
@@ -32,9 +42,9 @@ public class ListPanelSalles extends JPanel {
 				"/img/edit.png")));
 		this.supprimer = new JButton(new ImageIcon(getClass().getResource(
 				"/img/delete.png")));
-		this.nouveau.addActionListener(e -> {
-			createRoom();
-		});
+		this.nouveau.addActionListener(edit);
+		this.modifier.addActionListener(edit);
+		this.supprimer.addActionListener(e -> deleteRoom());
 
 		JToolBar barreOutils = new JToolBar();
 		barreOutils.add(this.nouveau);
@@ -83,6 +93,14 @@ public class ListPanelSalles extends JPanel {
 			}
 			
 			
+		}
+	}
+	
+	private void deleteRoom(){
+		if(!this.SalleList.isSelectionEmpty()){
+			Salles select = this.SalleList.getSelectedValue();
+			this.modelList.remove(select);
+			select.delete();
 		}
 	}
 }

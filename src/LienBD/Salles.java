@@ -198,6 +198,13 @@ public class Salles implements Comparable<Salles> {
 		Salles.instance.prepare(sql);
 		Salles.instance.execute(data, true);
 	}
+	
+	public void delete(){
+		String sql = "DELETE FROM SALLE WHERE NUMSALLE = ?";
+		Object[] data = { this.numSalle };
+		Salles.instance.prepare(sql);
+		Salles.instance.execute(data, true);
+	}
 
 	public java.util.Collection<Menu> getMenu() {
 		if (menus == null)
