@@ -138,7 +138,7 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public static Salles[] getAll() {
-		String sql = "SELECT NUMSALLE FROM SALLE";
+		String sql = "SELECT NUMSALLE FROM SALLE ORDER BY NUMRESTO";
 		Salles.instance.prepare(sql);
 		ResultSet res = (ResultSet) Salles.instance.execute();
 		Salles[] retour = null;

@@ -18,7 +18,7 @@ import LienBD.Salles;
 public class ListPanelSalles extends JPanel {
 
 	private JFrame parent;
-	private JButton nouveau, supprimer, modifer;
+	private JButton nouveau, supprimer, modifier;
 	private JList<Salles> SalleList;
 	private MyListModel<Salles> modelList;
 
@@ -28,7 +28,7 @@ public class ListPanelSalles extends JPanel {
 
 		this.nouveau = new JButton(new ImageIcon(getClass().getResource(
 				"/img/new.png")));
-		this.modifer = new JButton(new ImageIcon(getClass().getResource(
+		this.modifier = new JButton(new ImageIcon(getClass().getResource(
 				"/img/edit.png")));
 		this.supprimer = new JButton(new ImageIcon(getClass().getResource(
 				"/img/delete.png")));
@@ -38,7 +38,7 @@ public class ListPanelSalles extends JPanel {
 
 		JToolBar barreOutils = new JToolBar();
 		barreOutils.add(this.nouveau);
-		barreOutils.add(this.modifer);
+		barreOutils.add(this.modifier);
 		barreOutils.add(this.supprimer);
 
 		this.add(barreOutils, BorderLayout.NORTH);
