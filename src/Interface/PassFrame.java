@@ -1,15 +1,24 @@
 package Interface;
 
+import java.awt.Button;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import Interface.list.MenuRenderer;
 import Interface.list.MyListModel;
@@ -22,7 +31,9 @@ import LienBD.Salles;
 import Interface.list.ListPanelSalles;
 
 public class PassFrame extends JFrame {
-
+	
+	private JTabbedPane pane = new JTabbedPane();
+	
 	public PassFrame(int droit) throws Exception {
 		// on verifie que les droit sont bon
 		if (droit == 1 || droit == 2) {
@@ -36,8 +47,7 @@ public class PassFrame extends JFrame {
 			JMenuItem item3 = new JMenuItem("fermer");
 			JMenuItem item4 = new JMenuItem("save");
 			JMenu fichier = new JMenu("Fichier");
-			JMenu autre = new JMenu("Autre");
-			JTabbedPane pane = new JTabbedPane();
+			JMenu autre = new JMenu("Autre");			
 			fichier.add(item1);
 			fichier.add(item3);
 			fichier.add(item4);
@@ -47,6 +57,7 @@ public class PassFrame extends JFrame {
 
 			// Configuration du tabbedPane
 			JTextField text1 = new JTextField(50);
+			
 			// configuration de la liste des ingredient
 			JList<Ingredient> listeIngredient = new JList<Ingredient>();
 			MyListModel<Ingredient> modelListIngredient = new MyListModel<>();
@@ -99,6 +110,23 @@ public class PassFrame extends JFrame {
 			this.add(pane);
 			this.pack();
 		}
-
+	}
+	
+	public void addNewTab(String title, JPanel panel){
+		pane.add(title,panel);
+		
+		JLabel closeLabel = new JLabel(title);
+		JButton closeButton = new JButton("X");
+		closeButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+		JPanel titlePanel = new JPanel();
+		titlePanel.add(closeButton);
+		titlePanel.add(closeLabel);
+		
+		pane.setTabComponentAt(pane.indexOfComponent(panel), titlePanel);
+		pane.setSelectedComponent(panel);
+	}
+	
+	public void selTab(JPanel panel){
+		pane.remove(panel);
 	}
 }

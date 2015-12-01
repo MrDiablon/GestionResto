@@ -1,5 +1,6 @@
 package LienBD;
 
+import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.sql.DriverManager;
+
+import javax.swing.JOptionPane;
 
 import com.mysql.jdbc.UpdatableResultSet;
 
@@ -28,7 +31,7 @@ public class myPDO {
 			myPDO.url = url;
 			// Etape 1 : chargement du driver
 			Class.forName("com.mysql.jdbc.Driver");
-			// Etape 2 : r�cup�ration de la connexion
+			// Etape 2 : récupération de la connexion
 			myPDO.cn = DriverManager.getConnection(url, login, passwd);
 		} catch (SQLException e) {
 			e.printStackTrace();

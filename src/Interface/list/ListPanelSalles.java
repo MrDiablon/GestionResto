@@ -14,17 +14,18 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
+import Interface.PassFrame;
 import InterfaceDialog.SetterDialogRoom;
 import LienBD.Salles;
 
 public class ListPanelSalles extends JPanel {
 
-	private JFrame parent;
+	private PassFrame parent;
 	private JButton nouveau, supprimer, modifier;
 	private JList<Salles> SalleList;
 	private MyListModel<Salles> modelList;
 
-	public ListPanelSalles(JFrame parent) {
+	public ListPanelSalles(PassFrame parent) {
 		this.parent = parent;
 		this.setLayout(new BorderLayout());
 		
@@ -65,7 +66,7 @@ public class ListPanelSalles extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					editSelectedRoom();
+					parent.addNewTab("test", new JPanel() );
 				}
 			}
 		});
@@ -81,23 +82,22 @@ public class ListPanelSalles extends JPanel {
 		}
 
 	}
-	
-	private void editSelectedRoom(){
-		if(!this.SalleList.isSelectionEmpty()){
+
+	private void editSelectedRoom() {
+		if (!this.SalleList.isSelectionEmpty()) {
 			Salles select = this.SalleList.getSelectedValue();
 			Salles newSalle = SetterDialogRoom.showContactDialog(this.parent,
 					"nouvelle salle", select);
-			if(newSalle != null){
+			if (newSalle != null) {
 				this.modelList.remove(select);
 				this.modelList.add(newSalle);
 			}
-			
-			
+
 		}
 	}
-	
-	private void deleteRoom(){
-		if(!this.SalleList.isSelectionEmpty()){
+
+	private void deleteRoom() {
+		if (!this.SalleList.isSelectionEmpty()) {
 			Salles select = this.SalleList.getSelectedValue();
 			this.modelList.remove(select);
 			select.delete();
