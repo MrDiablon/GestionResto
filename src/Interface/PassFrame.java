@@ -115,18 +115,24 @@ public class PassFrame extends JFrame {
 	public void addNewTab(String title, JPanel panel){
 		pane.add(title,panel);
 		
+		//configuation du label
 		JLabel closeLabel = new JLabel(title);
+		closeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+		//configuration du bouton
 		JButton closeButton = new JButton("X");
-		closeButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+		closeButton.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+		closeButton.addActionListener(e -> delTab(panel));
+		//configuration du panel contenant le label et le bouton 
 		JPanel titlePanel = new JPanel();
-		titlePanel.add(closeButton);
 		titlePanel.add(closeLabel);
+		titlePanel.add(closeButton);
 		
 		pane.setTabComponentAt(pane.indexOfComponent(panel), titlePanel);
+		pane.validate();
 		pane.setSelectedComponent(panel);
 	}
 	
-	public void selTab(JPanel panel){
+	public void delTab(JPanel panel){
 		pane.remove(panel);
 	}
 }
