@@ -50,7 +50,7 @@ public class ListPanelRoom extends JPanel {
 		this.roomList = new JList<Salles>();
 		this.modelList = new MyListModel<Salles>();
 		this.roomList.setModel(this.modelList);
-		this.roomList.setCellRenderer(new SalleRenderer());
+		this.roomList.setCellRenderer(new RendererRoom());
 		Salles[] salles = Salles.getAll();
 		for (Salles s : salles) {
 			this.modelList.add(s);

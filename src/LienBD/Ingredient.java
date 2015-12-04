@@ -8,7 +8,6 @@ package LienBD;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
 
 public class Ingredient implements Comparable<Ingredient> {
 

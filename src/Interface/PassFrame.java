@@ -23,7 +23,7 @@ import javax.swing.border.Border;
 import Interface.list.MenuRenderer;
 import Interface.list.MyListModel;
 import Interface.list.RendererIngredient;
-import Interface.list.SalleRenderer;
+import Interface.list.RendererRoom;
 import LienBD.Ingredient;
 import LienBD.Menu;
 import LienBD.Personnel;

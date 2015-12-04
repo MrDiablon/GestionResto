@@ -8,8 +8,6 @@ package LienBD;
 import java.util.*;
 import java.sql.SQLException;
 
-import Tools.JDom;
-
 import com.mysql.jdbc.ResultSet;
 
 public class Salles implements Comparable<Salles> {
