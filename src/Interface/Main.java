@@ -1,6 +1,5 @@
 package Interface;
 
-import java.awt.GraphicsEnvironment;
 import javax.swing.SwingUtilities;
 
 import LienBD.myPDO;
