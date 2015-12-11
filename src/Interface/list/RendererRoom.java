@@ -31,16 +31,18 @@ public class RendererRoom implements ListCellRenderer<Salles> {
 					"/img/tableV.png")));
 		}
 
-		this.label.setText(nomSalles + " : " + nbTable);
+		
 
 		// si l'element est selectionner on change l'affichage pour bien le
 		// montré
 		if (isSelected) {
+			this.label.setText(nomSalles + " : " + nbTable);
 			this.label.setBackground(list.getSelectionBackground());
 			this.label.setForeground(list.getSelectionForeground());
 			this.label.setOpaque(true);
 		} else {
 			// sinon on met un affichage normal
+			this.label.setText(nomSalles);
 			this.label.setBackground(list.getBackground());
 			this.label.setForeground(list.getForeground());
 		}

@@ -59,7 +59,8 @@ public class ListPanelRoom extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					parent.addNewTab("test", new JPanel() );
+					Salles select = ListPanelRoom.this.roomList.getSelectedValue();
+					parent.addNewTab(select.getNomSalle(), new ListPanelTable(parent, select.getNumSalle()) );
 				}
 			}
 		});

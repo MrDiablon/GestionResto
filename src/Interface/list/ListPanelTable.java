@@ -37,6 +37,7 @@ public class ListPanelTable extends JPanel{
 		barreOutils.add(this.nouveau);
 		barreOutils.add(this.modifier);
 		barreOutils.add(this.supprimer);
+		this.add(barreOutils);
 		
 		try {
 			Table[] tables = Table.getAll(numSalle);
@@ -45,7 +46,7 @@ public class ListPanelTable extends JPanel{
 			JOptionPane.showMessageDialog(parent, "Probléme lors de la communication avec la base de donnée");
 		}
 		this.TableList.setModel(modelList);
-		//this.TableList.setCellRenderer(new RendererTable());
+		this.TableList.setCellRenderer(new RendererTable());
 		
 		this.TableList.addMouseListener(new MouseAdapter() {
 			@Override
@@ -55,6 +56,9 @@ public class ListPanelTable extends JPanel{
 				}
 			}
 		});
+		
+		
+		this.add(this.TableList);
 		
 	}
 }

@@ -26,7 +26,7 @@ public class Table implements Comparable<Table> {
 	 */
 	public Table(int id) {
 		// questionnement pour les information sur la table
-		String sql = "SELECT * FROM TABLE WHERE NUMTABLE = ?";
+		String sql = "SELECT * FROM TABLES WHERE NUMTABLE = ?";
 		Object[] data = { id };
 		Table.instance.prepare(sql);
 		ResultSet res = (ResultSet) Table.instance.execute(data, false);
@@ -209,7 +209,7 @@ public class Table implements Comparable<Table> {
 		String sql = "SELECT NUMTABLE FROM TABLES WHERE NUMSALLE = ?";
 		instance.prepare(sql);
 		Object[] data = { numSalle };
-		java.sql.ResultSet res = instance.execute(data, true);
+		java.sql.ResultSet res = instance.execute(data, false);
 		res.last();
 		retour = new Table[res.getRow()];
 		res.beforeFirst();
