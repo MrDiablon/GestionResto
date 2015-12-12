@@ -18,6 +18,7 @@ public class Salles implements Comparable<Salles> {
 	private int nombreTables;
 	private static myPDO instance = myPDO.getInstance();
 	private Etat etat;
+	private int nbTableDispo;
 	private Restaurant restaurant;
 	private java.util.Collection<Menu> menus;
 
@@ -26,6 +27,9 @@ public class Salles implements Comparable<Salles> {
 		Object[] data = { id };
 		Salles.instance.prepare(sql);
 		ResultSet res = (ResultSet) Salles.instance.execute(data, false);
+		sql = "SELECT COUNT(NUMTABLE) FROM TABLES WHERE NUMSALLE = ?";
+		instance.prepare(sql);
+		ResultSet res2 = (ResultSet) instance.execute(data,false);
 		sql = "SELECT * FROM MENU WHERE NUMMENU = ?";
 		Salles.instance.prepare(sql);
 		ResultSet res3 = (ResultSet) Salles.instance.execute(data, false);
@@ -39,6 +43,9 @@ public class Salles implements Comparable<Salles> {
 				this.etat = Etat.valueOf(res.getString("ETATS").toLowerCase());
 			}
 			this.restaurant = new Restaurant(this.numResto);
+			if(res2.next()){
+				this.nbTableDispo = res2.getInt(1);
+			}
 			while (res3.next()) {
 				this.menus.add(new Menu(res3.getInt("NUMMENU")));
 			}
@@ -294,6 +301,15 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public int getNombreTables() {
 		return nombreTables;
+	}
+	
+	public int getTableDispo() {
+		return this.nbTableDispo;
+	}
+	
+	public void setTableDispo(int nb){
+		this.nbTableDispo = nb;
+		this.modif();
 	}
 
 	/**
