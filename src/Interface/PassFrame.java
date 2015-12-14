@@ -19,6 +19,7 @@ import LienBD.Ingredient;
 import LienBD.Menu;
 import LienBD.Personnel;
 import LienBD.Salles;
+import Interface.list.ListPanelIngredient;
 import Interface.list.ListPanelSalles;
 
 public class PassFrame extends JFrame {
@@ -85,7 +86,7 @@ public class PassFrame extends JFrame {
 			}
 			JScrollPane personnelScroll = new JScrollPane(listPerso);
 
-			pane.addTab("Liste des ingrédients", ingredientScroll);
+			pane.addTab("Liste des ingrédients", new ListPanelIngredient(this));
 			pane.addTab("Liste des salles", new ListPanelSalles(this));
 			if (droit == 2) {
 				pane.addTab("Liste des menus", MenuSroll);
