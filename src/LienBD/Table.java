@@ -47,7 +47,7 @@ public class Table implements Comparable<Table> {
 				this.num = id;
 				this.numSalle = res.getInt("NUMSALLE");
 				this.capacite = res.getInt("CAPACITE");
-				this.etat = (Etat) res.getObject("ETAT");
+				this.etat = Etat.valueOf(res.getString("ETATS"));
 			}
 
 			while (res2.next()) {
@@ -78,9 +78,10 @@ public class Table implements Comparable<Table> {
 	 * @throws SQLException
 	 */
 
-	public Table(int capacite, Etat etat, ArrayList<Menu> menus,
+	public Table(int numSalle, int capacite, Etat etat, ArrayList<Menu> menus,
 			ArrayList<Reservation> reservations) throws SQLException {
-
+		
+		this.numSalle = numSalle;
 		this.capacite = capacite;
 		this.etat = etat;
 		this.menu = menus;
@@ -229,11 +230,11 @@ public class Table implements Comparable<Table> {
 	 * fonction de attribut de la class
 	 */
 	private void create() {
-		String sql = "INSERT INTO TABLES (`NUMSALLE`,`CAPACITE`,`ETATS`,) VALUE (?,?,?)";
+		String sql = "INSERT INTO TABLES (`NUMSALLE`,`CAPACITE`,`ETATS`) VALUE (?,?,?)";
 		Object[] data = { this.numSalle, this.capacite, this.etat.toString() };
 		instance.prepare(sql);
 		instance.execute(data, true);
-		sql = "SELECT MAX(NUMTABLE) FROM PERSONNEL";
+		sql = "SELECT MAX(NUMTABLE) FROM TABLES";
 		instance.prepare(sql);
 		ResultSet res = (ResultSet) instance.execute();
 		try {

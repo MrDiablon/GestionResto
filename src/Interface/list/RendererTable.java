@@ -22,6 +22,7 @@ public class RendererTable implements ListCellRenderer<Table> {
 		
 		int capaciter = value.getCapacite();
 		Etat etatTable = value.getEtat();
+		this.label = new JLabel();
 		
 		if (etatTable.equals(Etat.horsservice)) {
 			this.label.setIcon(new ImageIcon(getClass().getResource(
@@ -50,7 +51,7 @@ public class RendererTable implements ListCellRenderer<Table> {
 			this.label.setBorder(null);
 		}
 		
-		return null;
+		return this.label;
 	}
 
 }

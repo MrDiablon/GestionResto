@@ -374,5 +374,9 @@ public class Salles implements Comparable<Salles> {
 		}
 		return retour;
 	}
-
+	
+	
+	public String toString(){
+		return this.nomSalle;
+	}
 }

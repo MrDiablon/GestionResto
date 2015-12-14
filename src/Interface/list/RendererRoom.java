@@ -16,12 +16,13 @@ public class RendererRoom implements ListCellRenderer<Salles> {
 	private JLabel label;
 
 	@Override
-	public Component getListCellRendererComponent(JList<? extends Salles> list,			
+	public Component getListCellRendererComponent(JList<? extends Salles> list,
 			Salles value, int index, boolean isSelected, boolean cellHasFocus) {
 		this.label = new JLabel();
 		String nomSalles = value.getNomSalle();
 		int nbTable = value.getNombreTables();
 		Etat etatTable = value.getEtat();
+		int dispo = value.getTableDispo();
 
 		if (etatTable.equals(Etat.horsservice)) {
 			this.label.setIcon(new ImageIcon(getClass().getResource(
@@ -31,12 +32,11 @@ public class RendererRoom implements ListCellRenderer<Salles> {
 					"/img/tableV.png")));
 		}
 
-		
-
 		// si l'element est selectionner on change l'affichage pour bien le
 		// montré
 		if (isSelected) {
-			this.label.setText(nomSalles + " : " + nbTable);
+			this.label.setText(nomSalles + " capaciter : " + nbTable
+					+ " dispo : " + dispo);
 			this.label.setBackground(list.getSelectionBackground());
 			this.label.setForeground(list.getSelectionForeground());
 			this.label.setOpaque(true);

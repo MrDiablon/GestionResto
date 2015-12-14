@@ -20,6 +20,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import Interface.list.ListPanelTable;
 import Interface.list.MenuRenderer;
 import Interface.list.MyListModel;
 import Interface.list.RendererIngredient;
@@ -100,7 +101,7 @@ public class PassFrame extends JFrame {
 			pane.addTab("Liste des salles", new ListPanelRoom(this));
 			if (droit == 2) {
 				pane.addTab("Liste des menus", MenuSroll);
-				pane.addTab("Liste des employÃ©s", personnelScroll);
+				pane.addTab("Liste des employés", personnelScroll);
 			}
 			JButton bouton = new JButton("Afficher");
 			this.setLayout(new GridLayout(1, 5));
@@ -134,5 +135,9 @@ public class PassFrame extends JFrame {
 	
 	public void delTab(JPanel panel){
 		pane.remove(panel);
+	}
+	
+	public void update(JPanel panel){
+		
 	}
 }
