@@ -21,7 +21,8 @@ import LienBD.Salles;
 
 public class SetterDialogRoom extends JDialog {
 	private JLabel nomSalle, numResto, etat, nbTables, errorLabel;
-	private JComboBox<String> etatBox, restoBox;
+	private JComboBox<String> etatBox;
+	JComboBox<Restaurant> restoBox;
 	private JSpinner nbTableSpinner;
 	private JTextField nomSalleText;
 	private JButton valider, annuler;
@@ -40,11 +41,11 @@ public class SetterDialogRoom extends JDialog {
 		String[] etat = { Etat.libre.toString(), Etat.reserve.toString(),
 				Etat.horsservice.toString() };
 		this.etatBox = new JComboBox<String>(etat);
-		this.restoBox = new JComboBox<String>();
+		this.restoBox = new JComboBox<Restaurant>();
 		Restaurant[] restos = Restaurant.getAll();
 		int index = 0;
 		for (Restaurant r : restos) {
-			this.restoBox.addItem(r.toString());
+			this.restoBox.addItem(r);
 			if (this.salle != null) {
 				if (this.salle.getNumResto() == r.getNumResto()) {
 					this.restoBox.setSelectedIndex(index);
@@ -64,7 +65,8 @@ public class SetterDialogRoom extends JDialog {
 					this.dispose();
 				}
 			} catch (SQLException e1) {
-				JOptionPane.showMessageDialog(null, "acces a la base de donnÃ©e impossible");
+				JOptionPane.showMessageDialog(null,
+						"acces a la base de donnée impossible");
 			}
 		});
 
@@ -120,17 +122,20 @@ public class SetterDialogRoom extends JDialog {
 		String nom = this.nomSalleText.getText();
 		int nbTable = (int) this.nbTableSpinner.getValue();
 		Etat etatSalle = Etat.valueOf((String) this.etatBox.getSelectedItem());
-		int numResto = this.restoBox.getSelectedIndex();
+		Restaurant selectResto = (Restaurant) this.restoBox.getSelectedItem();
 		if (this.salle == null) {
-			this.salle = new Salles(numResto, nom, nbTable, etatSalle, null);
+			this.salle = new Salles(selectResto.getNumResto(), nom, nbTable,
+					etatSalle, null);
+			retour = true;
 		} else {
 			this.salle.setnomSalle(nom);
 			this.salle.setnombreTables(nbTable);
-			this.salle.setetat(etatSalle);
+			this.salle.setEtat(etatSalle);
 			this.salle.modif();
+			retour = true;
 		}
 		// cree la salles grace aux donnee saisie
-		//Test
+		// Test
 		return retour;
 	}
 

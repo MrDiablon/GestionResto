@@ -29,7 +29,7 @@ public class NewPersonnelDialog extends JDialog{
 		
 		public NewPersonnelDialog(Frame owner, boolean modal){
 			super(owner, modal);
-			this.setTitle("Création");
+			this.setTitle("Crï¿½ation");
 			
 			//panel pour le nom
 			JPanel panelNom = new JPanel();
@@ -59,11 +59,11 @@ public class NewPersonnelDialog extends JDialog{
 			
 			//panel pour les bouton
 			JPanel panelBouton = new JPanel();
-			this.valide = new JButton("Validé");
+			this.valide = new JButton("Validï¿½");
 			this.valide.addActionListener(e -> {
 				this.createPersonnel();
 			});
-			this.annulle = new JButton("Annulé");
+			this.annulle = new JButton("Annulï¿½");
 			this.annulle.addActionListener(e -> {
 				this.dispose();
 			});
@@ -90,7 +90,7 @@ public class NewPersonnelDialog extends JDialog{
 			try {
 				pwd = hashText.StringToSHA1(pwd);
 			} catch (NoSuchAlgorithmException e) {
-				JOptionPane.showMessageDialog(this.getContentPane(), "Un probléme est survenue");
+				JOptionPane.showMessageDialog(this.getContentPane(), "Un problÃ©me est survenue");
 			}
 			int type = this.type.getSelectedIndex();
 			if(nom.equals("")){
@@ -101,7 +101,7 @@ public class NewPersonnelDialog extends JDialog{
 				JOptionPane.showMessageDialog(this.getContentPane(), "Veuillez renseigner le champ \"type\"");
 			}else{
 				Personnel pers = new Personnel(0, 0, nom, null, null, null, null, null, null, null, 0, type, pwd);
-				JOptionPane.showMessageDialog(this.getContentPane(), pers.getNOM() + " a été ajouter à la base de donnée au numero " + pers.getNUMPERSO());
+				JOptionPane.showMessageDialog(this.getContentPane(), pers.getNOM() + " a ï¿½tï¿½ ajouter ï¿½ la base de donnï¿½e au numero " + pers.getNUMPERSO());
 				this.dispose();
 			}
 		}

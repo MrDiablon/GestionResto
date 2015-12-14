@@ -28,9 +28,14 @@ Sur windows un commit ouvre le system de saisie par defaut (celui du shell):
 
 l'envoie des commit ce fait comme a l'iut
 
+<<<<<<< HEAD
 avec gitHub vou spouvez paramete les id et mdp avec ceci :
 
 git config --global user.name "Julien Tilap LA VINH"
  git config --global user.email tilap@domain.tld
 
 Je ne les ai pas tester
+=======
+pour push sur vos branch :
+	git push origin "nom de la branche"
+>>>>>>> antoine

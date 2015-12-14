@@ -18,60 +18,53 @@ import Interface.PassFrame;
 import InterfaceDialog.SetterDialogRoom;
 import LienBD.Salles;
 
-public class ListPanelSalles extends JPanel {
+public class ListPanelRoom extends JPanel {
 
 	private PassFrame parent;
-	private JButton nouveau, supprimer, modifier;
-	private JList<Salles> SalleList;
+	private JButton newRoom, deleteRoom, setRoom;
+	private JList<Salles> roomList;
 	private MyListModel<Salles> modelList;
 
-	public ListPanelSalles(PassFrame parent) {
+	public ListPanelRoom(PassFrame parent) {
 		this.parent = parent;
 		this.setLayout(new BorderLayout());
-		
-		ActionListener edit = new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				createRoom();
-			}
-		};
 
-		this.nouveau = new JButton(new ImageIcon(getClass().getResource(
+		//parmatrage des bouton
+		this.newRoom = new JButton(new ImageIcon(getClass().getResource(
 				"/img/new.png")));
-		this.modifier = new JButton(new ImageIcon(getClass().getResource(
+		this.setRoom = new JButton(new ImageIcon(getClass().getResource(
 				"/img/edit.png")));
-		this.supprimer = new JButton(new ImageIcon(getClass().getResource(
+		this.deleteRoom = new JButton(new ImageIcon(getClass().getResource(
 				"/img/delete.png")));
-
-		this.nouveau.addActionListener(edit);
-		this.modifier.addActionListener(edit);
-		this.supprimer.addActionListener(e -> deleteRoom());
+		this.newRoom.addActionListener(e -> createRoom());
+		this.setRoom.addActionListener(e -> editSelectedRoom());
+		this.deleteRoom.addActionListener(e -> deleteRoom());
 
 		JToolBar barreOutils = new JToolBar();
-		barreOutils.add(this.nouveau);
-		barreOutils.add(this.modifier);
-		barreOutils.add(this.supprimer);
+		barreOutils.add(this.newRoom);
+		barreOutils.add(this.setRoom);
+		barreOutils.add(this.deleteRoom);
 
 		this.add(barreOutils, BorderLayout.NORTH);
 
-		this.SalleList = new JList<Salles>();
+		this.roomList = new JList<Salles>();
 		this.modelList = new MyListModel<Salles>();
-		this.SalleList.setModel(this.modelList);
-		this.SalleList.setCellRenderer(new SalleRenderer());
+		this.roomList.setModel(this.modelList);
+		this.roomList.setCellRenderer(new RendererRoom());
 		Salles[] salles = Salles.getAll();
 		for (Salles s : salles) {
 			this.modelList.add(s);
 		}
-		this.SalleList.addMouseListener(new MouseAdapter() {
+		this.roomList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					parent.addNewTab("test", new JPanel() );
+					Salles select = ListPanelRoom.this.roomList.getSelectedValue();
+					parent.addNewTab(select.getNomSalle(), new ListPanelTable(parent, select.getNumSalle()) );
 				}
 			}
 		});
-		JScrollPane SalleScroll = new JScrollPane(this.SalleList);
+		JScrollPane SalleScroll = new JScrollPane(this.roomList);
 		this.add(SalleScroll, BorderLayout.CENTER);
 	}
 
@@ -85,8 +78,8 @@ public class ListPanelSalles extends JPanel {
 	}
 
 	private void editSelectedRoom() {
-		if (!this.SalleList.isSelectionEmpty()) {
-			Salles select = this.SalleList.getSelectedValue();
+		if (!this.roomList.isSelectionEmpty()) {
+			Salles select = this.roomList.getSelectedValue();
 			Salles newSalle = SetterDialogRoom.showContactDialog(this.parent,
 					"nouvelle salle", select);
 			if (newSalle != null) {
@@ -98,8 +91,8 @@ public class ListPanelSalles extends JPanel {
 	}
 
 	private void deleteRoom() {
-		if (!this.SalleList.isSelectionEmpty()) {
-			Salles select = this.SalleList.getSelectedValue();
+		if (!this.roomList.isSelectionEmpty()) {
+			Salles select = this.roomList.getSelectedValue();
 			this.modelList.remove(select);
 			select.delete();
 		}

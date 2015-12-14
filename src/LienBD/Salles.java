@@ -8,8 +8,6 @@ package LienBD;
 import java.util.*;
 import java.sql.SQLException;
 
-import Tools.JDom;
-
 import com.mysql.jdbc.ResultSet;
 
 public class Salles implements Comparable<Salles> {
@@ -20,6 +18,7 @@ public class Salles implements Comparable<Salles> {
 	private int nombreTables;
 	private static myPDO instance = myPDO.getInstance();
 	private Etat etat;
+	private int nbTableDispo;
 	private Restaurant restaurant;
 	private java.util.Collection<Menu> menus;
 
@@ -28,6 +27,9 @@ public class Salles implements Comparable<Salles> {
 		Object[] data = { id };
 		Salles.instance.prepare(sql);
 		ResultSet res = (ResultSet) Salles.instance.execute(data, false);
+		sql = "SELECT COUNT(NUMTABLE) FROM TABLES WHERE NUMSALLE = ?";
+		instance.prepare(sql);
+		ResultSet res2 = (ResultSet) instance.execute(data,false);
 		sql = "SELECT * FROM MENU WHERE NUMMENU = ?";
 		Salles.instance.prepare(sql);
 		ResultSet res3 = (ResultSet) Salles.instance.execute(data, false);
@@ -41,6 +43,9 @@ public class Salles implements Comparable<Salles> {
 				this.etat = Etat.valueOf(res.getString("ETATS").toLowerCase());
 			}
 			this.restaurant = new Restaurant(this.numResto);
+			if(res2.next()){
+				this.nbTableDispo = res2.getInt(1);
+			}
 			while (res3.next()) {
 				this.menus.add(new Menu(res3.getInt("NUMMENU")));
 			}
@@ -138,7 +143,7 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public static Salles[] getAll() {
-		String sql = "SELECT NUMSALLE FROM SALLE";
+		String sql = "SELECT NUMSALLE FROM SALLE ORDER BY NUMRESTO";
 		Salles.instance.prepare(sql);
 		ResultSet res = (ResultSet) Salles.instance.execute();
 		Salles[] retour = null;
@@ -164,9 +169,14 @@ public class Salles implements Comparable<Salles> {
 		sql = "SELECT MAX(NUMPERSO) FROM PERSONNEL";
 		Salles.instance.prepare(sql);
 		ResultSet res = (ResultSet) Salles.instance.execute();
+		//insertion des menu dans la table servir
 		if(this.menus != null){
+			sql = "INSERT INTO SERVIR(NUMSALLE,NUMMENU) VALUE (?,?)";
+			Salles.instance.prepare(sql);
+			data[0] = this.numSalle;
 			for(Menu m : this.menus){
-				
+				data[1] = m.getNumMenu();
+				Salles.instance.execute(data, true);
 			}
 		}
 		try {
@@ -180,9 +190,9 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public void modif() {
-		String sql = "UPDATE SALLE SET NUMRESTO = ?, NOMSALLE = ?, NOMBRETABLES = ?, ETAT = ?, RESTAURANT = ?, MENU = ? WHERE id = ? ";
-		Object[] data = { this.numResto, this.nomSalle, this.nombreTables,
-				this.etat, this.restaurant, this.menus, this.numSalle };
+		String sql = "UPDATE SALLE SET NOMSALLE = ?, NOMBRETABLES = ?, ETATS = ?, NUMRESTO = ? WHERE NUMSALLE = ? ";
+		Object[] data = { this.nomSalle, this.nombreTables,
+				this.etat.toString(), this.restaurant.getNumResto(), this.numSalle };
 		Salles.instance.prepare(sql);
 		Salles.instance.execute(data, true);
 	}
@@ -196,20 +206,20 @@ public class Salles implements Comparable<Salles> {
 	
 	public void delete(){
 		String sql = "DELETE FROM SALLE WHERE NUMSALLE = ?";
-		Object[] data = { this.numResto };
+		Object[] data = { this.numSalle };
 		Salles.instance.prepare(sql);
-		Salles.instance.execute(data, true); 
+		Salles.instance.execute(data, true);
 	}
 
 	public java.util.Collection<Menu> getMenu() {
 		if (menus == null)
-			menus = new java.util.HashSet<Menu>();
+			menus = new ArrayList<Menu>();
 		return menus;
 	}
 
 	public java.util.Iterator getIteratorMenu() {
 		if (menus == null)
-			menus = new java.util.HashSet<Menu>();
+			menus = new ArrayList<Menu>();
 		return menus.iterator();
 	}
 
@@ -220,12 +230,18 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public void addMenu(Menu newMenu) {
-		if (newMenu == null)
-			return;
-		if (this.menus == null)
-			this.menus = new java.util.HashSet<Menu>();
-		if (!this.menus.contains(newMenu))
-			this.menus.add(newMenu);
+		if(newMenu != null){
+			if(this.menus == null){
+				this.menus = new ArrayList<Menu>();
+			}
+			if(!this.menus.contains(newMenu)){
+				this.menus.add(newMenu);
+				String sql = "INSERT INTO SERVIR(NUMSALLE,NUMMENU) VALUE (?,?)";
+				Object[] data = {this.numSalle , newMenu.getNumMenu()};
+				Salles.instance.prepare(sql);
+				Salles.instance.execute(data, true);
+			}
+		}
 	}
 
 	public void removeMenu(Menu oldMenu) {
@@ -244,16 +260,8 @@ public class Salles implements Comparable<Salles> {
 	/**
 	 * @return the numSalle
 	 */
-	public int numSalle() {
+	public int getNumSalle() {
 		return numSalle;
-	}
-
-	/**
-	 * @param numSalle
-	 *            the numSalle to set
-	 */
-	public void setnumSalle(int numSalle) {
-		this.numSalle = numSalle;
 	}
 
 	/**
@@ -269,6 +277,7 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public void setnumResto(int numResto) {
 		this.numResto = numResto;
+		this.modif();
 	}
 
 	/**
@@ -284,6 +293,7 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public void setnomSalle(String nomSalle) {
 		this.nomSalle = nomSalle;
+		this.modif();
 	}
 
 	/**
@@ -292,6 +302,15 @@ public class Salles implements Comparable<Salles> {
 	public int getNombreTables() {
 		return nombreTables;
 	}
+	
+	public int getTableDispo() {
+		return this.nbTableDispo;
+	}
+	
+	public void setTableDispo(int nb){
+		this.nbTableDispo = nb;
+		this.modif();
+	}
 
 	/**
 	 * @param numSalle
@@ -299,6 +318,7 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public void setnombreTables(int nombreTables) {
 		this.nombreTables = nombreTables;
+		this.modif();
 	}
 
 	/**
@@ -312,8 +332,9 @@ public class Salles implements Comparable<Salles> {
 	 * @param etat
 	 *            the etat to set
 	 */
-	public void setetat(Etat etat) {
+	public void setEtat(Etat etat) {
 		this.etat = etat;
+		this.modif();
 	}
 
 	/**
@@ -329,6 +350,7 @@ public class Salles implements Comparable<Salles> {
 	 */
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
+		this.modif();
 	}
 
 	@Override
@@ -352,5 +374,9 @@ public class Salles implements Comparable<Salles> {
 		}
 		return retour;
 	}
-
+	
+	
+	public String toString(){
+		return this.nomSalle;
+	}
 }
