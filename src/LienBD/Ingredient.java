@@ -102,6 +102,10 @@ public class Ingredient implements Comparable<Ingredient> {
 	public EtatI getEtatI() {
 		return etatI;
 	}
+	
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 
 	/**
 	 * @param etatI
@@ -112,12 +116,13 @@ public class Ingredient implements Comparable<Ingredient> {
 	}
 
 	public void create() throws SQLException {
-		String sql = "INSERT INTO INGREDIENT(`NUMINGREDIENT`,`ETATI`,`PRIXU`,`STOCK`,`NOM`) VALUES (?,?,?,?,?)";
-		Ingredient.instance.prepare(sql);
-		Object[] data = { this.numIngredient, this.etatI, this.prixU,
+		String sql = "INSERT INTO INGREDIENT(`NUMINGREDIENT`,`ETATSI`,`PRIXU`,`STOCK`,`NOM`) VALUES (?,?,?,?,?)";
+		Object[] data = { this.numIngredient, this.etatI.toString(), this.prixU,
 				this.stock, this.nom };
+		Ingredient.instance.prepare(sql);
 		Ingredient.instance.execute(data, true);
 		sql = "SELECT MAX(NUMINGREDIENT) FROM INGREDIENT";
+		Ingredient.instance.prepare(sql);
 		ResultSet res = Ingredient.instance.execute();
 		if (res.next()) {
 			this.numIngredient = res.getInt(1);
@@ -133,9 +138,10 @@ public class Ingredient implements Comparable<Ingredient> {
 	}
 
 	public void modif() {
-		String sql = "UPDATE `INGREDIENT` SET `NUMINGREDIENT` = ?,`ETATI` = ?,`PRIXU` = ?,`STOCK` = ? , `NOM = ?`";
-		Object[] data = { this.numIngredient, this.etatI, this.prixU,
-				this.stock,this.nom };
+		String sql = "UPDATE INGREDIENT SET `ETATSI` = ?,`PRIXU` = ?,`STOCK` = ? , `NOM` = ? WHERE NUMINGREDIENT = ?";
+		Ingredient.instance.prepare(sql);
+		Object[] data = {this.etatI.toString(), this.prixU,
+				this.stock,this.nom,this.numIngredient };
 		Ingredient.instance.execute(data, true);
 	}
 
