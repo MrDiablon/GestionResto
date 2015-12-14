@@ -22,9 +22,9 @@ import LienBD.Personnel;
 import Interface.list.ListPanelRoom;
 
 public class PassFrame extends JFrame {
-	
+
 	private JTabbedPane pane = new JTabbedPane();
-	
+
 	public PassFrame(int droit) throws Exception {
 		// on verifie que les droit sont bon
 		if (droit == 1 || droit == 2) {
@@ -33,22 +33,25 @@ public class PassFrame extends JFrame {
 
 			// configuration du menu
 			JMenuBar barre = new JMenuBar();
-			JMenuItem item1 = new JMenuItem("test");
-			JMenuItem item2 = new JMenuItem("plop");
-			JMenuItem item3 = new JMenuItem("fermer");
-			JMenuItem item4 = new JMenuItem("save");
 			JMenu fichier = new JMenu("Fichier");
-			JMenu autre = new JMenu("Autre");			
-			fichier.add(item1);
-			fichier.add(item3);
-			fichier.add(item4);
-			autre.add(item2);
+			JMenu windows = new JMenu("Windows");
+			JMenu newWindows = new JMenu("Nouvelle Fenetre");
+			JMenuItem fermer = new JMenuItem("Fermer");
+			JMenuItem listeSalle = new JMenuItem("Liste des salles");
+			// configuration des actionListener du menu
+			fermer.addActionListener(e -> this.dispose());
+			listeSalle.addActionListener(e->this.addNewTab("Liste des salles", new ListPanelRoom(this)));
+			// ajout des item et sous menu
+			fichier.add(fermer);
+			windows.add(newWindows);
+			newWindows.add(listeSalle);
 			barre.add(fichier);
-			barre.add(autre);
+			barre.add(windows);
 
+			this.add(barre);
 			// Configuration du tabbedPane
 			JTextField text1 = new JTextField(50);
-			
+
 			// configuration de la liste des ingredient
 			JList<Ingredient> listeIngredient = new JList<Ingredient>();
 			MyListModel<Ingredient> modelListIngredient = new MyListModel<>();
@@ -86,9 +89,12 @@ public class PassFrame extends JFrame {
 				}
 			}
 			JScrollPane personnelScroll = new JScrollPane(listPerso);
+			//this.addNewTab("Liste des ingredients", ingredientScroll);
+			
 
 			pane.addTab("Liste des ingrÃ©dients", ingredientScroll);
-			pane.addTab("Liste des salles", new ListPanelRoom(this));
+			this.addNewTab("Liste des salles", new ListPanelRoom(this));
+			//pane.addTab("Liste des salles", new ListPanelRoom(this));
 			if (droit == 2) {
 				pane.addTab("Liste des menus", MenuSroll);
 				pane.addTab("Liste des employés", personnelScroll);
@@ -102,32 +108,32 @@ public class PassFrame extends JFrame {
 			this.pack();
 		}
 	}
-	
-	public void addNewTab(String title, JPanel panel){
-		pane.add(title,panel);
-		
-		//configuation du label
+
+	public void addNewTab(String title, JPanel panel) {
+		pane.add(title, panel);
+
+		// configuation du label
 		JLabel closeLabel = new JLabel(title);
 		closeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-		//configuration du bouton
+		// configuration du bouton
 		JButton closeButton = new JButton("X");
 		closeButton.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 		closeButton.addActionListener(e -> delTab(panel));
-		//configuration du panel contenant le label et le bouton 
+		// configuration du panel contenant le label et le bouton
 		JPanel titlePanel = new JPanel();
 		titlePanel.add(closeLabel);
 		titlePanel.add(closeButton);
-		
+
 		pane.setTabComponentAt(pane.indexOfComponent(panel), titlePanel);
 		pane.validate();
 		pane.setSelectedComponent(panel);
 	}
-	
-	public void delTab(JPanel panel){
+
+	public void delTab(JPanel panel) {
 		pane.remove(panel);
 	}
-	
-	public void update(JPanel panel){
-		
+
+	public void update(JPanel panel) {
+
 	}
 }
