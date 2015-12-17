@@ -35,9 +35,10 @@ public class Plat {
 		Plat.instance.prepare(sql2);
 		ResultSet res2 = instance.execute(identifiant, false);
 		if(res.next()){
-			this.recette = (String) res.getObject("NUMPLAT");
-			this.prixU = (int) res.getObject("RECETTE");
-			this.numPlat = (int) res.getObject("PRIXU");
+			this.recette = (String) res.getObject("RECETTE");
+			this.prixU = (int) res.getObject("PRIXU");
+			this.numPlat = id;
+			this.nomPlat = res.getString("NOMPLAT");
 			while(res2.next()){
 				this.ingredient.add(new Ingredient(res2.getInt("NUMINGREDIENT")));
 			}
@@ -197,6 +198,7 @@ public class Plat {
 		try {
 			// on instance notre retour grace a res.getRow() qui donne le nombre
 			// de ligne retourner
+			res.last();
 			retour = new Plat[res.getRow()];
 			// on remet le curseur au debut
 			res.beforeFirst();
@@ -216,6 +218,11 @@ public class Plat {
 		if (ingredient == null)
 			ingredient = new java.util.HashSet<Ingredient>();
 		return ingredient;
+	}
+	
+	@Override
+	public String toString(){
+		return this.nomPlat;
 	}
 
 }

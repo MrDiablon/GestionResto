@@ -28,7 +28,7 @@ public class MenuRenderer implements ListCellRenderer<Menu> {
 			this.label.setOpaque(true);
 			String composition = value.getComposition();
 			composition = composition.replace("|", " : ");
-			text += "\n\r" + composition ; 
+			text += "\n\r - " + composition ; 
 			this.label.setText(text);
 		}else{
 			this.label.setBackground(list.getBackground());

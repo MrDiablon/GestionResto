@@ -1,6 +1,7 @@
 package Interface;
 
 import java.awt.GridLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+
+import Interface.list.ListPanelIngredient;
+import Interface.list.ListPanelMenu;
 import Interface.list.MenuRenderer;
 import Interface.list.MyListModel;
 import Interface.list.RendererIngredient;
@@ -36,21 +40,28 @@ public class PassFrame extends JFrame {
 			JMenu fichier = new JMenu("Fichier");
 			JMenu windows = new JMenu("Windows");
 			JMenu newWindows = new JMenu("Nouvelle Fenetre");
+			// JMenuItem
 			JMenuItem fermer = new JMenuItem("Fermer");
 			JMenuItem listeSalle = new JMenuItem("Liste des salles");
+			JMenuItem listeIngredientM = new JMenuItem("Liste des ingredients");
+			JMenuItem listeMenuM = new JMenuItem("Liste des menus");
 			// configuration des actionListener du menu
 			fermer.addActionListener(e -> this.dispose());
-			listeSalle.addActionListener(e->this.addNewTab("Liste des salles", new ListPanelRoom(this)));
+			listeSalle.addActionListener(e -> this.addNewTab(
+					"Liste des salles", new ListPanelRoom(this)));
+			listeIngredientM.addActionListener(e -> this.addNewTab(
+					"Liste des ingredients", new ListPanelIngredient(this), false));
+			listeMenuM.addActionListener(e -> this.addNewTab("Liste des menus",
+					new ListPanelMenu(this), false));
 			// ajout des item et sous menu
 			fichier.add(fermer);
 			windows.add(newWindows);
 			newWindows.add(listeSalle);
+			newWindows.add(listeMenuM);
 			barre.add(fichier);
 			barre.add(windows);
 
 			this.add(barre);
-			// Configuration du tabbedPane
-			JTextField text1 = new JTextField(50);
 
 			// configuration de la liste des ingredient
 			JList<Ingredient> listeIngredient = new JList<Ingredient>();
@@ -63,18 +74,6 @@ public class PassFrame extends JFrame {
 				modelListIngredient.add(I);
 			}
 			JScrollPane ingredientScroll = new JScrollPane(listeIngredient);
-
-			// configuration de la liste des menus
-			JList<LienBD.Menu> listMenu = new JList<LienBD.Menu>();
-			MyListModel<LienBD.Menu> modelListMenu = new MyListModel<LienBD.Menu>();
-			listMenu.setModel(modelListMenu);
-			MenuRenderer listMenuRenderer = new MenuRenderer();
-			listMenu.setCellRenderer(listMenuRenderer);
-			Menu[] menus = Menu.getAll();
-			for (Menu m : menus) {
-				modelListMenu.add(m);
-			}
-			JScrollPane MenuSroll = new JScrollPane(listMenu);
 
 			// Configuration de la liste du personnel
 			JList<Personnel> listPerso = new JList<>();
@@ -89,27 +88,24 @@ public class PassFrame extends JFrame {
 				}
 			}
 			JScrollPane personnelScroll = new JScrollPane(listPerso);
-			//this.addNewTab("Liste des ingredients", ingredientScroll);
-			
 
-			pane.addTab("Liste des ingrÃ©dients", ingredientScroll);
-			this.addNewTab("Liste des salles", new ListPanelRoom(this));
-			//pane.addTab("Liste des salles", new ListPanelRoom(this));
+			//this.addNewTab("Liste des ingredients", new ListPanelIngredient(
+			//		this));
+			this.addNewTab("Liste des salles", new ListPanelRoom(this), false);
 			if (droit == 2) {
-				pane.addTab("Liste des menus", MenuSroll);
+				this.addNewTab("Liste des menus", new ListPanelMenu(this),false);
 				pane.addTab("Liste des employés", personnelScroll);
 			}
 			JButton bouton = new JButton("Afficher");
 			this.setLayout(new GridLayout(1, 5));
 			this.setJMenuBar(barre);
 
-			// this.add(bouton);
 			this.add(pane);
 			this.pack();
 		}
 	}
 
-	public void addNewTab(String title, JPanel panel) {
+	public void addNewTab(String title, JPanel panel, boolean focus) {
 		pane.add(title, panel);
 
 		// configuation du label
@@ -126,7 +122,13 @@ public class PassFrame extends JFrame {
 
 		pane.setTabComponentAt(pane.indexOfComponent(panel), titlePanel);
 		pane.validate();
-		pane.setSelectedComponent(panel);
+		if(focus){
+			pane.setSelectedComponent(panel);
+		}
+	}
+	
+	public void addNewTab(String title, JPanel panel){
+		this.addNewTab(title, panel,true);
 	}
 
 	public void delTab(JPanel panel) {
