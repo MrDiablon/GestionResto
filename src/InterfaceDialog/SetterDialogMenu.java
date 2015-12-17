@@ -2,6 +2,7 @@ package InterfaceDialog;
 
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.sql.SQLException;
 import java.util.LinkedList;
 
 import javax.swing.BoxLayout;
@@ -47,6 +48,7 @@ public class SetterDialogMenu extends JDialog {
 		this.add(nomPanel);
 		
 		// configuration de la partie "plat"
+		this.nbPlatsPres = 0;
 		this.nbPlat = new JLabel("Nombre de plats");
 		this.nbPlatS = new JSpinner();
 		this.nbPlatS.addChangeListener(e -> this.add());
@@ -59,8 +61,13 @@ public class SetterDialogMenu extends JDialog {
 		
 		this.valider = new JButton("Valider");
 		this.valider.addActionListener(e -> {
-			if(this.updateMenu()){
-				this.dispose();
+			try {
+				if(this.updateMenu()){
+					this.dispose();
+				}
+			} catch (Exception e1) {
+				//this.erreur.setText("Une erreur est survenue");
+				e1.printStackTrace();
 			}
 		});
 		this.annuler = new JButton("Annuller");
@@ -74,20 +81,35 @@ public class SetterDialogMenu extends JDialog {
 		
 	}
 	
-	public boolean updateMenu(){
-		boolean retour = true;
+	public boolean updateMenu() throws SQLException{
+		boolean retour = false;
 		String nom = this.saisieNom.getText();
-		int nbPlat = this.listeBoxPlats.size();
-		//int this.
 		if(this.menu == null){
-			
+			Menu newMenu = new Menu(nom);
+			Plat tmp;
+			for (JComboBox<Plat> jComboBox : listeBoxPlats) {
+				tmp = (Plat) jComboBox.getSelectedItem();
+				newMenu.addPlat(tmp);
+			}
+			retour = true;
+		}else{
+			this.menu.setNom(nom);
+			LinkedList<Plat> ref = this.menu.getPlats();
+			Plat tmp;
+			for (JComboBox<Plat> jComboBox : listeBoxPlats) {
+				tmp = (Plat) jComboBox.getSelectedItem();
+				if(!ref.contains(tmp)){
+					this.menu.addPlat(tmp);
+				}
+			}
+			retour = true;
 		}
 		return retour;
 	}
 	
 	public void add(){
 		int value = (int) this.nbPlatS.getValue();
-		if(value > 0){
+		if(value > this.nbPlatsPres){
 			Plat[] plats = Plat.getAll();
 			this.nomPlat = new JLabel("Plat : ");
 			this.listeplats = new JComboBox<Plat>(plats);
@@ -96,7 +118,12 @@ public class SetterDialogMenu extends JDialog {
 			listeplat.add(this.listeplats);
 			this.panelPlats.add(listeplat);
 			this.listeBoxPlats.add(this.listeplats);
-			
+			this.nbPlatsPres++;
+			this.pack();
+		}else if(value < this.nbPlatsPres && value >= 0){
+			this.listeBoxPlats.remove(this.listeBoxPlats.size()-1);
+			this.panelPlats.remove(this.listeBoxPlats.size()-1);
+			this.nbPlatsPres--;
 			this.pack();
 		}
 	}

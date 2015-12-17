@@ -60,15 +60,29 @@ public class ListPanelMenu extends JPanel {
 }
 	
 	public void createMenu() {
-		SetterDialogMenu.showContactDialog(parent, "nouveau menu", null);
+		Menu newMenu = SetterDialogMenu.showContactDialog(parent, "nouveau menu", null);
+		if(newMenu != null){
+			this.modelList.add(newMenu);
+		}
 	}
 	
 	public void editSelectedMenu() {
-		
+		if(!this.menuList.isSelectionEmpty()){
+			Menu select = this.menuList.getSelectedValue();
+			Menu newMenu = SetterDialogMenu.showContactDialog(parent, "Modification de menu", select);
+			if(newMenu != null){
+				this.modelList.remove(select);
+				this.modelList.add(newMenu);
+			}
+		}
 	}
 
 	public void deleteSelectedMenu() {
-	
+		if(!this.menuList.isSelectionEmpty()){
+			Menu select = this.menuList.getSelectedValue();
+			this.modelList.remove(select);
+			select.delete();
+		}
 	}
 	
 }

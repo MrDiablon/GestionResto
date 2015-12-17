@@ -47,6 +47,7 @@ public class SetterDialogTable extends JDialog {
 		this.SalleSpinner = new JComboBox<Salles>(Salles.getAll());
 		if (table != null) {
 			this.SalleSpinner.setSelectedItem(table.getSalles());
+			System.out.println(table.getSalles().getNomSalle());
 		}else{
 			this.SalleSpinner.setSelectedItem(new Salles(numSalle));
 		}

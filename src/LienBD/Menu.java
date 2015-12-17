@@ -21,10 +21,9 @@ public class Menu implements Comparable<Menu> {
 	
 	private static myPDO instance = myPDO.getInstance();
 
-	public Menu(int numMenu, String nom) {
-		this.numMenu = numMenu;
+	public Menu(String nom) throws SQLException {
 		this.nom = nom;
-
+		this.plats = new LinkedList<>();
 		this.create();
 	}
 
@@ -32,6 +31,7 @@ public class Menu implements Comparable<Menu> {
 		String sql = "SELECT * FROM MENU WHERE NUMMENU = ?";
 		Object[] data = { id };
 		Menu.instance.prepare(sql);
+		this.plats = new LinkedList<>();
 		ResultSet res = (ResultSet) Menu.instance.execute(data, false);
 		sql = "SELECT * FROM COMPOSER WHERE NUMMENU = ?";
 		Menu.instance.prepare(sql);
@@ -42,7 +42,7 @@ public class Menu implements Comparable<Menu> {
 				this.nom = res.getString("NOM");
 			}
 			while (res2.next()) {
-				this.plats.add(new Plat(res2.getInt(0)));
+				this.plats.add(new Plat(res2.getInt(1)));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -96,11 +96,17 @@ public class Menu implements Comparable<Menu> {
 		this.nom = nom;
 	}
 
-	public void create() {
+	public void create() throws SQLException {
 		String sql = "INSERT INTO MENU(`NUMMENU`,`NOM`) VALUE (?,?)";
 		Object[] data = { this.numMenu, this.nom };
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
+		sql = "SELECT MAX(NUMMENU) FROM MENU";
+		Menu.instance.prepare(sql);
+		ResultSet res = (ResultSet) Menu.instance.execute();
+		if(res.next()){
+			this.numMenu = res.getInt(1);
+		}
 	}
 
 	// -modif() : modifie une ligne de la BD avec les attribut comme valeur.
@@ -112,9 +118,19 @@ public class Menu implements Comparable<Menu> {
 	}
 
 	// -delete() : supprimer une ligne de la BD .
-	public void delete(int id) {
+	public static void delete(int id) {
 		String sql = "DELETE FROM MENU WHERE NUMMENU = ?";
 		Object[] data = { id };
+		Menu.instance.prepare(sql);
+		Menu.instance.execute(data, true);
+	}
+	
+	public void delete() {
+		String sql = "DELETE FROM COMPOSER WHERE NUMMENU = ?";
+		Object[] data = { this.numMenu };
+		Menu.instance.prepare(sql);
+		Menu.instance.execute(data, true);
+		sql = "DELETE FROM MENU WHERE NUMMENU = ?";		
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
 	}
