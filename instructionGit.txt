@@ -65,6 +65,7 @@ pour la fusion des branch :
  	ensuite :
  	
  		git add .
+ 		git commit
  		git push
  		
  		et c'est bon normalement.
