@@ -1,6 +1,7 @@
 package Interface;
 
 import java.awt.GridLayout;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -11,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
+import Interface.list.ListPanelPersonnel;
 import Interface.list.MenuRenderer;
 import Interface.list.MyListModel;
 import Interface.list.RendererIngredient;
@@ -89,7 +91,7 @@ public class PassFrame extends JFrame {
 			pane.addTab("Liste des salles", new ListPanelSalles(this));
 			if (droit == 2) {
 				pane.addTab("Liste des menus", MenuSroll);
-				pane.addTab("Liste des employés", personnelScroll);
+				pane.addTab("Liste des employés", new ListPanelPersonnel(this));
 			}
 			JButton bouton = new JButton("Afficher");
 			this.setLayout(new GridLayout(1, 5));

@@ -103,6 +103,10 @@ public class Salles implements Comparable<Salles> {
 		}
 		return retour;
 	}
+	
+	public int getNumSalle(){
+		return this.numSalle;
+	}
 
 	public static Etat getEtatById(int id) {
 		Etat retour = null;
@@ -346,4 +350,12 @@ public class Salles implements Comparable<Salles> {
 		return retour;
 	}
 
+
+    @Override
+    public String toString(){
+        String nom = this.getNomSalle();
+        return nom;
+      
+    }
+	
 }
