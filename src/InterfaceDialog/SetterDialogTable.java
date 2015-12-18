@@ -37,8 +37,6 @@ public class SetterDialogTable extends JDialog {
 	public SetterDialogTable(Frame owner, boolean modal, Table table, int numSalle) {
 		super(owner, modal);
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-		BoxLayout layout = new BoxLayout(this.getContentPane(),
-				BoxLayout.X_AXIS);
 		this.table = table;
 
 		this.erreur = new JLabel();
@@ -49,6 +47,7 @@ public class SetterDialogTable extends JDialog {
 		this.SalleSpinner = new JComboBox<Salles>(Salles.getAll());
 		if (table != null) {
 			this.SalleSpinner.setSelectedItem(table.getSalles());
+			System.out.println(table.getSalles().getNomSalle());
 		}else{
 			this.SalleSpinner.setSelectedItem(new Salles(numSalle));
 		}

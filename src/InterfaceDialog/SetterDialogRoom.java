@@ -48,7 +48,7 @@ public class SetterDialogRoom extends JDialog {
 			this.restoBox.addItem(r);
 			if (this.salle != null) {
 				if (this.salle.getNumResto() == r.getNumResto()) {
-					this.restoBox.setSelectedIndex(index);
+					this.restoBox.getModel().setSelectedItem(r);
 				}
 			}
 			index++;

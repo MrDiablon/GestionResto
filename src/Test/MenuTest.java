@@ -70,15 +70,6 @@ public class MenuTest {
 		Menu.getnomById(-1);
 	}
 
-	@Test
-	public void testGetPrenomById() {
-		try {
-			assertEquals(ref.getComposition(), Menu.getCompositionById(id));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	@Test(expected = Exception.class)
 	public void testGetPrenomByIdNegatif() throws Exception {
 		Menu.getCompositionById(-1);

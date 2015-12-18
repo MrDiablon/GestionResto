@@ -8,44 +8,41 @@ package LienBD;
 
 import java.sql.SQLException;
 import java.util.*;
+
 import com.mysql.jdbc.ResultSet;
+
+import LienBD.Plat;
 
 public class Menu implements Comparable<Menu> {
 
 	private int numMenu;
-	private String composition;
 	private String nom;
-
+	private LinkedList<Plat> plats;
+	
 	private static myPDO instance = myPDO.getInstance();
 
-	public Menu(int numMenu, String composition, String nom) {
-		this.numMenu = numMenu;
-		this.composition = composition;
+	public Menu(String nom) throws SQLException {
 		this.nom = nom;
-
+		this.plats = new LinkedList<>();
 		this.create();
-
-		String[] comp = this.composition.split("|");
-		String sql = "INSERT INTO COMPOSER(NUMMENU,NUMPLAT) VALUE (?,?) ";
-		Menu.instance.prepare(sql);
-		Object[] data = new Object[2];
-		for (String c : comp) {
-			data[1] = this.numMenu;
-			data[2] = c;
-			Menu.instance.execute(data, true);
-		}
 	}
 
 	public Menu(int id) {
 		String sql = "SELECT * FROM MENU WHERE NUMMENU = ?";
 		Object[] data = { id };
 		Menu.instance.prepare(sql);
+		this.plats = new LinkedList<>();
 		ResultSet res = (ResultSet) Menu.instance.execute(data, false);
+		sql = "SELECT * FROM COMPOSER WHERE NUMMENU = ?";
+		Menu.instance.prepare(sql);
+		ResultSet res2 = (ResultSet) Menu.instance.execute(data, false);
 		try {
 			if (res.next()) {
 				this.numMenu = id;
-				this.composition = res.getString("COMPOSITION");
 				this.nom = res.getString("NOM");
+			}
+			while (res2.next()) {
+				this.plats.add(new Plat(res2.getInt(1)));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -59,13 +56,36 @@ public class Menu implements Comparable<Menu> {
 	public void setNumMenu(int numMenu) {
 		this.numMenu = numMenu;
 	}
-
-	public String getComposition() {
-		return composition;
+	
+	public LinkedList<Plat> getPlats(){
+		return this.plats;
 	}
-
-	public void setComposition(String composition) {
-		this.composition = composition;
+	
+	public void setPlats(LinkedList<Plat> plats){
+		if(plats != null){
+			this.plats = plats;
+		}
+	}
+	
+	public void addPlat(Plat plat){
+		if(plat != null){
+			this.plats.add(plat);
+			String sql = "INSERT INTO COMPOSER(`NUMPLAT`,`NUMMENU`) VALUE (?,?)";
+			Object[] data = {plat.getNumPlat(),this.numMenu};
+			Menu.instance.prepare(sql);
+			Menu.instance.execute(data,true);
+		}
+	}
+	
+	public void deletePlat(Plat plat){
+		int index = this.plats.indexOf(plat);
+		if(index > 0){
+			this.plats.remove(index);
+			String sql = "DELETE FROM COMPOSER WHERE NUMMENU = ? AND NUMPLAT = ?";
+			Object data[] = {this.numMenu,plat.getNumPlat()};
+			Menu.instance.prepare(sql);
+			Menu.instance.execute(data, true);
+		}
 	}
 
 	public String getNom() {
@@ -76,86 +96,41 @@ public class Menu implements Comparable<Menu> {
 		this.nom = nom;
 	}
 
-	/**
-	 * @pdRoleInfo migr=no name=Plat assc=composer coll=java.util.Collection
-	 *             impl=java.util.ArrayList mult=0..* type=Composition
-	 */
-	private java.util.Collection<Plat> plat;
-
-	/** @pdGenerated default getter */
-	public java.util.Collection<Plat> getPlat() {
-		if (plat == null)
-			plat = new java.util.ArrayList<Plat>();
-		return plat;
-	}
-
-	/** @pdGenerated default iterator getter */
-	public java.util.Iterator getIteratorPlat() {
-		if (plat == null)
-			plat = new java.util.ArrayList<Plat>();
-		return plat.iterator();
-	}
-
-	/**
-	 * @pdGenerated default setter
-	 * @param newPlat
-	 */
-	public void setPlat(java.util.Collection<Plat> newPlat) {
-		removeAllPlat();
-		for (java.util.Iterator iter = newPlat.iterator(); iter.hasNext();)
-			addPlat((Plat) iter.next());
-	}
-
-	/**
-	 * @pdGenerated default add
-	 * @param newPlat
-	 */
-	public void addPlat(Plat newPlat) {
-		if (newPlat == null)
-			return;
-		if (this.plat == null)
-			this.plat = new java.util.ArrayList<Plat>();
-		if (!this.plat.contains(newPlat))
-			this.plat.add(newPlat);
-	}
-
-	/**
-	 * @pdGenerated default remove
-	 * @param oldPlat
-	 */
-	public void removePlat(Plat oldPlat) {
-		if (oldPlat == null)
-			return;
-		if (this.plat != null)
-			if (this.plat.contains(oldPlat))
-				this.plat.remove(oldPlat);
-	}
-
-	/** @pdGenerated default removeAll */
-	public void removeAllPlat() {
-		if (plat != null)
-			plat.clear();
-	}
-
-	public void create() {
-		String sql = "INSERT INTO MENU(`NUMMENU`,`COMPOSITION`,`NOM`) VALUE (?,?,?)";
-		Object[] data = { this.numMenu, this.composition, this.nom };
+	public void create() throws SQLException {
+		String sql = "INSERT INTO MENU(`NUMMENU`,`NOM`) VALUE (?,?)";
+		Object[] data = { this.numMenu, this.nom };
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
+		sql = "SELECT MAX(NUMMENU) FROM MENU";
+		Menu.instance.prepare(sql);
+		ResultSet res = (ResultSet) Menu.instance.execute();
+		if(res.next()){
+			this.numMenu = res.getInt(1);
+		}
 	}
 
 	// -modif() : modifie une ligne de la BD avec les attribut comme valeur.
 	public void modif() {
-		String sql = "UPDATE MENU SET COMPOSITION = ?, NOM = ? WHERE NUMMENU = ? ";
-		Object[] data = { this.composition, this.nom, this.numMenu };
+		String sql = "UPDATE MENU SET NOM = ? WHERE NUMMENU = ? ";
+		Object[] data = { this.nom, this.numMenu };
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
 	}
 
 	// -delete() : supprimer une ligne de la BD .
-	public void delete(int id) {
+	public static void delete(int id) {
 		String sql = "DELETE FROM MENU WHERE NUMMENU = ?";
 		Object[] data = { id };
+		Menu.instance.prepare(sql);
+		Menu.instance.execute(data, true);
+	}
+	
+	public void delete() {
+		String sql = "DELETE FROM COMPOSER WHERE NUMMENU = ?";
+		Object[] data = { this.numMenu };
+		Menu.instance.prepare(sql);
+		Menu.instance.execute(data, true);
+		sql = "DELETE FROM MENU WHERE NUMMENU = ?";		
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
 	}

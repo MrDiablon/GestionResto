@@ -45,7 +45,7 @@ public class ListPanelTable extends JPanel {
 		barreOutils.add(this.modifier);
 		barreOutils.add(this.supprimer);
 		this.add(barreOutils, BorderLayout.NORTH);
-		//a partire de la ca foire
+
 		try {
 			Table[] tables = Table.getAll(numSalle);
 			this.TableList = new JList<Table>(tables);

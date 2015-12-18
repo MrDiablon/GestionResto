@@ -49,7 +49,7 @@ public class Table implements Comparable<Table> {
 				this.capacite = res.getInt("CAPACITE");
 				this.etat = Etat.valueOf(res.getString("ETATS"));
 			}
-
+			this.salles = new Salles(this.numSalle);
 			while (res2.next()) {
 				this.menu.add(new Menu(res2.getInt(1)));
 			}
@@ -86,6 +86,7 @@ public class Table implements Comparable<Table> {
 		this.etat = etat;
 		this.menu = menus;
 		this.reservation = reservations;
+		this.salles = new Salles(numSalle);
 
 		this.create();
 
