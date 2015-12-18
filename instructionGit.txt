@@ -1,6 +1,6 @@
 Lien dossier : https://github.com/MrDiablon/GestionResto.git
 
-Si vous n'avez pas git télécharger le.
+Si vous n'avez pas git tï¿½lï¿½charger le.
 
 recuperation du depot (master):
 	
@@ -10,12 +10,12 @@ recuperation du depot (master):
 		git fetch
 		git pull -u : origin master
 
-n'hésitez pas a tout suprimer et recommencer si vous rencontré un probléme avec la recuperation des donnée.
+n'hï¿½sitez pas a tout suprimer et recommencer si vous rencontrï¿½ un problï¿½me avec la recuperation des donnï¿½e.
 
 recuperation du depot (branch):
-	(des branches portant votre nom on été crée pour vous permetre de travailler vos modification a partire de n'importe ou)
+	(des branches portant votre nom on Ã©tÃ© crÃ©e pour vous permetre de travailler vos modification a partire de n'importe ou)
 	
-	si vous n'avez pas de donnée reprennez les deux premiere ligne de master
+	si vous n'avez pas de donnÃ©e reprennez les deux premiere ligne de master
 	sinon:
 
 		git fetch
@@ -39,3 +39,32 @@ Je ne les ai pas tester
 pour push sur vos branch :
 	git push origin "nom de la branche"
 >>>>>>> antoine
+
+pour la fusion des branch :
+	git checkout master
+	git merge 'la branche a fusionner)
+	git push
+	si une erreur s'affiche c'est que votre master et votre branche ne sont pas sur le mÃªme depart
+	
+	Ceci devrait apparaitre
+	
+	<<<<<<< HEAD
+	========
+	>>>>>>>>> antoine
+	
+	cela vous indique les zones ou git ne sait pas quoi faire pour cela vous devez supprimer une partie sachant que :
+	
+	<<<<<<< HEAD
+		Tous ce qui est ici etait dans master as so origine
+	========
+		Rous ce qui ici etait dans votre branche a son origine
+	>>>>>>>>> antoine
+	
+ 	a vous de voir ce qu'il faut garde
+ 	
+ 	ensuite :
+ 	
+ 		git add .
+ 		git push
+ 		
+ 		et c'est bon normalement.
