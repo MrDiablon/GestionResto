@@ -29,7 +29,7 @@ public class Salles implements Comparable<Salles> {
 		ResultSet res = (ResultSet) Salles.instance.execute(data, false);
 		sql = "SELECT COUNT(NUMTABLE) FROM TABLES WHERE NUMSALLE = ?";
 		instance.prepare(sql);
-		ResultSet res2 = (ResultSet) instance.execute(data,false);
+		ResultSet res2 = (ResultSet) instance.execute(data, false);
 		sql = "SELECT * FROM MENU WHERE NUMMENU = ?";
 		Salles.instance.prepare(sql);
 		ResultSet res3 = (ResultSet) Salles.instance.execute(data, false);
@@ -43,7 +43,7 @@ public class Salles implements Comparable<Salles> {
 				this.etat = Etat.valueOf(res.getString("ETATS").toLowerCase());
 			}
 			this.restaurant = new Restaurant(this.numResto);
-			if(res2.next()){
+			if (res2.next()) {
 				this.nbTableDispo = res2.getInt(1);
 			}
 			while (res3.next()) {
@@ -54,7 +54,8 @@ public class Salles implements Comparable<Salles> {
 		}
 	}
 
-	public Salles(int numResto, String nomSalle, int nombreTables, Etat etat, Collection<Menu> menu) throws SQLException {
+	public Salles(int numResto, String nomSalle, int nombreTables, Etat etat,
+			Collection<Menu> menu) throws SQLException {
 		this.numResto = numResto;
 		this.nomSalle = nomSalle;
 		this.nombreTables = nombreTables;
@@ -107,6 +108,10 @@ public class Salles implements Comparable<Salles> {
 			e.printStackTrace();
 		}
 		return retour;
+	}
+
+	public int getNumSalle() {
+		return this.numSalle;
 	}
 
 	public static Etat getEtatById(int id) {
@@ -169,12 +174,12 @@ public class Salles implements Comparable<Salles> {
 		sql = "SELECT MAX(NUMPERSO) FROM PERSONNEL";
 		Salles.instance.prepare(sql);
 		ResultSet res = (ResultSet) Salles.instance.execute();
-		//insertion des menu dans la table servir
-		if(this.menus != null){
+		// insertion des menu dans la table servir
+		if (this.menus != null) {
 			sql = "INSERT INTO SERVIR(NUMSALLE,NUMMENU) VALUE (?,?)";
 			Salles.instance.prepare(sql);
 			data[0] = this.numSalle;
-			for(Menu m : this.menus){
+			for (Menu m : this.menus) {
 				data[1] = m.getNumMenu();
 				Salles.instance.execute(data, true);
 			}
@@ -185,14 +190,14 @@ public class Salles implements Comparable<Salles> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
 	public void modif() {
 		String sql = "UPDATE SALLE SET NOMSALLE = ?, NOMBRETABLES = ?, ETATS = ?, NUMRESTO = ? WHERE NUMSALLE = ? ";
 		Object[] data = { this.nomSalle, this.nombreTables,
-				this.etat.toString(), this.restaurant.getNumResto(), this.numSalle };
+				this.etat.toString(), this.restaurant.getNumResto(),
+				this.numSalle };
 		Salles.instance.prepare(sql);
 		Salles.instance.execute(data, true);
 	}
@@ -203,8 +208,8 @@ public class Salles implements Comparable<Salles> {
 		Salles.instance.prepare(sql);
 		Salles.instance.execute(data, true);
 	}
-	
-	public void delete(){
+
+	public void delete() {
 		String sql = "DELETE FROM SALLE WHERE NUMSALLE = ?";
 		Object[] data = { this.numSalle };
 		Salles.instance.prepare(sql);
@@ -230,14 +235,14 @@ public class Salles implements Comparable<Salles> {
 	}
 
 	public void addMenu(Menu newMenu) {
-		if(newMenu != null){
-			if(this.menus == null){
+		if (newMenu != null) {
+			if (this.menus == null) {
 				this.menus = new ArrayList<Menu>();
 			}
-			if(!this.menus.contains(newMenu)){
+			if (!this.menus.contains(newMenu)) {
 				this.menus.add(newMenu);
 				String sql = "INSERT INTO SERVIR(NUMSALLE,NUMMENU) VALUE (?,?)";
-				Object[] data = {this.numSalle , newMenu.getNumMenu()};
+				Object[] data = { this.numSalle, newMenu.getNumMenu() };
 				Salles.instance.prepare(sql);
 				Salles.instance.execute(data, true);
 			}
@@ -260,7 +265,7 @@ public class Salles implements Comparable<Salles> {
 	/**
 	 * @return the numSalle
 	 */
-	public int getNumSalle() {
+	public int getNumSalle1() {
 		return numSalle;
 	}
 
@@ -302,12 +307,12 @@ public class Salles implements Comparable<Salles> {
 	public int getNombreTables() {
 		return nombreTables;
 	}
-	
+
 	public int getTableDispo() {
 		return this.nbTableDispo;
 	}
-	
-	public void setTableDispo(int nb){
+
+	public void setTableDispo(int nb) {
 		this.nbTableDispo = nb;
 		this.modif();
 	}
@@ -374,9 +379,12 @@ public class Salles implements Comparable<Salles> {
 		}
 		return retour;
 	}
-	
-	
-	public String toString(){
-		return this.nomSalle;
+
+	@Override
+	public String toString() {
+		String nom = this.getNomSalle();
+		return nom;
+
 	}
+
 }

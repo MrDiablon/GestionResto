@@ -57,7 +57,7 @@ public class Personnel implements Comparable<Personnel>{
 	public Personnel(int nUMRESTO, int NUMSALLE, String nOM,
 			String pRENOM, String pOSTE, String aDRESSE, String nUMTEL,
 			String aDRESSEMAIL, Document hORAIRETRAV, Document hORAIREPREV,
-			int sALAIRE_H, int dROITS,String mdp) {
+			float	 sALAIRE_H, int dROITS,String mdp) {
 		
 		this.NUMRESTO = nUMRESTO;
 		this.NUMSALLE = NUMSALLE;
@@ -118,6 +118,11 @@ public class Personnel implements Comparable<Personnel>{
 	 */
 	public void setNUMSALLE(int NUMSALLE) {
 		this.NUMSALLE = NUMSALLE;
+	}
+	
+	public String getNOMSALLE(){
+		Salles salle = new Salles(this.NUMSALLE);
+		return salle.getNomSalle();
 	}
 
 	/**
@@ -521,6 +526,16 @@ public class Personnel implements Comparable<Personnel>{
 		Personnel.instance.execute(data, true);
 	}
 	
+	public void delete() throws Exception{
+		if(this.NUMPERSO <= 0 ){
+			throw new Exception("id null ou negatif");
+		}
+		String sql = "DELETE FROM PERSONNEL WHERE NUMPERSO = ? ";
+		Personnel.instance.prepare(sql);
+		Object [] data = { NUMPERSO }; 
+		Personnel.instance.execute(data, true);
+	}
+	
 	public static Personnel[] getAll() throws Exception{
 		//on ecrit notre code sql on demande tous les id de la table
 		String sql ="SELECT NUMPERSO FROM PERSONNEL";
@@ -587,6 +602,8 @@ public class Personnel implements Comparable<Personnel>{
 	@Override
 	public int compareTo(Personnel p){
 		int retour = 0;
+		System.out.println(p.NOM);
+		System.out.println(this.NOM);
 		retour = this.NOM.compareTo(p.NOM);
 		if(retour == 0){
 			retour = this.PRENOM.compareTo(p.NOM);
