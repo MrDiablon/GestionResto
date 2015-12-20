@@ -19,7 +19,7 @@ import LienBD.Plat;
 
 public class SetterDialogMenu extends JDialog {
 
-	private JLabel nom, nbPlat, nomPlat, prix, symbole€, erreur = new JLabel();
+	private JLabel nom, nbPlat, nomPlat, prix, symbole, erreur = new JLabel();
 	private JTextField saisieNom, saisieprix;
 	private JSpinner nbPlatS;
 	private int nbPlatsPres;
