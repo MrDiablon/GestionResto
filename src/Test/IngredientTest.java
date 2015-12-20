@@ -8,14 +8,27 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import LienBD.Ingredient;
+import LienBD.myPDO;
+
 public class IngredientTest {
+	
+	public static myPDO instance;
+	public static Ingredient ref;
+	public static int numRef;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		//myPDO.configure("root", "", "jdbc:mysql://localhost/projets3");
+		myPDO.configure("infs3_prj03", "k4t28jb2", "jdbc:mysql://mysql/infs3_prj03");
+		instance = myPDO.getInstance();
+		IngredientTest.numRef = 1;
+		IngredientTest.ref = new Ingredient(1);
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		myPDO.close();
 	}
 
 	@Before
@@ -28,7 +41,7 @@ public class IngredientTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		assertNotNull(ref);
 	}
 
 }
