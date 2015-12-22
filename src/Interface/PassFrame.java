@@ -18,6 +18,7 @@ import Interface.list.ListPanelIngredient;
 import Interface.list.ListPanelMenu;
 import Interface.list.ListPanelRoom;
 import Interface.list.MyListModel;
+import Interface.list.PersonnelRenderer;
 import Interface.list.RendererIngredient;
 import LienBD.Ingredient;
 import LienBD.Personnel;

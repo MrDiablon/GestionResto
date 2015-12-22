@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
-import Interface.PersonnelRenderer;
 import InterfaceDialog.SetterDialogPerso;
 import LienBD.Personnel;
 

@@ -1,4 +1,4 @@
-package Interface;
+package Interface.list;
 
 import java.awt.Color;
 import java.awt.Component;
