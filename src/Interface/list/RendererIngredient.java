@@ -20,15 +20,14 @@ public class RendererIngredient implements ListCellRenderer<Ingredient> {
 		
 		String nomRes = value.getNom();
 		float prixRes = value.getPrixU();
-		int numRes = value.getNumIngredient();
 		EtatI etatRes = value.getEtatI();
 		
 		this.label = new JLabel();		
-		this.label.setText(numRes + " : " + nomRes + " (" + etatRes 
+		this.label.setText(nomRes + " (" + etatRes 
 				+ ")" + prixRes + "€");
 
 		// si l'element est selectionner on change l'affichage pour bien le
-		// montrÃ©
+		// montré
 		if (isSelected) {
 			this.label.setBackground(list.getSelectionBackground());
 			this.label.setForeground(list.getSelectionForeground());

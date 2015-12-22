@@ -60,7 +60,6 @@ public class ListPanelPersonnel extends JPanel {
 				}
 			}
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -81,15 +80,21 @@ public class ListPanelPersonnel extends JPanel {
 	private void modifier() {
 		if (!this.listPerso.isSelectionEmpty()) {
 			Personnel select = this.listPerso.getSelectedValue();
-			SetterDialogPerso.showContactDialog(this.parent,
+			Personnel newPerso = SetterDialogPerso.showContactDialog(this.parent,
 					"modifier personnel", select);
+			if(newPerso != null){
+				this.modelListPerso.remove(select);
+				this.modelListPerso.add(newPerso);
+			}
 		}
 	}
 
 	private void ajouter() {
 		Personnel perso = SetterDialogPerso.showContactDialog(this.parent,
 				"nouveau personnel", null);
-		this.modelListPerso.add(perso);
+		if(perso != null){
+			this.modelListPerso.add(perso);
+		}
 	}
 
 	private void supprimer() {
@@ -99,8 +104,7 @@ public class ListPanelPersonnel extends JPanel {
 			try {
 				select.delete();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			}
 		}
 	}

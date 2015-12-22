@@ -16,6 +16,7 @@ import javax.swing.JTabbedPane;
 
 import Interface.list.ListPanelIngredient;
 import Interface.list.ListPanelMenu;
+import Interface.list.ListPanelPersonnel;
 import Interface.list.ListPanelRoom;
 import Interface.list.MyListModel;
 import Interface.list.PersonnelRenderer;
@@ -43,12 +44,15 @@ public class PassFrame extends JFrame {
 			JMenuItem listeSalle = new JMenuItem("Liste des salles");
 			JMenuItem listeIngredientM = new JMenuItem("Liste des ingredients");
 			JMenuItem listeMenuM = new JMenuItem("Liste des menus");
+			JMenuItem listePersoM = new JMenuItem("Liste des employés");
 			// configuration des actionListener du menu
 			fermer.addActionListener(e -> this.dispose());
-			listeSalle.addActionListener(e -> this.addNewTab("Liste des salles", new ListPanelRoom(this)));
+			listeSalle.addActionListener(e -> this.addNewTab("Liste des salles", new ListPanelRoom(this),false));
 			listeIngredientM.addActionListener(
 					e -> this.addNewTab("Liste des ingredients", new ListPanelIngredient(this), false));
 			listeMenuM.addActionListener(e -> this.addNewTab("Liste des menus", new ListPanelMenu(this), false));
+			listePersoM
+					.addActionListener(e -> this.addNewTab("Liste des employés", new ListPanelPersonnel(this), false));
 			// ajout des item et sous menu
 			fichier.add(fermer);
 			windows.add(newWindows);
@@ -59,25 +63,11 @@ public class PassFrame extends JFrame {
 
 			this.add(barre);
 
-			// Configuration de la liste du personnel
-			JList<Personnel> listPerso = new JList<>();
-			MyListModel<Personnel> modelListPerso = new MyListModel<Personnel>();
-			listPerso.setModel(modelListPerso);
-			PersonnelRenderer rendererListPerso = new PersonnelRenderer();
-			listPerso.setCellRenderer(rendererListPerso);
-			Personnel[] personnes = Personnel.getAll();
-			for (Personnel p : personnes) {
-				if (!p.getNOM().equals("ROOT")) {
-					modelListPerso.add(p);
-				}
-			}
-			JScrollPane personnelScroll = new JScrollPane(listPerso);
-
 			this.addNewTab("Liste des ingredients", new ListPanelIngredient(this));
 			this.addNewTab("Liste des salles", new ListPanelRoom(this), false);
 			if (droit == 2) {
 				this.addNewTab("Liste des menus", new ListPanelMenu(this), false);
-				pane.addTab("Liste des employes", personnelScroll);
+				this.addNewTab("Liste des employes", new ListPanelPersonnel(this),false);
 			}
 			this.setLayout(new GridLayout(1, 5));
 			this.setJMenuBar(barre);
