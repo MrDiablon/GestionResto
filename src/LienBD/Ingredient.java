@@ -13,13 +13,13 @@ public class Ingredient implements Comparable<Ingredient> {
 
 	private int numIngredient;
 	private EtatI etatI;
-	private int prixU;
+	private float prixU;
 	private int stock;
 	private String nom;
 
 	private static myPDO instance = myPDO.getInstance();
 
-	public Ingredient(int prixU, int stock, EtatI etatI, String nom) throws SQLException {
+	public Ingredient(float prixU, int stock, EtatI etatI, String nom) throws SQLException {
 		this.etatI = etatI;
 		this.prixU = prixU;
 		this.stock = stock;
@@ -37,12 +37,11 @@ public class Ingredient implements Comparable<Ingredient> {
 		try {
 			if (res.next()) {
 				this.etatI = EtatI.valueOf(res.getString("ETATSI"));
-				this.prixU = res.getInt("PRIXU");
+				this.prixU = res.getFloat("PRIXU");
 				this.stock = res.getInt("STOCK");
 				this.nom = res.getString("NOM");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -69,7 +68,7 @@ public class Ingredient implements Comparable<Ingredient> {
 	/**
 	 * @return the prixU
 	 */
-	public int getPrixU() {
+	public float getPrixU() {
 		return prixU;
 	}
 
@@ -130,10 +129,17 @@ public class Ingredient implements Comparable<Ingredient> {
 
 	}
 
-	public void delete(int id) {
+	public static void delete(int id) {
 		String sql = "DELETE FROM INGREDIENT WHERE NUMINGREDIENT = ? ";
 		Ingredient.instance.prepare(sql);
 		Object[] data = { id };
+		Ingredient.instance.execute(data, true);
+	}
+	
+	public void delete(){
+		String sql = "DELETE FROM INGREDIENT WHERE NUMINGREDIENT = ? ";
+		Ingredient.instance.prepare(sql);
+		Object[] data = { this.numIngredient };
 		Ingredient.instance.execute(data, true);
 	}
 

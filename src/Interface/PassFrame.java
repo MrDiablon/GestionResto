@@ -44,13 +44,10 @@ public class PassFrame extends JFrame {
 			JMenuItem listeMenuM = new JMenuItem("Liste des menus");
 			// configuration des actionListener du menu
 			fermer.addActionListener(e -> this.dispose());
-			listeSalle.addActionListener(e -> this.addNewTab(
-					"Liste des salles", new ListPanelRoom(this)));
-			listeIngredientM.addActionListener(e -> this.addNewTab(
-					"Liste des ingredients", new ListPanelIngredient(this),
-					false));
-			listeMenuM.addActionListener(e -> this.addNewTab("Liste des menus",
-					new ListPanelMenu(this), false));
+			listeSalle.addActionListener(e -> this.addNewTab("Liste des salles", new ListPanelRoom(this)));
+			listeIngredientM.addActionListener(
+					e -> this.addNewTab("Liste des ingredients", new ListPanelIngredient(this), false));
+			listeMenuM.addActionListener(e -> this.addNewTab("Liste des menus", new ListPanelMenu(this), false));
 			// ajout des item et sous menu
 			fichier.add(fermer);
 			windows.add(newWindows);
@@ -87,13 +84,11 @@ public class PassFrame extends JFrame {
 			}
 			JScrollPane personnelScroll = new JScrollPane(listPerso);
 
-			// this.addNewTab("Liste des ingredients", new ListPanelIngredient(
-			// this));
+			this.addNewTab("Liste des ingredients", new ListPanelIngredient(this));
 			this.addNewTab("Liste des salles", new ListPanelRoom(this), false);
 			if (droit == 2) {
-				this.addNewTab("Liste des menus", new ListPanelMenu(this),
-						false);
-				pane.addTab("Liste des employ�s", personnelScroll);
+				this.addNewTab("Liste des menus", new ListPanelMenu(this), false);
+				pane.addTab("Liste des employes", personnelScroll);
 			}
 			JButton bouton = new JButton("Afficher");
 			this.setLayout(new GridLayout(1, 5));
