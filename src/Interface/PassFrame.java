@@ -58,18 +58,6 @@ public class PassFrame extends JFrame {
 
 			this.add(barre);
 
-			// configuration de la liste des ingredient
-			JList<Ingredient> listeIngredient = new JList<Ingredient>();
-			MyListModel<Ingredient> modelListIngredient = new MyListModel<>();
-			listeIngredient.setModel(modelListIngredient);
-			RendererIngredient rendererIngredient = new RendererIngredient();
-			listeIngredient.setCellRenderer(rendererIngredient);
-			Ingredient[] ings = Ingredient.getAll();
-			for (Ingredient I : ings) {
-				modelListIngredient.add(I);
-			}
-			JScrollPane ingredientScroll = new JScrollPane(listeIngredient);
-
 			// Configuration de la liste du personnel
 			JList<Personnel> listPerso = new JList<>();
 			MyListModel<Personnel> modelListPerso = new MyListModel<Personnel>();
@@ -90,7 +78,6 @@ public class PassFrame extends JFrame {
 				this.addNewTab("Liste des menus", new ListPanelMenu(this), false);
 				pane.addTab("Liste des employes", personnelScroll);
 			}
-			JButton bouton = new JButton("Afficher");
 			this.setLayout(new GridLayout(1, 5));
 			this.setJMenuBar(barre);
 

@@ -47,11 +47,32 @@ public class IngredientTest {
 		assertNotNull(ref);
 	}
 	
+	@Test
 	public void testConstruct() throws SQLException{
 		Ingredient newIng = new Ingredient((float) 10.5, 5, EtatI.mauvais, "tomate");
 		assertNotNull(newIng);
 		Ingredient testIng = new Ingredient(newIng.getNumIngredient());
-		assertNotNull(testIng);
+		assertNotNull(testIng.getNom());
+	}
+	
+	@Test (expected = NullPointerException.class)
+	public void testDestruct() throws SQLException{
+		Ingredient newIng = new Ingredient((float) 10.5, 5, EtatI.mauvais, "tomate");
+		newIng.delete();
+		new Ingredient(newIng.getNumIngredient());
+	}
+	
+	@Test 
+	public void testModif() throws NullPointerException, SQLException{
+		ref.setNom("patate");
+		ref.modif();
+		Ingredient test = new Ingredient(numRef);
+		assertNotNull("etat",test.getEtatI());
+		assertEquals("patate", ref.getNom());
+		assertNotNull("prixU",test.getPrixU());
+		assertNotNull("stock", test.getStock());
+		assertEquals("etat", ref.getEtatI(), test.getEtatI());
+		assertEquals("stock", ref.getStock(), test.getStock());
 	}
 
 }

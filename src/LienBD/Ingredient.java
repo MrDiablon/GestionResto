@@ -27,30 +27,29 @@ public class Ingredient implements Comparable<Ingredient> {
 		this.create();
 	}
 
-	public Ingredient(int id) {
+	public Ingredient(int id) throws NullPointerException, SQLException {
 		String sql = "SELECT * FROM INGREDIENT WHERE NUMINGREDIENT = ?";
 		Ingredient.instance.prepare(sql);
 		Object[] data = { id };
 		ResultSet res = Ingredient.instance.execute(data, false);
 
 		this.numIngredient = id;
-		try {
-			if (res.next()) {
-				this.etatI = EtatI.valueOf(res.getString("ETATSI"));
-				this.prixU = res.getFloat("PRIXU");
-				this.stock = res.getInt("STOCK");
-				this.nom = res.getString("NOM");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (res.next()) {
+			this.etatI = EtatI.valueOf(res.getString("ETATSI"));
+			this.prixU = res.getFloat("PRIXU");
+			this.stock = res.getInt("STOCK");
+			this.nom = res.getString("NOM");
+		} else {
+			throw new NullPointerException();
 		}
+
 	}
 
 	/**
 	 * @return the numIngredient
 	 */
 	public int getNumIngredient() {
-		return numIngredient;
+		return this.numIngredient;
 	}
 
 	public String getNom() {
@@ -101,7 +100,7 @@ public class Ingredient implements Comparable<Ingredient> {
 	public EtatI getEtatI() {
 		return etatI;
 	}
-	
+
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
@@ -116,8 +115,7 @@ public class Ingredient implements Comparable<Ingredient> {
 
 	public void create() throws SQLException {
 		String sql = "INSERT INTO INGREDIENT(`NUMINGREDIENT`,`ETATSI`,`PRIXU`,`STOCK`,`NOM`) VALUES (?,?,?,?,?)";
-		Object[] data = { this.numIngredient, this.etatI.toString(), this.prixU,
-				this.stock, this.nom };
+		Object[] data = { this.numIngredient, this.etatI.toString(), this.prixU, this.stock, this.nom };
 		Ingredient.instance.prepare(sql);
 		Ingredient.instance.execute(data, true);
 		sql = "SELECT MAX(NUMINGREDIENT) FROM INGREDIENT";
@@ -135,8 +133,8 @@ public class Ingredient implements Comparable<Ingredient> {
 		Object[] data = { id };
 		Ingredient.instance.execute(data, true);
 	}
-	
-	public void delete(){
+
+	public void delete() {
 		String sql = "DELETE FROM INGREDIENT WHERE NUMINGREDIENT = ? ";
 		Ingredient.instance.prepare(sql);
 		Object[] data = { this.numIngredient };
@@ -146,8 +144,7 @@ public class Ingredient implements Comparable<Ingredient> {
 	public void modif() {
 		String sql = "UPDATE INGREDIENT SET `ETATSI` = ?,`PRIXU` = ?,`STOCK` = ? , `NOM` = ? WHERE NUMINGREDIENT = ?";
 		Ingredient.instance.prepare(sql);
-		Object[] data = {this.etatI.toString(), this.prixU,
-				this.stock,this.nom,this.numIngredient };
+		Object[] data = { this.etatI.toString(), this.prixU, this.stock, this.nom, this.numIngredient };
 		Ingredient.instance.execute(data, true);
 	}
 
