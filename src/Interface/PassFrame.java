@@ -13,17 +13,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 
 import Interface.list.ListPanelIngredient;
 import Interface.list.ListPanelMenu;
-import Interface.list.MenuRenderer;
+import Interface.list.ListPanelRoom;
 import Interface.list.MyListModel;
 import Interface.list.RendererIngredient;
 import LienBD.Ingredient;
-import LienBD.Menu;
 import LienBD.Personnel;
-import Interface.list.ListPanelRoom;
 
 public class PassFrame extends JFrame {
 
@@ -47,12 +44,10 @@ public class PassFrame extends JFrame {
 			JMenuItem listeMenuM = new JMenuItem("Liste des menus");
 			// configuration des actionListener du menu
 			fermer.addActionListener(e -> this.dispose());
-			listeSalle.addActionListener(e -> this.addNewTab(
-					"Liste des salles", new ListPanelRoom(this)));
-			listeIngredientM.addActionListener(e -> this.addNewTab(
-					"Liste des ingredients", new ListPanelIngredient(this), false));
-			listeMenuM.addActionListener(e -> this.addNewTab("Liste des menus",
-					new ListPanelMenu(this), false));
+			listeSalle.addActionListener(e -> this.addNewTab("Liste des salles", new ListPanelRoom(this)));
+			listeIngredientM.addActionListener(
+					e -> this.addNewTab("Liste des ingredients", new ListPanelIngredient(this), false));
+			listeMenuM.addActionListener(e -> this.addNewTab("Liste des menus", new ListPanelMenu(this), false));
 			// ajout des item et sous menu
 			fichier.add(fermer);
 			windows.add(newWindows);
@@ -89,12 +84,11 @@ public class PassFrame extends JFrame {
 			}
 			JScrollPane personnelScroll = new JScrollPane(listPerso);
 
-			//this.addNewTab("Liste des ingredients", new ListPanelIngredient(
-			//		this));
+			this.addNewTab("Liste des ingredients", new ListPanelIngredient(this));
 			this.addNewTab("Liste des salles", new ListPanelRoom(this), false);
 			if (droit == 2) {
-				this.addNewTab("Liste des menus", new ListPanelMenu(this),false);
-				pane.addTab("Liste des employés", personnelScroll);
+				this.addNewTab("Liste des menus", new ListPanelMenu(this), false);
+				pane.addTab("Liste des employes", personnelScroll);
 			}
 			JButton bouton = new JButton("Afficher");
 			this.setLayout(new GridLayout(1, 5));
@@ -122,13 +116,13 @@ public class PassFrame extends JFrame {
 
 		pane.setTabComponentAt(pane.indexOfComponent(panel), titlePanel);
 		pane.validate();
-		if(focus){
+		if (focus) {
 			pane.setSelectedComponent(panel);
 		}
 	}
-	
-	public void addNewTab(String title, JPanel panel){
-		this.addNewTab(title, panel,true);
+
+	public void addNewTab(String title, JPanel panel) {
+		this.addNewTab(title, panel, true);
 	}
 
 	public void delTab(JPanel panel) {

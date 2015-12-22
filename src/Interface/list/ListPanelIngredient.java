@@ -12,6 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
+
+import InterfaceDialog.SetterDialogIngredients;
+
 import InterfaceDialog.SetterDialogRoom;
 import LienBD.Ingredient;
 import LienBD.Salles;
@@ -27,11 +30,11 @@ public class ListPanelIngredient extends JPanel{
 		this.parent=parent;
 		this.setLayout(new BorderLayout());
 		this.ajouter=new JButton(new ImageIcon(getClass().getResource(
-				"/img/ajout.png")));
+				"/img/new.png")));
 		this.supprimer=new JButton(new ImageIcon(getClass().getResource(
-				"/img/sup.png")));
+		 		"/img/delete.png")));
 		this.modifier=new JButton(new ImageIcon(getClass().getResource(
-				"/img/mod.png")));
+				"/img/edit.png")));
 		
 		this.ajouter.addActionListener(e -> ajouter());
 		this.modifier.addActionListener(e -> editSelectedIngredient());
@@ -65,17 +68,32 @@ public class ListPanelIngredient extends JPanel{
 	}
 	
 	
-
-	private void editSelectedIngredient() {
-		
-
+	private void ajouter() {
+		Ingredient newingredient = SetterDialogIngredients.showContactDialog(this.parent,
+				"nouvelle ingredient", null);
+		if (newingredient != null) {
+			this.modelList.add(newingredient);
+		}
 	}
 	
 	private void sup() {
-		// TODO Auto-generated method stub
+		if(!this.IngredientList.isSelectionEmpty()){
+			Ingredient select = this.IngredientList.getSelectedValue();
+			this.modelList.remove(select);
+			select.delete(select.getNumIngredient());
+		}
 	}
 
-	private void ajouter() {
-		// TODO Auto-generated method stub
+	private void editSelectedIngredient() {
+		if(!this.IngredientList.isSelectionEmpty()){
+			Ingredient select = this.IngredientList.getSelectedValue();
+			Ingredient newIngredient = SetterDialogIngredients.showContactDialog(this.parent,
+					"nouvelle ingredient", select);
+			if(newIngredient != null){
+				this.modelList.remove(select);
+				this.modelList.add(newIngredient);
+			}		
+		}
 	}
 }
+

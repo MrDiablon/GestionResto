@@ -2,12 +2,15 @@ package Test;
 
 import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import LienBD.EtatI;
 import LienBD.Ingredient;
 import LienBD.myPDO;
 
@@ -19,8 +22,8 @@ public class IngredientTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		//myPDO.configure("root", "", "jdbc:mysql://localhost/projets3");
-		myPDO.configure("infs3_prj03", "k4t28jb2", "jdbc:mysql://mysql/infs3_prj03");
+		myPDO.configure("root", "", "jdbc:mysql://localhost/projets3");
+		//myPDO.configure("infs3_prj03", "k4t28jb2", "jdbc:mysql://mysql/infs3_prj03");
 		instance = myPDO.getInstance();
 		IngredientTest.numRef = 1;
 		IngredientTest.ref = new Ingredient(1);
@@ -42,6 +45,13 @@ public class IngredientTest {
 	@Test
 	public void test() {
 		assertNotNull(ref);
+	}
+	
+	public void testConstruct() throws SQLException{
+		Ingredient newIng = new Ingredient((float) 10.5, 5, EtatI.mauvais, "tomate");
+		assertNotNull(newIng);
+		Ingredient testIng = new Ingredient(newIng.getNumIngredient());
+		assertNotNull(testIng);
 	}
 
 }
