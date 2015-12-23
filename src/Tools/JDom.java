@@ -26,4 +26,10 @@ public class JDom {
 		String retour = sortie.outputString(doc);
 		return retour;
 	}
+	
+	public static Document createTimeCard(int hour ,int min){
+		Document retour = null;
+		
+		return retour;
+	}
 }

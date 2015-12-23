@@ -131,7 +131,7 @@ public class SetterDialogPerso extends JDialog {
 		boxHorPrev.setLayout(new GridLayout(1, 3));
 		boxHorPrev.add(this.horairePrevPerso);
 		boxHorPrev.add(this.heurePrev);
-		boxHorPrev.add(this.minutePrev); 
+		boxHorPrev.add(this.minutePrev);
 
 		this.salairePerso = new JLabel("Salaire : ");
 		if (perso != null) {
@@ -198,8 +198,8 @@ public class SetterDialogPerso extends JDialog {
 		this.add(boxDroit);
 		this.add(bouton);
 		this.pack();
-		this.minutePrev.setSize(this.minutePrev.getWidth()/2, this.minutePrev.getHeight());
-		this.heurePrev.setSize(this.heurePrev.getWidth()/2,this.heurePrev.getHeight());
+		this.minutePrev.setSize(this.minutePrev.getWidth() / 2, this.minutePrev.getHeight());
+		this.heurePrev.setSize(this.heurePrev.getWidth() / 2, this.heurePrev.getHeight());
 		this.pack();
 	}
 
@@ -218,6 +218,8 @@ public class SetterDialogPerso extends JDialog {
 	}
 
 	public void create() {
+		int minute = (int) this.minutePrev.getValue();
+		int heure = (int) this.heurePrev.getValue();
 		Restaurant Resto = (Restaurant) this.resto.getSelectedItem();
 		int numResto = Resto.getNumResto();
 		Salles Salle = (Salles) this.salle.getSelectedItem();

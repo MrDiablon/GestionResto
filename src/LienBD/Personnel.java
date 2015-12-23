@@ -7,8 +7,8 @@ import org.jdom2.*;
 
 import Tools.JDom;
 
-public class Personnel implements Comparable<Personnel>{
-	
+public class Personnel implements Comparable<Personnel> {
+
 	private int NUMPERSO;
 	private int NUMRESTO;
 	private int NUMSALLE;
@@ -22,43 +22,43 @@ public class Personnel implements Comparable<Personnel>{
 	private Document HORAIREPREV;
 	private float SALAIRE_H;
 	private int DROITS;
-	private static myPDO instance = myPDO.getInstance(); 
-	
-	public Personnel(int id) throws Exception{
-		if(id <= 0){
+	private static myPDO instance = myPDO.getInstance();
+
+	public Personnel(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("index null ounegatif");
 		}
 		String sql = "select NUMPERSO,NUMRESTO,NUMSALLE,NOM,PRENOM,POSTE,ADRESSE,NUMTEL,ADRESSEMAIL,HORAIRETRAV,HORAIREPREV,SALAIRE_H,DROITS FROM PERSONNEL WHERE `NUMPERSO` = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id};
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				this.NUMPERSO = res.getInt("NUMPERSO");
 				this.NUMRESTO = res.getInt("NUMRESTO");
-				this.NUMSALLE =  res.getInt("NUMSALLE");
+				this.NUMSALLE = res.getInt("NUMSALLE");
 				this.NOM = res.getString("NOM");
 				this.PRENOM = res.getString("PRENOM");
 				this.POSTE = res.getString("POSTE");
 				this.ADRESSE = res.getString("ADRESSE");
 				this.NUMTEL = res.getString("NUMTEL");
 				this.ADRESSEMAIL = res.getString("ADRESSEMAIL");
-				this.HORAIRETRAV = (res.getString("HORAIRETRAV") != null) ? JDom.convertStringToDocument(res.getString("HORAIRETRAV")) : null;
-				this.HORAIREPREV = (res.getString("HORAIREPREV") != null) ? JDom.convertStringToDocument(res.getString("HORAIRETRAV")) : null;
+				this.HORAIRETRAV = (res.getString("HORAIRETRAV") != null)
+						? JDom.convertStringToDocument(res.getString("HORAIRETRAV")) : null;
+				this.HORAIREPREV = (res.getString("HORAIREPREV") != null)
+						? JDom.convertStringToDocument(res.getString("HORAIRETRAV")) : null;
 				this.SALAIRE_H = res.getFloat("SALAIRE_H");
 				this.DROITS = res.getInt("DROITS");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
-	public Personnel(int nUMRESTO, int NUMSALLE, String nOM,
-			String pRENOM, String pOSTE, String aDRESSE, String nUMTEL,
-			String aDRESSEMAIL, Document hORAIRETRAV, Document hORAIREPREV,
-			float	 sALAIRE_H, int dROITS,String mdp) {
-		
+	public Personnel(int nUMRESTO, int NUMSALLE, String nOM, String pRENOM, String pOSTE, String aDRESSE, String nUMTEL,
+			String aDRESSEMAIL, Document hORAIRETRAV, Document hORAIREPREV, float sALAIRE_H, int dROITS, String mdp) {
+
 		this.NUMRESTO = nUMRESTO;
 		this.NUMSALLE = NUMSALLE;
 		this.NOM = nOM.toUpperCase();
@@ -71,7 +71,7 @@ public class Personnel implements Comparable<Personnel>{
 		this.HORAIREPREV = hORAIREPREV;
 		this.SALAIRE_H = sALAIRE_H;
 		this.DROITS = dROITS;
-		
+
 		this.create(mdp);
 	}
 
@@ -119,8 +119,8 @@ public class Personnel implements Comparable<Personnel>{
 	public void setNUMSALLE(int NUMSALLE) {
 		this.NUMSALLE = NUMSALLE;
 	}
-	
-	public String getNOMSALLE(){
+
+	public String getNOMSALLE() {
 		Salles salle = new Salles(this.NUMSALLE);
 		return salle.getNomSalle();
 	}
@@ -274,18 +274,18 @@ public class Personnel implements Comparable<Personnel>{
 	public void setDROITS(int dROITS) {
 		DROITS = dROITS;
 	}
-	
-	public static Object getNumRestoById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getNumRestoById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT `NUMRESTO` FROM PERSONNEL WHERE `NUMPERSO` = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = res.getObject("NUMRESTO");
 			}
 		} catch (SQLException e) {
@@ -293,18 +293,18 @@ public class Personnel implements Comparable<Personnel>{
 		}
 		return retour;
 	}
-	
-	public static Object getNUMSALLEById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getNUMSALLEById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT NUMSALLE FROM PERSONNEL WHERE `NUMPERSO` = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = res.getObject("NUMSALLE");
 			}
 		} catch (SQLException e) {
@@ -312,18 +312,18 @@ public class Personnel implements Comparable<Personnel>{
 		}
 		return retour;
 	}
-	
-	public static Object getNomById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getNomById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT NOM FROM PERSONNEL WHERE NUMPERSO = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = res.getObject("NOM");
 			}
 		} catch (SQLException e) {
@@ -331,37 +331,37 @@ public class Personnel implements Comparable<Personnel>{
 		}
 		return retour;
 	}
-	
-	public static Object getPrenomById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getPrenomById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT PRENOM FROM PERSONNEL WHERE NUMPERSO = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = res.getObject("PRENOM");
-			}			
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return retour;
 	}
-	
-	public static Object getPosteById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getPosteById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT POSTE FROM PERSONNEL WHERE NUMPERSO = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = res.getObject("POSTE");
 			}
 		} catch (SQLException e) {
@@ -369,18 +369,18 @@ public class Personnel implements Comparable<Personnel>{
 		}
 		return retour;
 	}
-	
-	public static Object getAdresseById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getAdresseById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT ADRESSE FROM PERSONNEL WHERE NUMPERSO = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = res.getObject("ADRESSE");
 			}
 		} catch (SQLException e) {
@@ -388,37 +388,37 @@ public class Personnel implements Comparable<Personnel>{
 		}
 		return retour;
 	}
-	
-	public static Object getHoraireTravById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getHoraireTravById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT HORAIRETRAV FROM PERSONNEL WHERE NUMPERSO = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
-				retour = JDom.convertStringToDocument(res.getString("HORAIRETRAV"));				
+			if (res.next()) {
+				retour = JDom.convertStringToDocument(res.getString("HORAIRETRAV"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return retour;
 	}
-	
-	public static Object getHorairePrevById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getHorairePrevById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT HORAIREPREV FROM PERSONNEL WHERE NUMPERSO = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = JDom.convertStringToDocument(res.getString("HORAIREPREV"));
 			}
 		} catch (SQLException e) {
@@ -426,18 +426,18 @@ public class Personnel implements Comparable<Personnel>{
 		}
 		return retour;
 	}
-	
-	public static Object getSalaireById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getSalaireById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT SALAIRE FROM PERSONNEL WHERE NUMPERSO = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = res.getObject("SALAIRE");
 			}
 		} catch (SQLException e) {
@@ -445,18 +445,18 @@ public class Personnel implements Comparable<Personnel>{
 		}
 		return retour;
 	}
-	
-	public static Object getDroitsById(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static Object getDroitsById(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		Object retour = null;
 		String sql = "SELECT DROITS FROM PERSONNEL WHERE NUMPERSO = ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {id}; 
+		Object[] data = { id };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				retour = res.getObject("DROITS");
 			}
 		} catch (SQLException e) {
@@ -464,148 +464,171 @@ public class Personnel implements Comparable<Personnel>{
 		}
 		return retour;
 	}
-	
-	public static int verifCo(String nom , String mdp){
+
+	public static int verifCo(String nom, String mdp) {
 		int retour = -1;
 		String sql = "SELECT NUMPERSO FROM PERSONNEL WHERE NOM = ? AND MDP = sha1(?)";
 		Personnel.instance.prepare(sql);
-		Object[] data = {nom.toUpperCase(),mdp};
+		Object[] data = { nom.toUpperCase(), mdp };
 		ResultSet res = Personnel.instance.execute(data, false);
 		try {
-			if(res.next()){
+			if (res.next()) {
 				Object tmp = res.getInt("NUMPERSO");
-				if(tmp != null){
-					retour = (int) tmp;
-				}else{
-					retour = -1;
-				}
+				retour = (int) tmp;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return retour;
 	}
-	
-	public void create(String mdp){
+
+	public void create(String mdp) {
+
 		String sql = "INSERT INTO `PERSONNEL` (`NUMPERSO`,`NUMRESTO`,`NUMSALLE`,`NOM`,`PRENOM`,`POSTE`,`ADRESSE`,`NUMTEL`,`ADRESSEMAIL`,`HORAIRETRAV`,`HORAIREPREV`,`SALAIRE_H`,`DROITS`,`MDP`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,sha1(?))";
 		Personnel.instance.prepare(sql);
-		Object[] data = {null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,JDom.convertDocumentToString(this.HORAIRETRAV),JDom.convertDocumentToString(this.HORAIREPREV),this.SALAIRE_H,this.DROITS,mdp};
+		Object[] data = this.getData(mdp);		
 		Personnel.instance.execute(data, true);
 		sql = "SELECT MAX(NUMPERSO) FROM PERSONNEL";
 		Personnel.instance.prepare(sql);
 		ResultSet res = Personnel.instance.execute();
 		try {
-			if(res.next())
+			if (res.next())
 				this.NUMPERSO = res.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void modif(String mdp){
-		String sql = "";
+	private Object[] getData(String mdp){
 		Object[] data = null;
 		if(mdp != null){
-			sql = "UPDATE `PERSONNEL` SET `NUMRESTO` = ?,`NUMSALLE` = ?,`NOM` = ?,`PRENOM` = ?,`POSTE` = ?,`ADRESSE` = ?,`NUMTEL` = ?,`ADRESSEMAIL` = ?,`HORAIRETRAV` = ?,`HORAIREPREV` = ?,`SALAIRE_H` = ?,`DROITS` = ?,`MDP` = ? WHERE `NUMPERSO` = ?";
-			data = new Object[] {this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,JDom.convertDocumentToString(this.HORAIRETRAV),JDom.convertDocumentToString(this.HORAIREPREV),this.SALAIRE_H,this.DROITS,mdp,this.NUMPERSO};
+			if (this.HORAIREPREV != null && this.HORAIRETRAV != null) {
+				data = new Object[]{null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,JDom.convertDocumentToString(this.HORAIRETRAV),JDom.convertDocumentToString(this.HORAIREPREV),this.SALAIRE_H,this.DROITS,mdp};
+			}else if(this.HORAIREPREV != null && this.HORAIRETRAV == null){
+				data = new Object[]{null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,null,JDom.convertDocumentToString(this.HORAIREPREV),this.SALAIRE_H,this.DROITS,mdp};
+			}else if(this.HORAIREPREV == null && this.HORAIRETRAV != null){
+				data = new Object[]{null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,JDom.convertDocumentToString(this.HORAIRETRAV),null,this.SALAIRE_H,this.DROITS,mdp};
+			}else{
+				data = new Object[]{null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,null,null,this.SALAIRE_H,this.DROITS,mdp};
+			}
 		}else{
+			if (this.HORAIREPREV != null && this.HORAIRETRAV != null) {
+				data = new Object[]{null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,JDom.convertDocumentToString(this.HORAIRETRAV),JDom.convertDocumentToString(this.HORAIREPREV),this.SALAIRE_H,this.DROITS};
+			}else if(this.HORAIREPREV != null && this.HORAIRETRAV == null){
+				data = new Object[]{null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,null,JDom.convertDocumentToString(this.HORAIREPREV),this.SALAIRE_H,this.DROITS};
+			}else if(this.HORAIREPREV == null && this.HORAIRETRAV != null){
+				data = new Object[]{null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,JDom.convertDocumentToString(this.HORAIRETRAV),null,this.SALAIRE_H,this.DROITS};
+			}else{
+				data = new Object[]{null,this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,null,null,this.SALAIRE_H,this.DROITS};
+			}
+		}
+		return data;
+	}
+
+	public void modif(String mdp) {
+		String sql = "";
+		Object[] data = null;
+		if (mdp != null) {
+			sql = "UPDATE `PERSONNEL` SET `NUMRESTO` = ?,`NUMSALLE` = ?,`NOM` = ?,`PRENOM` = ?,`POSTE` = ?,`ADRESSE` = ?,`NUMTEL` = ?,`ADRESSEMAIL` = ?,`HORAIRETRAV` = ?,`HORAIREPREV` = ?,`SALAIRE_H` = ?,`DROITS` = ?,`MDP` = ? WHERE `NUMPERSO` = ?";
+			data = this.getData(mdp);
+		} else {
 			sql = "UPDATE `PERSONNEL` SET `NUMRESTO` = ?,`NUMSALLE` = ?,`NOM` = ?,`PRENOM` = ?,`POSTE` = ?,`ADRESSE` = ?,`NUMTEL` = ?,`ADRESSEMAIL` = ?,`HORAIRETRAV` = ?,`HORAIREPREV` = ?,`SALAIRE_H` = ?,`DROITS` = ? WHERE `NUMPERSO` = ?";
-			data = new Object[] {this.NUMRESTO,this.NUMSALLE,this.NOM,this.PRENOM,this.POSTE,this.ADRESSE,this.NUMTEL,this.ADRESSEMAIL,JDom.convertDocumentToString(this.HORAIRETRAV),JDom.convertDocumentToString(this.HORAIREPREV),this.SALAIRE_H,this.DROITS,this.NUMPERSO};
+			data = this.getData(null);
 		}
 		Personnel.instance.prepare(sql);
-		Personnel.instance.execute(data,true);
+		Personnel.instance.execute(data, true);
 	}
-	
-	public static void delete(int id) throws Exception{
-		if(id <= 0 ){
+
+	public static void delete(int id) throws Exception {
+		if (id <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		String sql = "DELETE FROM PERSONNEL WHERE NUMPERSO = ? ";
 		Personnel.instance.prepare(sql);
-		Object [] data = {id}; 
+		Object[] data = { id };
 		Personnel.instance.execute(data, true);
 	}
-	
-	public void delete() throws Exception{
-		if(this.NUMPERSO <= 0 ){
+
+	public void delete() throws Exception {
+		if (this.NUMPERSO <= 0) {
 			throw new Exception("id null ou negatif");
 		}
 		String sql = "DELETE FROM PERSONNEL WHERE NUMPERSO = ? ";
 		Personnel.instance.prepare(sql);
-		Object [] data = { NUMPERSO }; 
+		Object[] data = { NUMPERSO };
 		Personnel.instance.execute(data, true);
 	}
-	
-	public static Personnel[] getAll() throws Exception{
-		//on ecrit notre code sql on demande tous les id de la table
-		String sql ="SELECT NUMPERSO FROM PERSONNEL";
-		//on prepare notre requete
+
+	public static Personnel[] getAll() throws Exception {
+		// on ecrit notre code sql on demande tous les id de la table
+		String sql = "SELECT NUMPERSO FROM PERSONNEL";
+		// on prepare notre requete
 		Personnel.instance.prepare(sql);
-		//on l'execute sans parametre car inutile
+		// on l'execute sans parametre car inutile
 		ResultSet res = Personnel.instance.execute();
-		//on prepare notre tableau de retour;
+		// on prepare notre tableau de retour;
 		Personnel[] retour = null;
-		try{
+		try {
 			res.last();
-			//on instance notre retour grace a res.getRow() qui donne le nombre de ligne retourner
+			// on instance notre retour grace a res.getRow() qui donne le nombre
+			// de ligne retourner
+			res.last();
 			retour = new Personnel[res.getRow()];
-			//on remet le curseur au debut
+			// on remet le curseur au debut
 			res.beforeFirst();
-			//pour chaque ligne on cree une nouvelle instance grace a l'id
-			for(int i = 0;res.next();i++){
+			// pour chaque ligne on cree une nouvelle instance grace a l'id
+			for (int i = 0; res.next(); i++) {
 				retour[i] = new Personnel(res.getInt(1));
 			}
-		}catch (SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return retour;
 	}
-	
-	public static Personnel[] getByNB(int deb,int nb) throws Exception{
+
+	public static Personnel[] getByNB(int deb, int nb) throws Exception {
 		String sql = "SELECT NUMPERSO FROM PERSONNEL LIMIT ? , ?";
 		Personnel.instance.prepare(sql);
-		Object[] data = {deb,nb};
+		Object[] data = { deb, nb };
 		ResultSet res = Personnel.instance.execute(data, false);
 		Personnel[] retour = null;
-		try{
-			
-			retour = new Personnel[nb];
+		try {
+			res.last();
+			retour = new Personnel[res.getRow()];
 			res.beforeFirst();
-			for(int i = 1 ; res.next() ; i++){
-				//retour[i] = new Personnel(res.getInt(1));
-				System.out.println(res.getInt("NUMPERSO"));
+			for (int i = 1; res.next(); i++) {
+				retour[i] = new Personnel(res.getInt(1));
 			}
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return retour;
 	}
-	
-	public static int count(){
+
+	public static int count() {
 		int retour = 0;
 		String sql = "SELECT COUNT(NUMPERSO) FROM PERSONNEL";
 		Personnel.instance.prepare(sql);
 		ResultSet res = Personnel.instance.execute();
-		try{
-			if(res.next()){
+		try {
+			if (res.next()) {
 				retour = res.getInt(1);
 			}
-		} catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return retour;
 	}
 
 	@Override
-	public int compareTo(Personnel p){
+	public int compareTo(Personnel p) {
 		int retour = 0;
 		System.out.println(p.NOM);
 		System.out.println(this.NOM);
 		retour = this.NOM.compareTo(p.NOM);
-		if(retour == 0){
+		if (retour == 0) {
 			retour = this.PRENOM.compareTo(p.NOM);
 		}
 		return retour;
