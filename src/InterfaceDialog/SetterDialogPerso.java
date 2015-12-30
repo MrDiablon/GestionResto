@@ -2,10 +2,6 @@ package InterfaceDialog;
 
 import java.awt.Frame;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -16,15 +12,24 @@ import javax.swing.JSpinner;
 import javax.swing.JSpinner.NumberEditor;
 import javax.swing.JTextField;
 
+import org.jdom2.Document;
+
 import LienBD.Personnel;
 import LienBD.Restaurant;
 import LienBD.Salles;
+import Tools.JDom;
 
+@SuppressWarnings("serial")
+/**
+ * Fenetre pop-up permetant de definir les information sur un objet de type LienBD.Personnel
+ * @author Benjamin
+ *
+ */
 public class SetterDialogPerso extends JDialog {
 	private JLabel nomPerso, prenomPerso, adressePerso, numTelPerso, mailPerso, postePerso, sallePerso,
-			horairePrevPerso, salairePerso, mdpPerso, restoPerso, droitPerso;
+			horairePrevPersoB, horairePrevPersoE, salairePerso, mdpPerso, restoPerso, droitPerso;
 	private JTextField nom, prenom, adresse, numTel, mail, poste, salaire;
-	private JSpinner droit, minutePrev, heurePrev;
+	private JSpinner droit, minutePrevB, heurePrevB, minutePrevE, heurePrevE;
 	private JComboBox<Restaurant> resto;
 	private JComboBox<Salles> salle;
 	private JPasswordField mdp;
@@ -116,22 +121,41 @@ public class SetterDialogPerso extends JDialog {
 		boxSalle.add(this.sallePerso);
 		boxSalle.add(this.salle);
 
-		this.horairePrevPerso = new JLabel("Horaires Prévus : Heure|Minute");
-		this.minutePrev = new JSpinner();
-		NumberEditor numberEditorM = new NumberEditor(minutePrev);
-		this.minutePrev.setEditor(numberEditorM);
-		numberEditorM.getModel().setMaximum(60);
-		numberEditorM.getModel().setMinimum(0);
-		this.heurePrev = new JSpinner();
-		NumberEditor numberEditorH = new NumberEditor(heurePrev);
-		this.heurePrev.setEditor(numberEditorH);
-		numberEditorH.getModel().setMaximum(24);
-		numberEditorH.getModel().setMinimum(0);
-		JPanel boxHorPrev = new JPanel();
-		boxHorPrev.setLayout(new GridLayout(1, 3));
-		boxHorPrev.add(this.horairePrevPerso);
-		boxHorPrev.add(this.heurePrev);
-		boxHorPrev.add(this.minutePrev);
+		// recuperation des elements pour la fiche horaire heure|Minute arriver
+		this.horairePrevPersoB = new JLabel("Horaires Prévus (arriver): Heure|Minute");
+		this.minutePrevB = new JSpinner();
+		NumberEditor numberEditorBM = new NumberEditor(minutePrevB);
+		this.minutePrevB.setEditor(numberEditorBM);
+		numberEditorBM.getModel().setMaximum(60);
+		numberEditorBM.getModel().setMinimum(0);
+		this.heurePrevB = new JSpinner();
+		NumberEditor numberEditorBH = new NumberEditor(heurePrevB);
+		this.heurePrevB.setEditor(numberEditorBH);
+		numberEditorBH.getModel().setMaximum(24);
+		numberEditorBH.getModel().setMinimum(0);
+		JPanel boxHorPrevB = new JPanel();
+		boxHorPrevB.setLayout(new GridLayout(1, 3));
+		boxHorPrevB.add(this.horairePrevPersoB);
+		boxHorPrevB.add(this.heurePrevB);
+		boxHorPrevB.add(this.minutePrevB);
+
+		// recuperation des elements pour la fiche horaire heure|Minute (fin)
+		this.horairePrevPersoE = new JLabel("Horaires Prévus (depart): Heure|Minute");
+		this.minutePrevE = new JSpinner();
+		NumberEditor numberEditorEM = new NumberEditor(minutePrevE);
+		this.minutePrevE.setEditor(numberEditorEM);
+		numberEditorEM.getModel().setMaximum(60);
+		numberEditorEM.getModel().setMinimum(0);
+		this.heurePrevE = new JSpinner();
+		NumberEditor numberEditorEH = new NumberEditor(heurePrevE);
+		this.heurePrevE.setEditor(numberEditorEH);
+		numberEditorEH.getModel().setMaximum(24);
+		numberEditorEH.getModel().setMinimum(0);
+		JPanel boxHorPrevE = new JPanel();
+		boxHorPrevE.setLayout(new GridLayout(1, 3));
+		boxHorPrevE.add(this.horairePrevPersoE);
+		boxHorPrevE.add(this.heurePrevE);
+		boxHorPrevE.add(this.minutePrevE);
 
 		this.salairePerso = new JLabel("Salaire : ");
 		if (perso != null) {
@@ -192,14 +216,15 @@ public class SetterDialogPerso extends JDialog {
 		this.add(boxPoste);
 		this.add(boxResto);
 		this.add(boxSalle);
-		this.add(boxHorPrev);
+		this.add(boxHorPrevB);
+		this.add(boxHorPrevE);
 		this.add(boxSalaire);
 		this.add(boxMdp);
 		this.add(boxDroit);
 		this.add(bouton);
 		this.pack();
-		this.minutePrev.setSize(this.minutePrev.getWidth() / 2, this.minutePrev.getHeight());
-		this.heurePrev.setSize(this.heurePrev.getWidth() / 2, this.heurePrev.getHeight());
+		this.minutePrevB.setSize(this.minutePrevB.getWidth() / 2, this.minutePrevB.getHeight());
+		this.heurePrevB.setSize(this.heurePrevB.getWidth() / 2, this.heurePrevB.getHeight());
 		this.pack();
 	}
 
@@ -218,8 +243,11 @@ public class SetterDialogPerso extends JDialog {
 	}
 
 	public void create() {
-		int minute = (int) this.minutePrev.getValue();
-		int heure = (int) this.heurePrev.getValue();
+		int beginMminute = (int) this.minutePrevB.getValue();
+		int beginHour = (int) this.heurePrevB.getValue();
+		int endMin = (int) this.minutePrevE.getValue();
+		int endHour = (int) this.heurePrevE.getValue();
+		Document timeCard = JDom.createTimeCard(beginHour, beginMminute, endMin, endHour);
 		Restaurant Resto = (Restaurant) this.resto.getSelectedItem();
 		int numResto = Resto.getNumResto();
 		Salles Salle = (Salles) this.salle.getSelectedItem();
@@ -234,6 +262,6 @@ public class SetterDialogPerso extends JDialog {
 		int droitPerso = (int) this.droit.getValue();
 		String mdpPerso = this.mdp.getSelectedText();
 		this.perso = new Personnel(numResto, numSalle, nomPerso, prenomPerso, postePerso, adressPerso, numTelPerso,
-				mailPerso, null, null, salairePerso, droitPerso, mdpPerso);
+				mailPerso, timeCard, null, salairePerso, droitPerso, mdpPerso);
 	}
 }

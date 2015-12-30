@@ -6,23 +6,16 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import Interface.list.ListPanelIngredient;
 import Interface.list.ListPanelMenu;
 import Interface.list.ListPanelPersonnel;
 import Interface.list.ListPanelRoom;
-import Interface.list.MyListModel;
-import Interface.list.PersonnelRenderer;
-import Interface.list.RendererIngredient;
-import LienBD.Ingredient;
-import LienBD.Personnel;
 
 public class PassFrame extends JFrame {
 
