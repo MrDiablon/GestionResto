@@ -97,8 +97,8 @@ public class Menu implements Comparable<Menu> {
 	}
 
 	public void create() throws SQLException {
-		String sql = "INSERT INTO MENU(`NUMMENU`,`NOM`) VALUE (?,?)";
-		Object[] data = { this.numMenu, this.nom };
+		String sql = "INSERT INTO MENU(`NOM`) VALUE (?)";
+		Object[] data = { this.nom };
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
 		sql = "SELECT MAX(NUMMENU) FROM MENU";
@@ -182,12 +182,17 @@ public class Menu implements Comparable<Menu> {
 			res.last();
 			// on instance notre retour grace a res.getRow() qui donne le nombre
 			// de ligne retourner
-			retour = new Menu[res.getRow()];
+			retour = new Menu[res.getRow()-1];
 			// on remet le curseur au debut
 			res.beforeFirst();
 			// pour chaque ligne on cree une nouvelle instance grace a l'id
 			for (int i = 0; res.next(); i++) {
-				retour[i] = new Menu(res.getInt(1));
+				int num = res.getInt(1);
+				if(num > 1){
+					retour[i] = new Menu(res.getInt(1));
+				}else{
+					i--;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

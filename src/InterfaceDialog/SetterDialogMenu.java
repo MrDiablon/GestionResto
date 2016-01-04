@@ -3,14 +3,17 @@ package InterfaceDialog;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
@@ -24,8 +27,7 @@ public class SetterDialogMenu extends JDialog {
 	private JSpinner nbPlatS;
 	private int nbPlatsPres;
 	private JPanel panelPlats;
-	private LinkedList<JComboBox<Plat>> listeBoxPlats;
-	private JComboBox<Plat> listeplats;
+	private LinkedList<Plat> mealsList;
 	private Menu menu;
 	private JButton valider, annuler;
 
@@ -33,8 +35,11 @@ public class SetterDialogMenu extends JDialog {
 		super(owner, modal);
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.menu = menu;
-		
-		this.listeBoxPlats = new LinkedList<>();
+		if(menu != null){
+			this.mealsList = menu.getPlats();
+		}else{
+			this.mealsList = new LinkedList<Plat>();
+		}
 		// configuration de la partie "nom"
 		this.nom = new JLabel("Nom : ");
 		this.saisieNom = new JTextField(10);
@@ -48,16 +53,19 @@ public class SetterDialogMenu extends JDialog {
 		this.add(nomPanel);
 		
 		// configuration de la partie "plat"
-		this.nbPlatsPres = 0;
-		this.nbPlat = new JLabel("Nombre de plats");
-		this.nbPlatS = new JSpinner();
-		this.nbPlatS.addChangeListener(e -> this.add());
-		JPanel panelNbPlat = new JPanel();		
-		panelNbPlat.add(this.nbPlat);
-		panelNbPlat.add(this.nbPlatS);
-		this.panelPlats = new JPanel(new GridLayout(0, 2));
-		this.add(panelNbPlat);
-		this.add(this.panelPlats);
+		Plat[] meals = Plat.getAll();
+		JPanel mealsP = new JPanel();
+		mealsP.setLayout(new GridLayout(0,1));
+		int i = 0;
+		for (Plat plat : meals) {
+			JCheckBox tmp = new JCheckBox(plat.getNomPlat()); 
+			tmp.addActionListener(e->{
+					add(plat);
+			});
+			mealsP.add(tmp);
+		}
+		JScrollPane scrollMeal = new JScrollPane(mealsP);
+		this.add(scrollMeal);
 		
 		this.valider = new JButton("Valider");
 		this.valider.addActionListener(e -> {
@@ -81,51 +89,30 @@ public class SetterDialogMenu extends JDialog {
 		
 	}
 	
+	public void add(Plat meal){
+		if(this.mealsList.contains(meal)){
+			this.mealsList.remove(meal);
+		}else{
+			this.mealsList.add(meal);
+		}
+	}
+	
 	public boolean updateMenu() throws SQLException{
 		boolean retour = false;
 		String nom = this.saisieNom.getText();
 		if(this.menu == null){
 			Menu newMenu = new Menu(nom);
-			Plat tmp;
-			for (JComboBox<Plat> jComboBox : listeBoxPlats) {
-				tmp = (Plat) jComboBox.getSelectedItem();
-				newMenu.addPlat(tmp);
+			for (Plat plat : mealsList) {
+				newMenu.addPlat(plat);
 			}
 			retour = true;
 		}else{
 			this.menu.setNom(nom);
-			LinkedList<Plat> ref = this.menu.getPlats();
-			Plat tmp;
-			for (JComboBox<Plat> jComboBox : listeBoxPlats) {
-				tmp = (Plat) jComboBox.getSelectedItem();
-				if(!ref.contains(tmp)){
-					this.menu.addPlat(tmp);
-				}
-			}
+			this.menu.setPlats(this.mealsList);
+			
 			retour = true;
 		}
 		return retour;
-	}
-	
-	public void add(){
-		int value = (int) this.nbPlatS.getValue();
-		if(value > this.nbPlatsPres){
-			Plat[] plats = Plat.getAll();
-			this.nomPlat = new JLabel("Plat : ");
-			this.listeplats = new JComboBox<Plat>(plats);
-			JPanel listeplat = new JPanel();
-			listeplat.add(this.nomPlat);
-			listeplat.add(this.listeplats);
-			this.panelPlats.add(listeplat);
-			this.listeBoxPlats.add(this.listeplats);
-			this.nbPlatsPres++;
-			this.pack();
-		}else if(value < this.nbPlatsPres && value >= 0){
-			this.listeBoxPlats.remove(this.listeBoxPlats.size()-1);
-			this.panelPlats.remove(this.listeBoxPlats.size()-1);
-			this.nbPlatsPres--;
-			this.pack();
-		}
 	}
 	
 	public static Menu showContactDialog(Frame parent, String title,

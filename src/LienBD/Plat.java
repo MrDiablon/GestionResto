@@ -15,7 +15,7 @@ public class Plat {
 	private int numPlat;
 	private String nomPlat;
 	private String recette;
-	private int prixU;
+	private float prixU;
 
 	private static myPDO instance = myPDO.getInstance();
 
@@ -36,7 +36,7 @@ public class Plat {
 		ResultSet res2 = instance.execute(identifiant, false);
 		if(res.next()){
 			this.recette = (String) res.getObject("RECETTE");
-			this.prixU = (int) res.getObject("PRIXU");
+			this.prixU = res.getFloat("PRIXU");
 			this.numPlat = id;
 			this.nomPlat = res.getString("NOMPLAT");
 			while(res2.next()){
@@ -82,7 +82,7 @@ public class Plat {
 	}
 	
 
-	public int getPrixU() {
+	public float getPrixU() {
 		return prixU;
 	}
 
@@ -135,7 +135,6 @@ public class Plat {
 		try {
 			data[0] = res.getObject("`NUMPLAT`");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return (int) data[0];
@@ -150,7 +149,6 @@ public class Plat {
 		try {
 			data[0] = res.getObject("`PRIXU`");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return (int) data[0];
@@ -165,7 +163,6 @@ public class Plat {
 		try {
 			data[0] = res.getObject("`RECETTE`");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return (String) data[0];
@@ -180,7 +177,6 @@ public class Plat {
 		try {
 			data[0] = res.getObject("`NOMPLAT`");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return (String) data[0];
@@ -199,12 +195,17 @@ public class Plat {
 			// on instance notre retour grace a res.getRow() qui donne le nombre
 			// de ligne retourner
 			res.last();
-			retour = new Plat[res.getRow()];
+			retour = new Plat[res.getRow()-1];
 			// on remet le curseur au debut
 			res.beforeFirst();
 			// pour chaque ligne on cree une nouvelle instance grace a l'id
 			for (int i = 0; res.next(); i++) {
-				retour[i] = new Plat(res.getInt(1));
+				int num = res.getInt(1);
+				if(num > 1){
+					retour[i] = new Plat(num);
+				}else{
+					i--;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

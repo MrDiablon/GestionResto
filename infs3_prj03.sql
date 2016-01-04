@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `INGREDIENT` (
 --
 
 INSERT INTO `INGREDIENT` (`NUMINGREDIENT`, `ETATSI`, `PRIXU`, `STOCK`, `NOM`) VALUES
-(1, 'bon', 10, 5, 'pomme de terre'),
+(1, 'bon', 10, 5, 'vide'),
 (2, 'bon', 10, 5, 'steack');
 
 -- --------------------------------------------------------
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `MENU` (
 --
 
 INSERT INTO `MENU` (`NUMMENU`, `COMPOSITION`, `NOM`) VALUES
-(1, 'Frite|Poulet|Vin', 'Miam');
+(1, 'vide', 'vide');
 
 -- --------------------------------------------------------
 
