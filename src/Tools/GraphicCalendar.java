@@ -3,7 +3,11 @@ package Tools;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import javax.swing.JButton;
@@ -25,23 +29,36 @@ import Interface.PassFrame;
 public class GraphicCalendar extends JPanel {
 
 	protected int nbDay, currentYear, currentMonth;
-	protected JPanel datePanel, dayPanel, weekPanel, choosePanel,centerPanel;
+	protected JPanel datePanel, dayPanel, weekPanel, choosePanel, centerPanel;
 	protected JButton[] buttonsDay;
 	protected String[] day = { "lun.", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim." }, month = { "Janvier", "Fevrier",
 			"Mars", "Avril", "Mai", "Juin", "Juillet", "Octobre", "Septembre", "Octobre", "Novembre", "Decembre" };
 	protected JLabel[] jLDay = new JLabel[8];
 	protected JTextField chooseYear;
 	protected JComboBox<String> chooseMonth;
+	protected Calendar cal;
+	protected int posFirstDay = 0;
 
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				JFrame test = new JFrame("test Calendar");
-				test.add(new GraphicCalendar(2015, 12));
+				test.add(new GraphicCalendar(2015, Calendar.DECEMBER));
 				test.pack();
 				test.setVisible(true);
 			}
 		});
+
+		/*
+		 * Calendar cal = new GregorianCalendar(2016, 1, 1); Date d = new
+		 * Date(); d.setMonth(Calendar.NOVEMBER); // cal.setTime(d); //
+		 * System.out.println(d.toString());
+		 * System.out.println(cal.getTime().toString());
+		 * System.out.println(Calendar.DAY_OF_WEEK);
+		 * System.out.println(cal.get(Calendar.DAY_OF_WEEK) - 1);
+		 */
 	}
 
 	public GraphicCalendar(int year, int month) {
@@ -51,12 +68,17 @@ public class GraphicCalendar extends JPanel {
 		GridLayout layout = new GridLayout(0, 7);
 		this.choosePanel = new JPanel(new GridLayout(1, 0));
 		this.chooseMonth = new JComboBox<>(this.month);
-		this.chooseMonth.addActionListener(e->{
-			this.currentMonth = this.chooseMonth.getSelectedIndex();
+		this.chooseMonth.addActionListener(e -> {
+			currentMonth = chooseMonth.getSelectedIndex();
 			generateDayPanel();
-			this.validate();
+			GraphicCalendar.this.validate();
 		});
 		this.chooseYear = new JTextField("" + this.currentYear);
+		chooseYear.addActionListener(e -> {
+			currentYear = Integer.parseInt(chooseYear.getText());
+			generateDayPanel();
+			GraphicCalendar.this.validate();
+		});
 		this.choosePanel.add(this.chooseMonth);
 		this.choosePanel.add(this.chooseYear);
 		this.dayPanel = new JPanel(layout);
@@ -64,10 +86,8 @@ public class GraphicCalendar extends JPanel {
 			jLDay[i] = new JLabel(day[i]);
 			this.dayPanel.add(jLDay[i]);
 		}
-		
-		this.nbDay = this.getNbDayByMonth(year, month);
 		this.generateDayPanel();
-		this.add(this.choosePanel,BorderLayout.NORTH);
+		this.add(this.choosePanel, BorderLayout.NORTH);
 	}
 
 	private int getNbDayByMonth(int year, int month) {
@@ -99,22 +119,43 @@ public class GraphicCalendar extends JPanel {
 	}
 
 	private void generateDayPanel() {
+		this.nbDay = this.getNbDayByMonth(this.currentYear, this.currentMonth);
+		this.cal = new GregorianCalendar(this.currentYear, currentMonth, 1);
+		if (this.cal.get(Calendar.DAY_OF_WEEK) - 1 == 0) {
+			this.posFirstDay = this.cal.get(Calendar.DAY_OF_WEEK);
+		} else {
+			this.posFirstDay = this.cal.get(Calendar.DAY_OF_WEEK) - 1;
+		}
+		// this.posFirstDay = (this.cal.get(Calendar.DAY_OF_WEEK) - 1 == 0) ? 7
+		// - this.cal.get(Calendar.DAY_OF_WEEK)
+		// : 7 - this.cal.get(Calendar.DAY_OF_WEEK) - 1;
+		System.out.println(this.cal.get(Calendar.DAY_OF_WEEK) - 1);
+		System.out.println(this.posFirstDay);
 		int week = this.getWeek();
 		GridLayout layout = new GridLayout(0, 7);
-		if(datePanel != null){
+		if (datePanel != null) {
 			this.remove(this.datePanel);
 			this.centerPanel.remove(this.datePanel);
 		}
 		this.datePanel = new JPanel(layout);
-		if(this.weekPanel != null){
+		if (this.weekPanel != null) {
 			this.remove(this.weekPanel);
 		}
-		if(this.centerPanel != null){
+		if (this.centerPanel != null) {
 			this.remove(this.centerPanel);
 		}
 		this.centerPanel = new JPanel(new BorderLayout());
 		this.weekPanel = new JPanel(new GridLayout(0, 1));
 		this.buttonsDay = new JButton[this.nbDay];
+		if (this.posFirstDay > 0) {
+			for (int i = this.posFirstDay - 1; i > 0; i--) {
+				int beforeD = (this.currentMonth == 0) ? this.getNbDayByMonth(currentYear-1, 11)
+						: this.getNbDayByMonth(currentYear, currentMonth - 1);
+				JButton tmp = new JButton("" + (beforeD - i ));
+				tmp.setEnabled(false);
+				this.datePanel.add(tmp);
+			}
+		}
 		for (int i = 0; i < this.nbDay; i++) {
 			if (i % 7 == 0) {
 				this.weekPanel.add(new JLabel("" + week++));
@@ -123,12 +164,12 @@ public class GraphicCalendar extends JPanel {
 			tmp = new JButton("" + (i + 1));
 			this.datePanel.add(tmp);
 		}
-		this.centerPanel.add(this.dayPanel,BorderLayout.NORTH);
-		this.centerPanel.add(this.datePanel,BorderLayout.CENTER);
+		this.centerPanel.add(this.dayPanel, BorderLayout.NORTH);
+		this.centerPanel.add(this.datePanel, BorderLayout.CENTER);
 		this.add(centerPanel);
-		//this.add(this.datePanel, BorderLayout.CENTER);
+		// this.add(this.datePanel, BorderLayout.CENTER);
 		this.add(this.weekPanel, BorderLayout.WEST);
-		
+
 	}
 
 }
