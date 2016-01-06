@@ -56,12 +56,17 @@ public class SetterDialogMenu extends JDialog {
 		Plat[] meals = Plat.getAll();
 		JPanel mealsP = new JPanel();
 		mealsP.setLayout(new GridLayout(0,1));
-		int i = 0;
 		for (Plat plat : meals) {
 			JCheckBox tmp = new JCheckBox(plat.getNomPlat()); 
 			tmp.addActionListener(e->{
 					add(plat);
 			});
+			if(menu != null){
+				LinkedList<Plat> plats = menu.getPlats();
+				if(plats.indexOf(plat) < 0){
+					tmp.setSelected(true);
+				}
+			}
 			mealsP.add(tmp);
 		}
 		JScrollPane scrollMeal = new JScrollPane(mealsP);
