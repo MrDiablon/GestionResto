@@ -17,12 +17,14 @@ public class Menu implements Comparable<Menu> {
 
 	private int numMenu;
 	private String nom;
+	private float prix;
 	private LinkedList<Plat> plats;
 
 	private static myPDO instance = myPDO.getInstance();
 
-	public Menu(String nom) throws SQLException {
+	public Menu(String nom,float prix) throws SQLException {
 		this.nom = nom;
+		this.prix = prix;
 		this.plats = new LinkedList<>();
 		this.create();
 	}
@@ -40,6 +42,7 @@ public class Menu implements Comparable<Menu> {
 			if (res.next()) {
 				this.numMenu = id;
 				this.nom = res.getString("NOM");
+				this.prix = res.getFloat("PRIX");
 			}
 			while (res2.next()) {
 				this.plats.add(new Plat(res2.getInt(1)));
@@ -52,9 +55,14 @@ public class Menu implements Comparable<Menu> {
 	public int getNumMenu() {
 		return numMenu;
 	}
-
-	public void setNumMenu(int numMenu) {
-		this.numMenu = numMenu;
+	
+	public float getPrix(){
+		return this.prix;
+	}
+	
+	public void setPrix(float pr){
+		this.prix = pr;
+		this.modif();
 	}
 
 	public LinkedList<Plat> getPlats() {
@@ -65,6 +73,7 @@ public class Menu implements Comparable<Menu> {
 		if (plats != null) {
 			this.plats = plats;
 		}
+		this.modif();
 	}
 
 	public void addPlat(Plat plat) {
@@ -94,11 +103,12 @@ public class Menu implements Comparable<Menu> {
 
 	public void setNom(String nom) {
 		this.nom = nom;
+		this.modif();
 	}
 
 	public void create() throws SQLException {
-		String sql = "INSERT INTO MENU(`NOM`) VALUE (?)";
-		Object[] data = { this.nom };
+		String sql = "INSERT INTO MENU(`NOM`,`PRIX`) VALUE (?,?)";
+		Object[] data = { this.nom,this.prix };
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
 		sql = "SELECT MAX(NUMMENU) FROM MENU";
@@ -109,10 +119,10 @@ public class Menu implements Comparable<Menu> {
 		}
 	}
 
-	// -modif() : modifie une ligne de la BD avec les attribut comme valeur.
+	// modif() : modifie une ligne de la BD avec les attribut comme valeur.
 	public void modif() {
-		String sql = "UPDATE MENU SET NOM = ? WHERE NUMMENU = ? ";
-		Object[] data = { this.nom, this.numMenu };
+		String sql = "UPDATE MENU SET NOM = ? PRIX = ? WHERE NUMMENU = ? ";
+		Object[] data = { this.nom,this.prix,this.numMenu };
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
 	}
@@ -133,23 +143,6 @@ public class Menu implements Comparable<Menu> {
 		sql = "DELETE FROM MENU WHERE NUMMENU = ?";
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
-	}
-
-	public static String getCompositionById(int id) {
-		String retour = "";
-		String sql = "SELECT COMPOSITION FROM MENU WHERE NUMMENU = ?";
-		Object[] data = { id };
-		Menu.instance.prepare(sql);
-		ResultSet res = (ResultSet) Menu.instance.execute(data, false);
-		try {
-			if (res.next()) {
-				retour = res.getString("COMPOSITION");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return retour;
 	}
 
 	public static String getnomById(int id) {

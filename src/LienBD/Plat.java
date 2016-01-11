@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Plat {
-	
+
 	private int numPlat;
 	private String nomPlat;
 	private String recette;
@@ -34,23 +34,21 @@ public class Plat {
 		ResultSet res = instance.execute(identifiant, false);
 		Plat.instance.prepare(sql2);
 		ResultSet res2 = instance.execute(identifiant, false);
-		if(res.next()){
+		if (res.next()) {
 			this.recette = (String) res.getObject("RECETTE");
 			this.prixU = res.getFloat("PRIXU");
 			this.numPlat = id;
 			this.nomPlat = res.getString("NOMPLAT");
-			while(res2.next()){
+			while (res2.next()) {
 				this.ingredient.add(new Ingredient(res2.getInt("NUMINGREDIENT")));
 			}
 		}
-			
-		
+
 	}
 
-	public Plat(int numPlat, int prixU,String plat, String recette,
-			java.util.Collection<Ingredient> ingredient) {
+	public Plat(int numPlat, int prixU, String plat, String recette, java.util.Collection<Ingredient> ingredient) {
 		this.ingredient = ingredient;
-		this.nomPlat=plat;
+		this.nomPlat = plat;
 		this.numPlat = numPlat;
 		this.prixU = prixU;
 		this.recette = recette;
@@ -80,7 +78,6 @@ public class Plat {
 	public void setRecette(String recette) {
 		this.recette = recette;
 	}
-	
 
 	public float getPrixU() {
 		return prixU;
@@ -98,17 +95,16 @@ public class Plat {
 		String sql = "INSERT INTO PLAT(`NUMPLAT`,`NOMPLAT`,`RECETTE`,`PRIXU`) VALUES (?,?,?,?)";
 		String sql2 = "INSERT INTO CONSTITUER(`NUMPLAT`,NUMINGREDIENT) VALUES (?,?)";
 		Plat.instance.prepare(sql);
-		Object[] data = { this.numPlat, this.ingredient, this.prixU,
-				this.recette };
+		Object[] data = { this.numPlat, this.ingredient, this.prixU, this.recette };
 		Plat.instance.execute(data, true);
 		Plat.instance.prepare(sql2);
 		data = new Object[2];
-			for(Ingredient ing : this.ingredient){
-				data[0] = this.numPlat;
-				data[1] = ing;
-				Plat.instance.execute(data, true);
-			}
-		
+		for (Ingredient ing : this.ingredient) {
+			data[0] = this.numPlat;
+			data[1] = ing;
+			Plat.instance.execute(data, true);
+		}
+
 	}
 
 	public void delete(int id) {
@@ -121,8 +117,7 @@ public class Plat {
 	public void modif() {
 		String sql = "UPDATE `PLAT` SET `NUMPLAT` = ?,`RECETTE` = ?,`PRIXU` = ?";
 		Plat.instance.prepare(sql);
-		Object[] data = { this.numPlat, this.recette, this.prixU
-				};
+		Object[] data = { this.numPlat, this.recette, this.prixU };
 		Plat.instance.execute(data, true);
 	}
 
@@ -167,8 +162,8 @@ public class Plat {
 		}
 		return (String) data[0];
 	}
-	
-	public static String getNomPlatByID(int id){
+
+	public static String getNomPlatByID(int id) {
 		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
 		Plat.instance.prepare(sql);
 		Object[] identifiant = { id };
@@ -195,16 +190,18 @@ public class Plat {
 			// on instance notre retour grace a res.getRow() qui donne le nombre
 			// de ligne retourner
 			res.last();
-			retour = new Plat[res.getRow()-1];
-			// on remet le curseur au debut
-			res.beforeFirst();
-			// pour chaque ligne on cree une nouvelle instance grace a l'id
-			for (int i = 0; res.next(); i++) {
-				int num = res.getInt(1);
-				if(num > 1){
-					retour[i] = new Plat(num);
-				}else{
-					i--;
+			if (res.getRow() > 1) {
+				retour = new Plat[res.getRow() - 1];
+				// on remet le curseur au debut
+				res.beforeFirst();
+				// pour chaque ligne on cree une nouvelle instance grace a l'id
+				for (int i = 0; res.next(); i++) {
+					int num = res.getInt(1);
+					if (num > 1) {
+						retour[i] = new Plat(num);
+					} else {
+						i--;
+					}
 				}
 			}
 		} catch (SQLException e) {
@@ -220,9 +217,9 @@ public class Plat {
 			ingredient = new java.util.HashSet<Ingredient>();
 		return ingredient;
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return this.nomPlat;
 	}
 

@@ -70,11 +70,6 @@ public class MenuTest {
 		Menu.getnomById(-1);
 	}
 
-	@Test(expected = Exception.class)
-	public void testGetPrenomByIdNegatif() throws Exception {
-		Menu.getCompositionById(-1);
-	}
-
 	@Test
 	public void testGetAll() {
 		try {
