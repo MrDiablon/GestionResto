@@ -24,9 +24,6 @@ public class SetterDialogMenu extends JDialog {
 
 	private JLabel nom, nbPlat, nomPlat, prix, symbole, erreur = new JLabel();
 	private JTextField saisieNom, saisieprix;
-	private JSpinner nbPlatS;
-	private int nbPlatsPres;
-	private JPanel panelPlats;
 	private LinkedList<Plat> mealsList;
 	private Menu menu;
 	private JButton valider, annuler;

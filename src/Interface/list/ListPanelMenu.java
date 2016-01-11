@@ -47,11 +47,16 @@ public class ListPanelMenu extends JPanel {
 		this.add(barreOutils, BorderLayout.NORTH);
 		
 		Menu[] menus = Menu.getAll();
-		this.menuList = new JList<Menu>(menus);
-		this.menuList.setModel(this.modelList);
-		for (Menu menu : menus) {
-			this.modelList.add(menu);
+		if(menus != null){
+			this.menuList = new JList<Menu>(menus);
+			this.menuList.setModel(this.modelList);
+			for (Menu menu : menus) {
+				this.modelList.add(menu);
+			}
+		}else{
+			this.menuList = new JList<Menu>();
 		}
+		
 		this.menuList.setCellRenderer(new MenuRenderer());
 		
 		JScrollPane scroll = new JScrollPane(this.menuList);

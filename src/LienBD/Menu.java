@@ -18,7 +18,7 @@ public class Menu implements Comparable<Menu> {
 	private int numMenu;
 	private String nom;
 	private LinkedList<Plat> plats;
-	
+
 	private static myPDO instance = myPDO.getInstance();
 
 	public Menu(String nom) throws SQLException {
@@ -56,33 +56,33 @@ public class Menu implements Comparable<Menu> {
 	public void setNumMenu(int numMenu) {
 		this.numMenu = numMenu;
 	}
-	
-	public LinkedList<Plat> getPlats(){
+
+	public LinkedList<Plat> getPlats() {
 		return this.plats;
 	}
-	
-	public void setPlats(LinkedList<Plat> plats){
-		if(plats != null){
+
+	public void setPlats(LinkedList<Plat> plats) {
+		if (plats != null) {
 			this.plats = plats;
 		}
 	}
-	
-	public void addPlat(Plat plat){
-		if(plat != null){
+
+	public void addPlat(Plat plat) {
+		if (plat != null) {
 			this.plats.add(plat);
 			String sql = "INSERT INTO COMPOSER(`NUMPLAT`,`NUMMENU`) VALUE (?,?)";
-			Object[] data = {plat.getNumPlat(),this.numMenu};
+			Object[] data = { plat.getNumPlat(), this.numMenu };
 			Menu.instance.prepare(sql);
-			Menu.instance.execute(data,true);
+			Menu.instance.execute(data, true);
 		}
 	}
-	
-	public void deletePlat(Plat plat){
+
+	public void deletePlat(Plat plat) {
 		int index = this.plats.indexOf(plat);
-		if(index > 0){
+		if (index > 0) {
 			this.plats.remove(index);
 			String sql = "DELETE FROM COMPOSER WHERE NUMMENU = ? AND NUMPLAT = ?";
-			Object data[] = {this.numMenu,plat.getNumPlat()};
+			Object data[] = { this.numMenu, plat.getNumPlat() };
 			Menu.instance.prepare(sql);
 			Menu.instance.execute(data, true);
 		}
@@ -104,7 +104,7 @@ public class Menu implements Comparable<Menu> {
 		sql = "SELECT MAX(NUMMENU) FROM MENU";
 		Menu.instance.prepare(sql);
 		ResultSet res = (ResultSet) Menu.instance.execute();
-		if(res.next()){
+		if (res.next()) {
 			this.numMenu = res.getInt(1);
 		}
 	}
@@ -124,13 +124,13 @@ public class Menu implements Comparable<Menu> {
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
 	}
-	
+
 	public void delete() {
 		String sql = "DELETE FROM COMPOSER WHERE NUMMENU = ?";
 		Object[] data = { this.numMenu };
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
-		sql = "DELETE FROM MENU WHERE NUMMENU = ?";		
+		sql = "DELETE FROM MENU WHERE NUMMENU = ?";
 		Menu.instance.prepare(sql);
 		Menu.instance.execute(data, true);
 	}
@@ -180,18 +180,21 @@ public class Menu implements Comparable<Menu> {
 		Menu[] retour = null;
 		try {
 			res.last();
-			// on instance notre retour grace a res.getRow() qui donne le nombre
-			// de ligne retourner
-			retour = new Menu[res.getRow()-1];
-			// on remet le curseur au debut
-			res.beforeFirst();
-			// pour chaque ligne on cree une nouvelle instance grace a l'id
-			for (int i = 0; res.next(); i++) {
-				int num = res.getInt(1);
-				if(num > 1){
-					retour[i] = new Menu(res.getInt(1));
-				}else{
-					i--;
+			if (res.getRow() > 0) {
+				// on instance notre retour grace a res.getRow() qui donne le
+				// nombre
+				// de ligne retourner
+				retour = new Menu[res.getRow() - 1];
+				// on remet le curseur au debut
+				res.beforeFirst();
+				// pour chaque ligne on cree une nouvelle instance grace a l'id
+				for (int i = 0; res.next(); i++) {
+					int num = res.getInt(1);
+					if (num > 1) {
+						retour[i] = new Menu(res.getInt(1));
+					} else {
+						i--;
+					}
 				}
 			}
 		} catch (SQLException e) {
