@@ -56,7 +56,7 @@ public class ListPanelTable extends JPanel {
 		} catch (SQLException e) {
 			JOptionPane
 					.showMessageDialog(parent,
-							"Probl�me lors de la communication avec la base de donnée");
+							"Problème lors de la communication avec la base de données");
 		}
 
 		this.TableList.setCellRenderer(new RendererTable());

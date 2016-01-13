@@ -35,7 +35,7 @@ public class Plat {
 		Plat.instance.prepare(sql2);
 		ResultSet res2 = instance.execute(identifiant, false);
 		if (res.next()) {
-			this.recette = (String) res.getObject("RECETTE");
+			//this.recette = (String) res.getObject("RECETTE");
 			this.prixU = res.getFloat("PRIXU");
 			this.numPlat = id;
 			this.nomPlat = res.getString("NOMPLAT");

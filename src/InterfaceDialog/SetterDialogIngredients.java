@@ -34,7 +34,7 @@ public class SetterDialogIngredients extends JDialog {
 		this.nomIngredient = new JLabel("Nom de l'ingredient");
 		this.etat = new JLabel("Etat de l'ingredient");
 		this.prix = new JLabel("Prix de l'ingredient");
-		this.stock = new JLabel("Quantit�");
+		this.stock = new JLabel("Quantité");
 		this.prixSpinner = new JSpinner();
 		this.stockSpinner = new JSpinner();
 		this.nomIngredientText = new JTextField(3);
@@ -67,7 +67,7 @@ public class SetterDialogIngredients extends JDialog {
 					this.dispose();
 				}
 			} catch (SQLException e1) {
-				JOptionPane.showMessageDialog(null, "acces a la base de donnée impossible");
+				JOptionPane.showMessageDialog(null, "acces a la base de données impossible");
 			}
 		});
 
@@ -114,7 +114,7 @@ public class SetterDialogIngredients extends JDialog {
 			this.errorLabel.setText("Remplir le champ \"Nom de l'ingredient\"");
 		}
 		if (this.prix.getText().equals("")) {
-			this.errorLabel.setText("Remplir le champ \"prix de l'ingredient\"");
+			this.errorLabel.setText("Remplir le champ \"Prix de l'ingredient\"");
 		}
 		if (!this.nomIngredientText.getText().equals("")) {
 			String nom = this.nomIngredientText.getText();

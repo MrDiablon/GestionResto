@@ -30,7 +30,7 @@ public class RestaurantRenderer implements ListCellRenderer<Restaurant> {
 		value.getCp();
 
 		this.label.setText(nomResto + " : " + adresse + " (" + pays 
-				+ ")" + numTel);
+				+ ") " + numTel);
 
 		if (isSelected) {
 			this.label.setBackground(list.getSelectionBackground());

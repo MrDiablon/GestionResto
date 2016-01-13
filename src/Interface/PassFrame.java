@@ -24,7 +24,7 @@ public class PassFrame extends JFrame {
 	public PassFrame(int droit) throws Exception {
 		// on verifie que les droit sont bon
 		if (droit == 1 || droit == 2) {
-			this.setTitle("test de Page");
+			this.setTitle("Test de Page");
 			this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 			// configuration du menu
@@ -37,7 +37,7 @@ public class PassFrame extends JFrame {
 			JMenuItem listeSalle = new JMenuItem("Liste des salles");
 			JMenuItem listeIngredientM = new JMenuItem("Liste des ingredients");
 			JMenuItem listeMenuM = new JMenuItem("Liste des menus");
-			JMenuItem listePersoM = new JMenuItem("Liste des employÈs");
+			JMenuItem listePersoM = new JMenuItem("Liste des employ√©s");
 			// configuration des actionListener du menu
 			fermer.addActionListener(e -> this.dispose());
 			listeSalle.addActionListener(e -> this.addNewTab("Liste des salles", new ListPanelRoom(this),false));
@@ -45,7 +45,7 @@ public class PassFrame extends JFrame {
 					e -> this.addNewTab("Liste des ingredients", new ListPanelIngredient(this), false));
 			listeMenuM.addActionListener(e -> this.addNewTab("Liste des menus", new ListPanelMenu(this), false));
 			listePersoM
-					.addActionListener(e -> this.addNewTab("Liste des employÈs", new ListPanelPersonnel(this), false));
+					.addActionListener(e -> this.addNewTab("Liste des employ√©s", new ListPanelPersonnel(this), false));
 			// ajout des item et sous menu
 			fichier.add(fermer);
 			windows.add(newWindows);

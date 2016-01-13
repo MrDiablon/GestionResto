@@ -1,7 +1,10 @@
 package InterfaceDialog;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -27,7 +30,7 @@ import Tools.JDom;
  */
 public class SetterDialogPerso extends JDialog {
 	private JLabel nomPerso, prenomPerso, adressePerso, numTelPerso, mailPerso, postePerso, sallePerso,
-			horairePrevPersoB, horairePrevPersoE, salairePerso, mdpPerso, restoPerso, droitPerso;
+			horairePrevPersoB, horairePrevPersoE, salairePerso, mdpPerso, restoPerso, droitPerso , erreur;
 	private JTextField nom, prenom, adresse, numTel, mail, poste, salaire;
 	private JSpinner droit, minutePrevB, heurePrevB, minutePrevE, heurePrevE;
 	private JComboBox<Restaurant> resto;
@@ -38,6 +41,11 @@ public class SetterDialogPerso extends JDialog {
 
 	public SetterDialogPerso(Frame owner, boolean modal, Personnel perso) {
 		super(owner, modal);
+		this.perso = perso;
+		
+		this.erreur = new JLabel("");
+		this.add(erreur);
+		this.erreur.setBackground(Color.red);
 		// configuration des attributs
 		this.nomPerso = new JLabel("Nom : ");
 		if (perso != null) {
@@ -49,8 +57,8 @@ public class SetterDialogPerso extends JDialog {
 		boxNom.setLayout(this.grid);
 		boxNom.add(this.nomPerso);
 		boxNom.add(this.nom);
-
-		this.prenomPerso = new JLabel("Prénom : ");
+		
+		this.prenomPerso = new JLabel("PrÃ©nom : ");
 		if (perso != null) {
 			this.prenom = new JTextField(perso.getPRENOM());
 		} else {
@@ -72,7 +80,7 @@ public class SetterDialogPerso extends JDialog {
 		boxAdresse.add(this.adressePerso);
 		boxAdresse.add(this.adresse);
 
-		this.numTelPerso = new JLabel("Téléphone : ");
+		this.numTelPerso = new JLabel("TÃ©lÃ©phone : ");
 		if (perso != null) {
 			this.numTel = new JTextField(perso.getNUMTEL());
 		} else {
@@ -94,7 +102,7 @@ public class SetterDialogPerso extends JDialog {
 		boxMail.add(this.mailPerso);
 		boxMail.add(this.mail);
 
-		this.postePerso = new JLabel("Poste Occupé : ");
+		this.postePerso = new JLabel("Poste OccupÃ© : ");
 		if (perso != null) {
 			this.poste = new JTextField(perso.getPOSTE());
 		} else {
@@ -122,7 +130,7 @@ public class SetterDialogPerso extends JDialog {
 		boxSalle.add(this.salle);
 
 		// recuperation des elements pour la fiche horaire heure|Minute arriver
-		this.horairePrevPersoB = new JLabel("Horaires Prévus (arriver): Heure|Minute");
+		this.horairePrevPersoB = new JLabel("Horaires PrÃ©vus (arriver): Heure|Minute");
 		this.minutePrevB = new JSpinner();
 		NumberEditor numberEditorBM = new NumberEditor(minutePrevB);
 		this.minutePrevB.setEditor(numberEditorBM);
@@ -140,7 +148,7 @@ public class SetterDialogPerso extends JDialog {
 		boxHorPrevB.add(this.minutePrevB);
 
 		// recuperation des elements pour la fiche horaire heure|Minute (fin)
-		this.horairePrevPersoE = new JLabel("Horaires Prévus (depart): Heure|Minute");
+		this.horairePrevPersoE = new JLabel("Horaires PrÃ©vus (depart): Heure|Minute");
 		this.minutePrevE = new JSpinner();
 		NumberEditor numberEditorEM = new NumberEditor(minutePrevE);
 		this.minutePrevE.setEditor(numberEditorEM);
@@ -193,12 +201,9 @@ public class SetterDialogPerso extends JDialog {
 
 		JButton valider = new JButton("Valider");
 		valider.addActionListener(e -> {
-			if (this.perso == null) {
-				create();
-			} else {
-				update();
-			}
-			this.dispose();
+				if(verif()){
+					this.dispose();
+				}
 		});
 		JButton annuler = new JButton("Annuler");
 		annuler.addActionListener(e -> this.dispose());
@@ -207,7 +212,7 @@ public class SetterDialogPerso extends JDialog {
 		bouton.add(valider);
 		bouton.add(annuler);
 
-		this.setLayout(new GridLayout(14, 1));
+		this.setLayout(new GridLayout(15, 1));
 		this.add(boxNom);
 		this.add(boxPrenom);
 		this.add(boxAdresse);
@@ -236,13 +241,8 @@ public class SetterDialogPerso extends JDialog {
 		return retour;
 	}
 
-	public void update() {
-		char[] mdp = this.mdp.getPassword();
-		String s = new String(mdp);
-		this.perso.modif(s);
-	}
-
-	public void create() {
+	public boolean verif() {
+		boolean retour= true;
 		int beginMminute = (int) this.minutePrevB.getValue();
 		int beginHour = (int) this.heurePrevB.getValue();
 		int endMin = (int) this.minutePrevE.getValue();
@@ -258,10 +258,32 @@ public class SetterDialogPerso extends JDialog {
 		String adressPerso = this.adresse.getText();
 		String numTelPerso = this.numTel.getText();
 		String mailPerso = this.mail.getText();
-		float salairePerso = Float.parseFloat(this.salaire.getText());
+		float salairePerso = 0;
+		try{
+			salairePerso = Float.parseFloat(this.salaire.getText());
+		}catch(NumberFormatException e){
+			this.erreur.setText("Le format du salaire ne convient pas.");
+			this.pack();
+			retour = false;
+		}		
 		int droitPerso = (int) this.droit.getValue();
-		String mdpPerso = this.mdp.getSelectedText();
+		String mdpPerso = this.mdp.getText(); 
+		if(nomPerso.equals("")){
+			this.erreur.setText("Le format du nom ne convient pas.");
+			this.pack();
+			retour = false;
+		}
+		if(this.perso != null){
+			try {
+				this.perso.delete();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		this.perso = new Personnel(numResto, numSalle, nomPerso, prenomPerso, postePerso, adressPerso, numTelPerso,
 				mailPerso, timeCard, null, salairePerso, droitPerso, mdpPerso);
+		
+		return retour;
 	}
 }

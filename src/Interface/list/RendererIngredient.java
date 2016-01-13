@@ -24,10 +24,10 @@ public class RendererIngredient implements ListCellRenderer<Ingredient> {
 		
 		this.label = new JLabel();		
 		this.label.setText(nomRes + " (" + etatRes 
-				+ ")" + prixRes + "€");
+				+ ") " + prixRes + "â‚¬");
 
 		// si l'element est selectionner on change l'affichage pour bien le
-		// montré
+		// montrer
 		if (isSelected) {
 			this.label.setBackground(list.getSelectionBackground());
 			this.label.setForeground(list.getSelectionForeground());

@@ -70,7 +70,7 @@ public class ListPanelIngredient extends JPanel{
 	
 	private void ajouter() {
 		Ingredient newingredient = SetterDialogIngredients.showContactDialog(this.parent,
-				"nouvelle ingredient", null);
+				"nouvel ingredient", null);
 		if (newingredient != null) {
 			this.modelList.add(newingredient);
 		}
@@ -88,7 +88,7 @@ public class ListPanelIngredient extends JPanel{
 		if(!this.IngredientList.isSelectionEmpty()){
 			Ingredient select = this.IngredientList.getSelectedValue();
 			Ingredient newIngredient = SetterDialogIngredients.showContactDialog(this.parent,
-					"nouvelle ingredient", select);
+					"nouvel ingredient", select);
 			if(newIngredient != null){
 				this.modelList.remove(select);
 				this.modelList.add(newIngredient);

@@ -70,7 +70,7 @@ public class ListPanelRoom extends JPanel {
 
 	private void createRoom() {
 		Salles newSalle = SetterDialogRoom.showContactDialog(this.parent,
-				"nouvelle salle", null);
+				"Nouvelle salle", null);
 		if (newSalle != null) {
 			this.modelList.add(newSalle);
 		}
@@ -81,7 +81,7 @@ public class ListPanelRoom extends JPanel {
 		if (!this.roomList.isSelectionEmpty()) {
 			Salles select = this.roomList.getSelectedValue();
 			Salles newSalle = SetterDialogRoom.showContactDialog(this.parent,
-					"nouvelle salle", select);
+					"Nouvelle salle", select);
 			if (newSalle != null) {
 				this.modelList.remove(select);
 				this.modelList.add(newSalle);
