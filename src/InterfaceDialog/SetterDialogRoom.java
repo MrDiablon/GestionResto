@@ -66,7 +66,7 @@ public class SetterDialogRoom extends JDialog {
 				}
 			} catch (SQLException e1) {
 				JOptionPane.showMessageDialog(null,
-						"Acces a la base de données impossible");
+						"acces a la base de donn�e impossible");
 			}
 		});
 
