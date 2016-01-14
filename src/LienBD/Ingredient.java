@@ -72,11 +72,11 @@ public class Ingredient implements Comparable<Ingredient> {
 	}
 
 	/**
-	 * @param prixU
+	 * @param prix
 	 *            the prixU to set
 	 */
-	public void setPrixU(int prixU) {
-		this.prixU = prixU;
+	public void setPrixU(float prix) {
+		this.prixU = prix;
 	}
 
 	/**

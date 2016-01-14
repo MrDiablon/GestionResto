@@ -12,12 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
-
 import InterfaceDialog.SetterDialogIngredients;
-
 import InterfaceDialog.SetterDialogRoom;
 import LienBD.Ingredient;
 import LienBD.Salles;
+import LienBD.myPDO;
 
 public class ListPanelIngredient extends JPanel{
 	
@@ -88,7 +87,7 @@ public class ListPanelIngredient extends JPanel{
 		if(!this.IngredientList.isSelectionEmpty()){
 			Ingredient select = this.IngredientList.getSelectedValue();
 			Ingredient newIngredient = SetterDialogIngredients.showContactDialog(this.parent,
-					"nouvel ingredient", select);
+					"modifier ingredient", select);
 			if(newIngredient != null){
 				this.modelList.remove(select);
 				this.modelList.add(newIngredient);
@@ -96,4 +95,3 @@ public class ListPanelIngredient extends JPanel{
 		}
 	}
 }
-

@@ -3,6 +3,7 @@ package InterfaceDialog;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -122,7 +123,12 @@ public class SetterDialogPerso extends JDialog {
 		boxResto.add(this.resto);
 
 		this.sallePerso = new JLabel("Salle de Travail : ");
-		this.salle = new JComboBox<Salles>(Salles.getAll());
+		try {
+			this.salle = new JComboBox<Salles>(Salles.getAll());
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		JPanel boxSalle = new JPanel();
 		boxSalle.setLayout(this.grid);

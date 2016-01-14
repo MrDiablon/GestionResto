@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.jdom2.*;
 
+import resteau.config.ResteauConfig;
 import Tools.JDom;
 
 public class Personnel implements Comparable<Personnel> {
@@ -551,11 +552,12 @@ public class Personnel implements Comparable<Personnel> {
 
 	public static Personnel[] getAll() throws Exception {
 		// on ecrit notre code sql on demande tous les id de la table
-		String sql = "SELECT NUMPERSO FROM PERSONNEL";
+		String sql = "SELECT NUMPERSO FROM PERSONNEL WHERE NUMRESTO = ?";
+		Object[] data = {ResteauConfig.getResteauID()};
 		// on prepare notre requete
 		Personnel.instance.prepare(sql);
 		// on l'execute sans parametre car inutile
-		ResultSet res = Personnel.instance.execute();
+		ResultSet res = Personnel.instance.execute(data, false);
 		// on prepare notre tableau de retour;
 		Personnel[] retour = null;
 		try {

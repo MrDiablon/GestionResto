@@ -1,6 +1,7 @@
 package InterfaceDialog;
 
 import java.awt.Frame;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
@@ -44,7 +45,12 @@ public class SetterDialogTable extends JDialog {
 
 		// configuration de la partie salle
 		this.Salle = new JLabel("Salle");
-		this.SalleSpinner = new JComboBox<Salles>(Salles.getAll());
+		try {
+			this.SalleSpinner = new JComboBox<Salles>(Salles.getAll());
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		if (table != null) {
 			this.SalleSpinner.setSelectedItem(table.getSalles());
 			System.out.println(table.getSalles().getNomSalle());
