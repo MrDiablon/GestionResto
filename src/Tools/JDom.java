@@ -1,6 +1,7 @@
 package Tools;
 
 import java.io.StringReader;
+import java.util.Date;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -38,35 +39,144 @@ public class JDom {
 	 * @param endMin minute de fin
 	 * @return le document XML generer
 	 */
-	public static Document createTimeCard(int beginHour, int beginMin, int endHour, int endMin) {
+	@SuppressWarnings("deprecation")
+	public static Document createTimeCard(Date dateDay,int beginHourM, int beginMinM, int endHourM, int endMinM,
+			int beginHourA, int beginMinA, int endHourA, int endMinA) {
+		
 		Element racine = new Element("Personnel_TimeCard");
 		Document retour = new Document(racine);
+		
 		//ecriture de la partie consernant l'heure d'arriver
-		Element begin = new Element("heure_arriver");
-		Element beginH = new Element("hour");
-		Attribute valueBH = new Attribute("value", "" + beginHour);
-		beginH.setAttribute(valueBH);
-		begin.addContent(beginH);
-		Element beginM = new Element("minute");
-		Attribute valueBM = new Attribute("value", "" + beginMin);
-		beginM.setAttribute(valueBM);
-		begin.addContent(beginM);
+		Element day = new Element("Date");
+		Attribute year = new Attribute("year", "" + dateDay.getYear());
+		Attribute month = new Attribute("month", "" + dateDay.getMonth());
+		Attribute dayR = new Attribute("day", "" + dateDay.getDay());
+		day.setAttribute(year);
+		day.setAttribute(month);
+		day.setAttribute(dayR);
+		Element matin = new Element("matin");
+		Element beginM = new Element("heure_arriver_matin");
+		Element beginHM = new Element("hour");
+		Attribute valueBHM= new Attribute("value", "" + beginHourM);
+		beginHM.setAttribute(valueBHM);
+		beginM.addContent(beginHM);
+		Element beginMM = new Element("minute");
+		Attribute valueBMM = new Attribute("value", "" + beginMinM);
+		beginMM.setAttribute(valueBMM);
+		beginM.addContent(beginMM);
 		//ecriture de la partie heure de fin
-		Element end = new Element("heure_fin");
-		Element endH = new Element("hour");
-		Attribute valueEH = new Attribute("value", "" + endHour);
-		endH.setAttribute(valueEH);
-		end.addContent(endH);
-		Element endM = new Element("minute");
-		Attribute valueEM = new Attribute("value", "" + endMin);
-		endM.setAttribute(valueEM);
-		end.addContent(endM);
-		racine.addContent(begin);
-		racine.addContent(end);
+		Element endM = new Element("heure_fin_matin");
+		Element endHM = new Element("hour");
+		Attribute valueEHM = new Attribute("value", "" + endHourM);
+		endHM.setAttribute(valueEHM);
+		endM.addContent(endHM);
+		Element endMM = new Element("minute");
+		Attribute valueEMM = new Attribute("value", "" + endMinM);
+		endMM.setAttribute(valueEMM);
+		endM.addContent(endMM);
+		matin.addContent(beginM);
+		matin.addContent(endM);
+		day.addContent(matin);
+		Element ApresMidi = new Element("apresMidi");
+		Element beginA = new Element("heure_arriver_apres_midi");
+		Element beginHA = new Element("hour");
+		Attribute valueBHA = new Attribute("value", "" + beginHourA);
+		beginHA.setAttribute(valueBHA);
+		beginA.addContent(beginHA);
+		Element beginMA = new Element("minute");
+		Attribute valueBMA = new Attribute("value", "" + beginMinA);
+		beginMA.setAttribute(valueBMA);
+		beginA.addContent(beginMA);
+		//ecriture de la partie heure de fin
+		Element endA = new Element("heure_fin_apres_midi");
+		Element endHA = new Element("hour");
+		Attribute valueEHA = new Attribute("value", "" + endHourA);
+		endHA.setAttribute(valueEHA);
+		endA.addContent(endHA);
+		Element endMA = new Element("minute");
+		Attribute valueEMA = new Attribute("value", "" + endMinA);
+		endMA.setAttribute(valueEMA);
+		endA.addContent(endMA);
+		ApresMidi.addContent(beginA);
+		ApresMidi.addContent(endA);
+		day.addContent(ApresMidi);
+		
+		racine.addContent(day);
 		return retour;
+	}
+	
+	public static Document createTimeCard(Document doc,Date dateDay,int beginHourM, int beginMinM, int endHourM, int endMinM,
+			int beginHourA, int beginMinA, int endHourA, int endMinA) {
+		
+		
+		Element racine = doc.getRootElement();
+		
+		//ecriture de la partie consernant l'heure d'arriver
+		Element day = new Element("Date");
+		Attribute year = new Attribute("year", "" + dateDay.getYear());
+		Attribute month = new Attribute("month", "" + dateDay.getMonth());
+		Attribute dayR = new Attribute("day", "" + dateDay.getDay());
+		day.setAttribute(year);
+		day.setAttribute(month);
+		day.setAttribute(dayR);
+		Element matin = new Element("matin");
+		Element beginM = new Element("heure_arriver_matin");
+		Element beginHM = new Element("hour");
+		Attribute valueBHM= new Attribute("value", "" + beginHourM);
+		beginHM.setAttribute(valueBHM);
+		beginM.addContent(beginHM);
+		Element beginMM = new Element("minute");
+		Attribute valueBMM = new Attribute("value", "" + beginMinM);
+		beginMM.setAttribute(valueBMM);
+		beginM.addContent(beginMM);
+		//ecriture de la partie heure de fin
+		Element endM = new Element("heure_fin_matin");
+		Element endHM = new Element("hour");
+		Attribute valueEHM = new Attribute("value", "" + endHourM);
+		endHM.setAttribute(valueEHM);
+		endM.addContent(endHM);
+		Element endMM = new Element("minute");
+		Attribute valueEMM = new Attribute("value", "" + endMinM);
+		endMM.setAttribute(valueEMM);
+		endM.addContent(endMM);
+		matin.addContent(beginM);
+		matin.addContent(endM);
+		day.addContent(matin);
+		Element ApresMidi = new Element("apresMidi");
+		Element beginA = new Element("heure_arriver_apres_midi");
+		Element beginHA = new Element("hour");
+		Attribute valueBHA = new Attribute("value", "" + beginHourA);
+		beginHA.setAttribute(valueBHA);
+		beginA.addContent(beginHA);
+		Element beginMA = new Element("minute");
+		Attribute valueBMA = new Attribute("value", "" + beginMinA);
+		beginMA.setAttribute(valueBMA);
+		beginA.addContent(beginMA);
+		//ecriture de la partie heure de fin
+		Element endA = new Element("heure_fin_apres_midi");
+		Element endHA = new Element("hour");
+		Attribute valueEHA = new Attribute("value", "" + endHourA);
+		endHA.setAttribute(valueEHA);
+		endA.addContent(endHA);
+		Element endMA = new Element("minute");
+		Attribute valueEMA = new Attribute("value", "" + endMinA);
+		endMA.setAttribute(valueEMA);
+		endA.addContent(endMA);
+		ApresMidi.addContent(beginA);
+		ApresMidi.addContent(endA);
+		day.addContent(ApresMidi);
+		
+		racine.addContent(day);
+		
+		return doc;
 	}
 
 	public static void main(String[] args) {
-		System.out.println(convertDocumentToString(createTimeCard(10, 50, 10, 50)));
+		@SuppressWarnings("deprecation")
+		Date d = new Date(2016, 01, 13);
+		Document doc1 = createTimeCard(d,10, 50, 10, 50, 10, 50, 10, 50);
+		Document doc2 = createTimeCard(doc1,d,10, 50, 10, 50, 10, 50, 10, 50);
+		System.out.println(convertDocumentToString(doc1));
+		System.out.println(convertDocumentToString(doc2));
 	}
 }
