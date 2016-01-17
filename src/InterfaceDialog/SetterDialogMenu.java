@@ -75,7 +75,7 @@ public class SetterDialogMenu extends JDialog {
 			JButton addPlat = new JButton("Ajouter un plat");
 			addPlat.addActionListener(e -> {
 				/*
-				 * ajout d'un appel a la créaton d'un plat grace a une fonction
+				 * ajout d'un appel a la crï¿½aton d'un plat grace a une fonction
 				 * qui previen du succes de l'operation.
 				 */
 			});
@@ -89,7 +89,7 @@ public class SetterDialogMenu extends JDialog {
 		pricePanel.add(this.prix,BorderLayout.WEST);
 		this.saisieprix = new JTextField(10);
 		pricePanel.add(this.saisieprix,BorderLayout.CENTER);
-		this.symbole = new JLabel("€");
+		this.symbole = new JLabel("â‚¬");
 		pricePanel.add(this.symbole,BorderLayout.EAST);
 		this.add(pricePanel);
 

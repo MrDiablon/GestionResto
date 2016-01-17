@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.jdom2.*;
 
+import resteau.config.ResteauConfig;
 import Tools.JDom;
 
 public class Personnel implements Comparable<Personnel> {
@@ -71,8 +72,12 @@ public class Personnel implements Comparable<Personnel> {
 		this.HORAIREPREV = hORAIREPREV;
 		this.SALAIRE_H = sALAIRE_H;
 		this.DROITS = dROITS;
+		try {
+			this.create(mdp);
 
-		this.create(mdp);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -482,22 +487,23 @@ public class Personnel implements Comparable<Personnel> {
 		return retour;
 	}
 
-	public void create(String mdp) {
-
-		String sql = "INSERT INTO `PERSONNEL` (`NUMPERSO`,`NUMRESTO`,`NUMSALLE`,`NOM`,`PRENOM`,`POSTE`,`ADRESSE`,`NUMTEL`,`ADRESSEMAIL`,`HORAIRETRAV`,`HORAIREPREV`,`SALAIRE_H`,`DROITS`,`MDP`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,sha1(?))";
+	public void create(String mdp) throws SQLException {
+		String sql = null;
+		if(mdp != null){
+			sql = "INSERT INTO `PERSONNEL` (`NUMPERSO`,`NUMRESTO`,`NUMSALLE`,`NOM`,`PRENOM`,`POSTE`,`ADRESSE`,`NUMTEL`,`ADRESSEMAIL`,`HORAIRETRAV`,`HORAIREPREV`,`SALAIRE_H`,`DROITS`,`MDP`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,sha1(?))";
+		}else{
+			sql = "INSERT INTO `PERSONNEL` (`NUMPERSO`,`NUMRESTO`,`NUMSALLE`,`NOM`,`PRENOM`,`POSTE`,`ADRESSE`,`NUMTEL`,`ADRESSEMAIL`,`HORAIRETRAV`,`HORAIREPREV`,`SALAIRE_H`,`DROITS`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		}
 		Personnel.instance.prepare(sql);
-		Object[] data = this.getData(mdp);		
-		Personnel.instance.execute(data, true);
+		Object[] data = getData(mdp); 
+		Personnel.instance.execute(data,true);
 		sql = "SELECT MAX(NUMPERSO) FROM PERSONNEL";
 		Personnel.instance.prepare(sql);
 		ResultSet res = Personnel.instance.execute();
-		try {
 			if (res.next())
 				this.NUMPERSO = res.getInt(1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
+	
 	private Object[] getData(String mdp){
 		Object[] data = null;
 		if(mdp != null){
@@ -524,20 +530,6 @@ public class Personnel implements Comparable<Personnel> {
 		return data;
 	}
 
-	public void modif(String mdp) {
-		String sql = "";
-		Object[] data = null;
-		if (mdp != null) {
-			sql = "UPDATE `PERSONNEL` SET `NUMRESTO` = ?,`NUMSALLE` = ?,`NOM` = ?,`PRENOM` = ?,`POSTE` = ?,`ADRESSE` = ?,`NUMTEL` = ?,`ADRESSEMAIL` = ?,`HORAIRETRAV` = ?,`HORAIREPREV` = ?,`SALAIRE_H` = ?,`DROITS` = ?,`MDP` = ? WHERE `NUMPERSO` = ?";
-			data = this.getData(mdp);
-		} else {
-			sql = "UPDATE `PERSONNEL` SET `NUMRESTO` = ?,`NUMSALLE` = ?,`NOM` = ?,`PRENOM` = ?,`POSTE` = ?,`ADRESSE` = ?,`NUMTEL` = ?,`ADRESSEMAIL` = ?,`HORAIRETRAV` = ?,`HORAIREPREV` = ?,`SALAIRE_H` = ?,`DROITS` = ? WHERE `NUMPERSO` = ?";
-			data = this.getData(null);
-		}
-		Personnel.instance.prepare(sql);
-		Personnel.instance.execute(data, true);
-	}
-
 	public static void delete(int id) throws Exception {
 		if (id <= 0) {
 			throw new Exception("id null ou negatif");
@@ -560,11 +552,12 @@ public class Personnel implements Comparable<Personnel> {
 
 	public static Personnel[] getAll() throws Exception {
 		// on ecrit notre code sql on demande tous les id de la table
-		String sql = "SELECT NUMPERSO FROM PERSONNEL";
+		String sql = "SELECT NUMPERSO FROM PERSONNEL WHERE NUMRESTO = ?";
+		Object[] data = {ResteauConfig.getResteauID()};
 		// on prepare notre requete
 		Personnel.instance.prepare(sql);
 		// on l'execute sans parametre car inutile
-		ResultSet res = Personnel.instance.execute();
+		ResultSet res = Personnel.instance.execute(data, false);
 		// on prepare notre tableau de retour;
 		Personnel[] retour = null;
 		try {
@@ -625,8 +618,6 @@ public class Personnel implements Comparable<Personnel> {
 	@Override
 	public int compareTo(Personnel p) {
 		int retour = 0;
-		System.out.println(p.NOM);
-		System.out.println(this.NOM);
 		retour = this.NOM.compareTo(p.NOM);
 		if (retour == 0) {
 			retour = this.PRENOM.compareTo(p.NOM);

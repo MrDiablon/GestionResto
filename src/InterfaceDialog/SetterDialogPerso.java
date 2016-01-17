@@ -1,8 +1,10 @@
 package InterfaceDialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 import javax.swing.BoxLayout;
@@ -37,7 +39,7 @@ import resteau.config.ResteauConfig;
  */
 public class SetterDialogPerso extends JDialog {
 	private JLabel nomPerso, prenomPerso, adressePerso, numTelPerso, mailPerso, postePerso, sallePerso,
-			horairePrevPersoB, horairePrevPersoE, salairePerso, mdpPerso, restoPerso, droitPerso;
+			horairePrevPersoB, horairePrevPersoE, salairePerso, mdpPerso, restoPerso, droitPerso , erreur;
 	private JTextField nom, prenom, adresse, numTel, mail, poste, salaire;
 	private JSpinner droit, minutePrevB, heurePrevB, minutePrevE, heurePrevE;
 	private JComboBox<Restaurant> resto;
@@ -48,6 +50,11 @@ public class SetterDialogPerso extends JDialog {
 
 	public SetterDialogPerso(Frame owner, boolean modal, Personnel perso) {
 		super(owner, modal);
+		this.perso = perso;
+		
+		this.erreur = new JLabel("");
+		this.add(erreur);
+		this.erreur.setBackground(Color.red);
 		// configuration des attributs
 		this.nomPerso = new JLabel("Nom : ");
 		if (perso != null) {
@@ -88,7 +95,7 @@ public class SetterDialogPerso extends JDialog {
 		boxAdresse.add(this.adresse);
 		infoPerso.add(boxAdresse);
 
-		this.numTelPerso = new JLabel("Téléphone : ");
+		this.numTelPerso = new JLabel("TÃ©lÃ©phone : ");
 		if (perso != null) {
 			this.numTel = new JTextField(perso.getNUMTEL());
 		} else {
@@ -114,7 +121,7 @@ public class SetterDialogPerso extends JDialog {
 
 		JPanel workPanel = new JPanel(new GridLayout(4, 1));
 
-		this.postePerso = new JLabel("Poste Occupé : ");
+		this.postePerso = new JLabel("Poste OccupÃ© : ");
 		if (perso != null) {
 			this.poste = new JTextField(perso.getPOSTE());
 		} else {
@@ -136,7 +143,12 @@ public class SetterDialogPerso extends JDialog {
 		workPanel.add(boxResto);
 
 		this.sallePerso = new JLabel("Salle de Travail : ");
-		this.salle = new JComboBox<Salles>(Salles.getAll());
+		try {
+			this.salle = new JComboBox<Salles>(Salles.getAll());
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		JPanel boxSalle = new JPanel();
 		boxSalle.setLayout(this.grid);
@@ -182,12 +194,9 @@ public class SetterDialogPerso extends JDialog {
 
 		JButton valider = new JButton("Valider");
 		valider.addActionListener(e -> {
-			if (this.perso == null) {
-				create();
-			} else {
-				update();
-			}
-			this.dispose();
+				if(verif()){
+					this.dispose();
+				}
 		});
 		JButton annuler = new JButton("Annuler");
 		annuler.addActionListener(e -> this.dispose());
@@ -212,7 +221,12 @@ public class SetterDialogPerso extends JDialog {
 		if (this.perso != null) {
 			calG = new CalTimeCard(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), this.perso.getHORAIREPREV());
 		} else {
-			calG = new CalTimeCard(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), null);
+			try {
+				this.perso =new Personnel(ResteauConfig.getResteauID(),0, "tmp", null, null, null, null, null, null, null, 0, 1,null);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			calG = new CalTimeCard(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), this.perso.getHORAIREPREV());
 		}
 		panelCal.add(calG, BorderLayout.CENTER);
 		JLabel calLabel = new JLabel("Gestion horaire : ");
@@ -232,13 +246,8 @@ public class SetterDialogPerso extends JDialog {
 		return retour;
 	}
 
-	public void update() {
-		char[] mdp = this.mdp.getPassword();
-		String s = new String(mdp);
-		this.perso.modif(s);
-	}
-
-	public void create() {
+	public boolean verif() {
+		boolean retour= true;
 		Restaurant Resto = (Restaurant) this.resto.getSelectedItem();
 		int numResto = Resto.getNumResto();
 		Salles Salle = (Salles) this.salle.getSelectedItem();
@@ -249,10 +258,32 @@ public class SetterDialogPerso extends JDialog {
 		String adressPerso = this.adresse.getText();
 		String numTelPerso = this.numTel.getText();
 		String mailPerso = this.mail.getText();
-		float salairePerso = Float.parseFloat(this.salaire.getText());
+		float salairePerso = 0;
+		try{
+			salairePerso = Float.parseFloat(this.salaire.getText());
+		}catch(NumberFormatException e){
+			this.erreur.setText("Le format du salaire ne convient pas.");
+			this.pack();
+			retour = false;
+		}		
 		int droitPerso = (int) this.droit.getValue();
-		String mdpPerso = this.mdp.getSelectedText();
+		String mdpPerso = this.mdp.getText(); 
+		if(nomPerso.equals("")){
+			this.erreur.setText("Le format du nom ne convient pas.");
+			this.pack();
+			retour = false;
+		}
+		if(this.perso != null){
+			try {
+				this.perso.delete();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		this.perso = new Personnel(numResto, numSalle, nomPerso, prenomPerso, postePerso, adressPerso, numTelPerso,
 				mailPerso, null, null, salairePerso, droitPerso, mdpPerso);
+		
+		return retour;
 	}
 }

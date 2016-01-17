@@ -6,7 +6,10 @@
 package LienBD;
 
 import java.util.*;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
+
+import resteau.config.ResteauConfig;
 
 import com.mysql.jdbc.ResultSet;
 
@@ -147,10 +150,11 @@ public class Salles implements Comparable<Salles> {
 		return retour;
 	}
 
-	public static Salles[] getAll() {
-		String sql = "SELECT NUMSALLE FROM SALLE ORDER BY NUMRESTO";
+	public static Salles[] getAll() throws FileNotFoundException {
+		String sql = "SELECT NUMSALLE FROM SALLE WHERE NUMRESTO = ? ORDER BY NUMRESTO";
+		Object[] data = {ResteauConfig.getResteauID()};
 		Salles.instance.prepare(sql);
-		ResultSet res = (ResultSet) Salles.instance.execute();
+		ResultSet res = (ResultSet) Salles.instance.execute(data, false);
 		Salles[] retour = null;
 		try {
 			res.last();

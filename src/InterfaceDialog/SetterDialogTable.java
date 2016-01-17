@@ -1,6 +1,7 @@
 package InterfaceDialog;
 
 import java.awt.Frame;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
@@ -32,7 +33,7 @@ public class SetterDialogTable extends JDialog {
 	 * @param modal
 	 *            dis si cette fenetre est modal ou non
 	 * @param table
-	 *            la table a modifier peut etre null dans la cas d'une créations
+	 *            la table a modifier peut etre null dans la cas d'une crï¿½ations
 	 */
 	public SetterDialogTable(Frame owner, boolean modal, Table table, int numSalle) {
 		super(owner, modal);
@@ -44,7 +45,12 @@ public class SetterDialogTable extends JDialog {
 
 		// configuration de la partie salle
 		this.Salle = new JLabel("Salle");
-		this.SalleSpinner = new JComboBox<Salles>(Salles.getAll());
+		try {
+			this.SalleSpinner = new JComboBox<Salles>(Salles.getAll());
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		if (table != null) {
 			this.SalleSpinner.setSelectedItem(table.getSalles());
 			System.out.println(table.getSalles().getNomSalle());
@@ -70,7 +76,7 @@ public class SetterDialogTable extends JDialog {
 		this.add(etatPanel);
 
 		// configuration de la partie capaciter
-		this.capacite = new JLabel("capacité");
+		this.capacite = new JLabel("CapacitÃ©");
 		this.capaciterSpinner = new JSpinner();
 		if (table != null) {
 			this.capaciterSpinner.setValue(table.getCapacite());
@@ -109,7 +115,7 @@ public class SetterDialogTable extends JDialog {
 			} catch (SQLException e) {
 				retour = false;
 				this.erreur
-						.setText("Une erreur avec la base de donnée est survenue");
+						.setText("Une erreur avec la base de donnï¿½e est survenue");
 			}
 		} else {
 			this.table.setCapacite(capaciter);

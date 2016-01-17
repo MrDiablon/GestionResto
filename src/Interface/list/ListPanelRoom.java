@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileNotFoundException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -51,10 +52,17 @@ public class ListPanelRoom extends JPanel {
 		this.modelList = new MyListModel<Salles>();
 		this.roomList.setModel(this.modelList);
 		this.roomList.setCellRenderer(new RendererRoom());
-		Salles[] salles = Salles.getAll();
-		for (Salles s : salles) {
-			this.modelList.add(s);
+		Salles[] salles;
+		try {
+			salles = Salles.getAll();
+			for (Salles s : salles) {
+				this.modelList.add(s);
+			}
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		
 		this.roomList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -70,7 +78,7 @@ public class ListPanelRoom extends JPanel {
 
 	private void createRoom() {
 		Salles newSalle = SetterDialogRoom.showContactDialog(this.parent,
-				"nouvelle salle", null);
+				"Nouvelle salle", null);
 		if (newSalle != null) {
 			this.modelList.add(newSalle);
 		}
@@ -81,7 +89,7 @@ public class ListPanelRoom extends JPanel {
 		if (!this.roomList.isSelectionEmpty()) {
 			Salles select = this.roomList.getSelectedValue();
 			Salles newSalle = SetterDialogRoom.showContactDialog(this.parent,
-					"nouvelle salle", select);
+					"Nouvelle salle", select);
 			if (newSalle != null) {
 				this.modelList.remove(select);
 				this.modelList.add(newSalle);

@@ -65,7 +65,7 @@ public class ListPanelMenu extends JPanel {
 }
 	
 	public void createMenu() {
-		Menu newMenu = SetterDialogMenu.showContactDialog(parent, "nouveau menu", null);
+		Menu newMenu = SetterDialogMenu.showContactDialog(parent, "Nouveau menu", null);
 		if(newMenu != null){
 			this.modelList.add(newMenu);
 		}

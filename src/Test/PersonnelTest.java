@@ -225,17 +225,6 @@ public class PersonnelTest {
 	}
 
 	@Test
-	public void testModif() {
-		ref.setADRESSE("16 rue de la modif");
-		ref.modif("test");
-		try {
-			assertEquals(ref.getADRESSE(), Personnel.getAdresseById(id));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
 	public void testDelete() {
 		Document xml = JDom
 				.convertStringToDocument("<?xml version=\"1.0\" encoding=\"UTF-8\"?><Personnel><Arrive heure=\"9\" minute=\"00\" /><Depart heure=\"9\" minute=\"00\"/></Personnel>");

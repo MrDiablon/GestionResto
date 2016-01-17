@@ -33,7 +33,7 @@ public class ReservationRenderer implements ListCellRenderer<Reservation> {
 		}
 
 		this.label.setText(numRes + " : " + nomClient + " (" + nbPers
-				+ "personnes" + ")");
+				+ "personnes" + ") ");
 
 		if (isSelected) {
 			this.label.setBackground(list.getSelectionBackground());

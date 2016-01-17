@@ -35,8 +35,8 @@ public class RendererRoom implements ListCellRenderer<Salles> {
 		// si l'element est selectionner on change l'affichage pour bien le
 		// montré
 		if (isSelected) {
-			this.label.setText(nomSalles + " capaciter : " + nbTable
-					+ " dispo : " + dispo);
+			this.label.setText(nomSalles + " Capacité : " + nbTable
+					+ " Disponibilité : " + dispo);
 			this.label.setBackground(list.getSelectionBackground());
 			this.label.setForeground(list.getSelectionForeground());
 			this.label.setOpaque(true);

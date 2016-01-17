@@ -91,7 +91,7 @@ public class ListPanelPersonnel extends JPanel {
 
 	private void ajouter() {
 		Personnel perso = SetterDialogPerso.showContactDialog(this.parent,
-				"nouveau personnel", null);
+				"Nouveau personnel", null);
 		if(perso != null){
 			this.modelListPerso.add(perso);
 		}
