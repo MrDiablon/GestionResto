@@ -239,12 +239,6 @@ public class SetterDialogPerso extends JDialog {
 	}
 
 	public void create() {
-		int beginMminute = (int) this.minutePrevB.getValue();
-		int beginHour = (int) this.heurePrevB.getValue();
-		int endMin = (int) this.minutePrevE.getValue();
-		int endHour = (int) this.heurePrevE.getValue();
-		// Document timeCard = JDom.createTimeCard(beginHour, beginMminute,
-		// endMin, endHour);
 		Restaurant Resto = (Restaurant) this.resto.getSelectedItem();
 		int numResto = Resto.getNumResto();
 		Salles Salle = (Salles) this.salle.getSelectedItem();
