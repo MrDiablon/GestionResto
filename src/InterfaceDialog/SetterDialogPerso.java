@@ -7,7 +7,6 @@ import java.awt.GridLayout;
 import java.io.FileNotFoundException;
 import java.util.Calendar;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -16,17 +15,13 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JSpinner.NumberEditor;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-
-import org.jdom2.Document;
 
 import Interface.CalTimeCard;
 import LienBD.Personnel;
 import LienBD.Restaurant;
 import LienBD.Salles;
-import Tools.JDom;
 import resteau.config.ResteauConfig;
 
 @SuppressWarnings("serial")
@@ -39,14 +34,15 @@ import resteau.config.ResteauConfig;
  */
 public class SetterDialogPerso extends JDialog {
 	private JLabel nomPerso, prenomPerso, adressePerso, numTelPerso, mailPerso, postePerso, sallePerso,
-			horairePrevPersoB, horairePrevPersoE, salairePerso, mdpPerso, restoPerso, droitPerso , erreur;
+			salairePerso, mdpPerso, restoPerso, droitPerso , erreur;
 	private JTextField nom, prenom, adresse, numTel, mail, poste, salaire;
-	private JSpinner droit, minutePrevB, heurePrevB, minutePrevE, heurePrevE;
+	private JSpinner droit;
 	private JComboBox<Restaurant> resto;
 	private JComboBox<Salles> salle;
 	private JPasswordField mdp;
 	private Personnel perso;
 	private GridLayout grid = new GridLayout(1, 2);
+	private boolean persoIsTmp = false;
 
 	public SetterDialogPerso(Frame owner, boolean modal, Personnel perso) {
 		super(owner, modal);
@@ -63,8 +59,8 @@ public class SetterDialogPerso extends JDialog {
 			this.nom = new JTextField();
 		}
 		JPanel all = new JPanel();
-		JPanel infoPerso = new JPanel(new GridLayout(4, 1));
-		JScrollPane scroll = new JScrollPane(all);
+		JPanel infoPerso = new JPanel(new GridLayout(5, 1));
+		new JScrollPane(all);
 		JPanel boxNom = new JPanel();
 		boxNom.setLayout(this.grid);
 		boxNom.add(this.nomPerso);
@@ -81,7 +77,7 @@ public class SetterDialogPerso extends JDialog {
 		boxPrenom.setLayout(this.grid);
 		boxPrenom.add(this.prenomPerso);
 		boxPrenom.add(this.prenom);
-		infoPerso.add(boxNom);
+		infoPerso.add(boxPrenom);
 
 		this.adressePerso = new JLabel("Adresse : ");
 		if (perso != null) {
@@ -95,7 +91,7 @@ public class SetterDialogPerso extends JDialog {
 		boxAdresse.add(this.adresse);
 		infoPerso.add(boxAdresse);
 
-		this.numTelPerso = new JLabel("TÃ©lÃ©phone : ");
+		this.numTelPerso = new JLabel("Téléphone : ");
 		if (perso != null) {
 			this.numTel = new JTextField(perso.getNUMTEL());
 		} else {
@@ -121,7 +117,7 @@ public class SetterDialogPerso extends JDialog {
 
 		JPanel workPanel = new JPanel(new GridLayout(4, 1));
 
-		this.postePerso = new JLabel("Poste OccupÃ© : ");
+		this.postePerso = new JLabel("Poste Occupé : ");
 		if (perso != null) {
 			this.poste = new JTextField(perso.getPOSTE());
 		} else {
@@ -143,8 +139,10 @@ public class SetterDialogPerso extends JDialog {
 		workPanel.add(boxResto);
 
 		this.sallePerso = new JLabel("Salle de Travail : ");
+		Salles[] salles = null;
 		try {
-			this.salle = new JComboBox<Salles>(Salles.getAll());
+			salles = Salles.getAll();
+			this.salle = new JComboBox<Salles>(salles);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -199,7 +197,11 @@ public class SetterDialogPerso extends JDialog {
 				}
 		});
 		JButton annuler = new JButton("Annuler");
-		annuler.addActionListener(e -> this.dispose());
+		annuler.addActionListener(e -> {
+			if(delete()){
+				this.dispose();
+			}
+		});
 		JPanel bouton = new JPanel();
 		bouton.setLayout(grid);
 		bouton.add(valider);
@@ -222,7 +224,8 @@ public class SetterDialogPerso extends JDialog {
 			calG = new CalTimeCard(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), this.perso.getHORAIREPREV());
 		} else {
 			try {
-				this.perso =new Personnel(ResteauConfig.getResteauID(),0, "tmp", null, null, null, null, null, null, null, 0, 1,null);
+				this.perso =new Personnel(ResteauConfig.getResteauID(),salles[1].getNumSalle(), "tmp", null, null, null, null, null, null, null, 0, 1,null);
+				this.persoIsTmp = true;
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
@@ -242,6 +245,9 @@ public class SetterDialogPerso extends JDialog {
 		SetterDialogPerso perso = new SetterDialogPerso(parent, true, personne);
 		perso.setVisible(true);
 		perso.setTitle(title);
+		if(perso.persoIsTmp){
+			return null;
+		}
 		Personnel retour = perso.perso;
 		return retour;
 	}
@@ -284,6 +290,19 @@ public class SetterDialogPerso extends JDialog {
 		this.perso = new Personnel(numResto, numSalle, nomPerso, prenomPerso, postePerso, adressPerso, numTelPerso,
 				mailPerso, null, null, salairePerso, droitPerso, mdpPerso);
 		
+		return retour;
+	}
+	
+	public boolean delete(){
+		boolean retour = true;
+		if(this.persoIsTmp){
+			try {
+				this.perso.delete();
+			} catch (Exception e) {
+				this.erreur.setText("Une erreur serveur est survenue");
+				retour = false;
+			}
+		}
 		return retour;
 	}
 }
