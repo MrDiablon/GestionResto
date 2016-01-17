@@ -1,7 +1,9 @@
 package Tools;
 
 import java.io.StringReader;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -40,7 +42,7 @@ public class JDom {
 	 * @return le document XML generer
 	 */
 	@SuppressWarnings("deprecation")
-	public static Document createTimeCard(Date dateDay,int beginHourM, int beginMinM, int endHourM, int endMinM,
+	public static Document createTimeCard(Calendar dateDay,int beginHourM, int beginMinM, int endHourM, int endMinM,
 			int beginHourA, int beginMinA, int endHourA, int endMinA) {
 		
 		Element racine = new Element("Personnel_TimeCard");
@@ -48,9 +50,9 @@ public class JDom {
 		
 		//ecriture de la partie consernant l'heure d'arriver
 		Element day = new Element("Date");
-		Attribute year = new Attribute("year", "" + dateDay.getYear());
-		Attribute month = new Attribute("month", "" + dateDay.getMonth());
-		Attribute dayR = new Attribute("day", "" + dateDay.getDay());
+		Attribute year = new Attribute("year", "" + dateDay.get(Calendar.YEAR));
+		Attribute month = new Attribute("month", "" + dateDay.get(Calendar.MONTH));
+		Attribute dayR = new Attribute("day", "" + dateDay.get(Calendar.DAY_OF_MONTH));
 		day.setAttribute(year);
 		day.setAttribute(month);
 		day.setAttribute(dayR);
@@ -105,7 +107,7 @@ public class JDom {
 		return retour;
 	}
 	
-	public static Document createTimeCard(Document doc,Date dateDay,int beginHourM, int beginMinM, int endHourM, int endMinM,
+	public static Document createTimeCard(Document doc,Calendar dateDay,int beginHourM, int beginMinM, int endHourM, int endMinM,
 			int beginHourA, int beginMinA, int endHourA, int endMinA) {
 		
 		
@@ -113,9 +115,9 @@ public class JDom {
 		
 		//ecriture de la partie consernant l'heure d'arriver
 		Element day = new Element("Date");
-		Attribute year = new Attribute("year", "" + dateDay.getYear());
-		Attribute month = new Attribute("month", "" + dateDay.getMonth());
-		Attribute dayR = new Attribute("day", "" + dateDay.getDay());
+		Attribute year = new Attribute("year", "" + dateDay.get(Calendar.YEAR));
+		Attribute month = new Attribute("month", "" + dateDay.get(Calendar.MONTH));
+		Attribute dayR = new Attribute("day", "" + dateDay.get(Calendar.DAY_OF_MONTH));
 		day.setAttribute(year);
 		day.setAttribute(month);
 		day.setAttribute(dayR);
@@ -173,7 +175,7 @@ public class JDom {
 
 	public static void main(String[] args) {
 		@SuppressWarnings("deprecation")
-		Date d = new Date(2016, 01, 13);
+		Calendar d = new GregorianCalendar(2016, 01, 13);
 		Document doc1 = createTimeCard(d,10, 50, 10, 50, 10, 50, 10, 50);
 		Document doc2 = createTimeCard(doc1,d,10, 50, 10, 50, 10, 50, 10, 50);
 		System.out.println(convertDocumentToString(doc1));

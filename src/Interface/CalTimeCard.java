@@ -1,6 +1,8 @@
 package Interface;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
 
@@ -15,11 +17,18 @@ public class CalTimeCard extends GraphicCalendar {
 		super(year, month);
 		for (JButton jButton : buttonsDay) {
 			jButton.addActionListener(e ->{
-				Date d = new Date(this.currentYear, this.currentMonth, buttonsDay.indexOf(jButton)+1);
-				System.out.println(d.getYear() + "/" + this.currentYear );
-				SetterDialogDate.showContactDialog(null, "Horaire pour le : " + d.getDay() + "/" + (d.getMonth()+1) + "/" + d.getDate() , d,timecard);
+				Calendar cal = new GregorianCalendar(this.currentYear, this.currentMonth, buttonsDay.indexOf(jButton)+1);
+				SetterDialogDate.showContactDialog(null, "Horaire pour le : " + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH)+1) + "/" + cal.get(Calendar.DAY_OF_MONTH) , cal,timecard);
 			});
 		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void main(String[] args) {
+		Date d = new Date(2016, 01, 13);
+		System.out.println(d.getYear());
+		System.out.println(d.getMonth());
+		System.out.println(d.getDate());
 	}
 
 }

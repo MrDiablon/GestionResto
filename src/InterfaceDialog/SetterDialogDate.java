@@ -3,6 +3,7 @@ package InterfaceDialog;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -22,18 +23,13 @@ public class SetterDialogDate extends JDialog {
 	private JLabel matin, aprem, debM, finM, debA, finA;
 	private JSpinner hDebM, hFinM, mDebM, mFinM, hDebA, hFinA, mDebA, mFinA;
 	private JButton valider, annuler;
-	private Date dateDay;
+	private Calendar dateDay;
 	private Document doc;
 
-	public static void main(String[] args) {
-		@SuppressWarnings("deprecation")
-		Date d = new Date(2016, 01, 13);
-		SetterDialogDate.showContactDialog(null, "test", d, null);
-	}
-
-	public SetterDialogDate(Frame owner, boolean modal, Date date, Document timeCard) {
+	public SetterDialogDate(Frame owner, boolean modal, Calendar date, Document timeCard) {
 		super(owner, modal);
 		this.doc = timeCard;
+		this.dateDay = date;
 
 		SpinnerNumberModel min1 = new SpinnerNumberModel(1, 1, 60, 1);
 		SpinnerNumberModel min2 = new SpinnerNumberModel(1, 1, 60, 1);
@@ -128,7 +124,7 @@ public class SetterDialogDate extends JDialog {
 		this.pack();
 	}
 
-	public static void showContactDialog(Frame parent, String title, Date dateD, Document doc) {
+	public static void showContactDialog(Frame parent, String title, Calendar dateD, Document doc) {
 		SetterDialogDate date = new SetterDialogDate(parent, true, dateD, doc);
 		date.setTitle(title);
 		date.setVisible(true);

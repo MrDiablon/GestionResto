@@ -117,9 +117,7 @@ public class GraphicCalendar extends JPanel {
 		} else {
 			this.posFirstDay = this.cal.get(Calendar.DAY_OF_WEEK)-1;
 		}
-		// this.posFirstDay = (this.cal.get(Calendar.DAY_OF_WEEK) - 1 == 0) ? 7
-		// - this.cal.get(Calendar.DAY_OF_WEEK)
-		// : 7 - this.cal.get(Calendar.DAY_OF_WEEK) - 1;
+
 		int week = this.getWeek();
 		GridLayout layout = new GridLayout(0, 7);
 		if (datePanel != null) {
