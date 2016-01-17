@@ -19,6 +19,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 
 import Interface.CalTimeCard;
+import LienBD.Droit;
 import LienBD.Personnel;
 import LienBD.Restaurant;
 import LienBD.Salles;
@@ -36,9 +37,9 @@ public class SetterDialogPerso extends JDialog {
 	private JLabel nomPerso, prenomPerso, adressePerso, numTelPerso, mailPerso, postePerso, sallePerso,
 			salairePerso, mdpPerso, restoPerso, droitPerso , erreur;
 	private JTextField nom, prenom, adresse, numTel, mail, poste, salaire;
-	private JSpinner droit;
 	private JComboBox<Restaurant> resto;
 	private JComboBox<Salles> salle;
+	private JComboBox<Droit> droit;
 	private JPasswordField mdp;
 	private Personnel perso;
 	private GridLayout grid = new GridLayout(1, 2);
@@ -178,12 +179,10 @@ public class SetterDialogPerso extends JDialog {
 		boxMdp.add(this.mdp);
 		logPerso.add(boxMdp);
 
-		this.droitPerso = new JLabel("Droit : ");
-		this.droit = new JSpinner();
-		JSpinner.NumberEditor spinnerEditor2 = new JSpinner.NumberEditor(droit);
-		droit.setEditor(spinnerEditor2);
-		spinnerEditor2.getModel().setMinimum(0);
-		spinnerEditor2.getModel().setMaximum(1);
+		this.droitPerso = new JLabel("Droit : (?)");
+		this.droitPerso.setToolTipText("Le droit permet de définir les acces utilisateur (plus d'info : Aide > droit");
+		Droit[] d = {Droit.Serveur,Droit.Cuisinier,Droit.Administratif}; 
+		this.droit = new JComboBox<Droit>(d);
 		JPanel boxDroit = new JPanel();
 		boxDroit.setLayout(this.grid);
 		boxDroit.add(droitPerso);
@@ -252,6 +251,7 @@ public class SetterDialogPerso extends JDialog {
 		return retour;
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean verif() {
 		boolean retour= true;
 		Restaurant Resto = (Restaurant) this.resto.getSelectedItem();
@@ -272,14 +272,15 @@ public class SetterDialogPerso extends JDialog {
 			this.pack();
 			retour = false;
 		}		
-		int droitPerso = (int) this.droit.getValue();
+		Droit droitPersoD = (Droit) this.droit.getSelectedItem();
+		int droitPerso = droitPersoD.ordinal()+1;
 		String mdpPerso = this.mdp.getText(); 
 		if(nomPerso.equals("")){
 			this.erreur.setText("Le format du nom ne convient pas.");
 			this.pack();
 			retour = false;
 		}
-		if(this.perso != null){
+		if(this.perso != null && !this.persoIsTmp){
 			try {
 				this.perso.delete();
 			} catch (Exception e) {
@@ -289,6 +290,7 @@ public class SetterDialogPerso extends JDialog {
 		}
 		this.perso = new Personnel(numResto, numSalle, nomPerso, prenomPerso, postePerso, adressPerso, numTelPerso,
 				mailPerso, null, null, salairePerso, droitPerso, mdpPerso);
+		this.persoIsTmp = false;
 		
 		return retour;
 	}
