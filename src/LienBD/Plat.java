@@ -7,15 +7,18 @@ package LienBD;
  ***********************************************************************/
 
 import java.util.*;
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Plat extends PrixNourriture{
+import Tools.JDom;
 
+public class Plat extends PrixNourriture implements Comparable<Plat>{
+	
 	private int numPlat;
 	private String nomPlat;
-	private String recette;
 	private float prixU;
+	private LinkedList<Ingredient> ingredients = new LinkedList<Ingredient>();
 
 	private static myPDO instance = myPDO.getInstance();
 
@@ -24,7 +27,7 @@ public class Plat extends PrixNourriture{
 	 *             coll=java.util.Collection impl=java.util.HashSet mult=0..*
 	 *             type=Composition
 	 */
-	private java.util.Collection<Ingredient> ingredient;
+	
 
 	public Plat(int id) throws SQLException {
 		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
@@ -34,24 +37,23 @@ public class Plat extends PrixNourriture{
 		ResultSet res = instance.execute(identifiant, false);
 		Plat.instance.prepare(sql2);
 		ResultSet res2 = instance.execute(identifiant, false);
-		if (res.next()) {
-			//this.recette = (String) res.getObject("RECETTE");
-			this.prixU = res.getFloat("PRIXU");
+		if(res.next()){
+			this.prixU = (float) res.getObject("PRIXU");
 			this.numPlat = id;
 			this.nomPlat = res.getString("NOMPLAT");
-			while (res2.next()) {
-				this.ingredient.add(new Ingredient(res2.getInt("NUMINGREDIENT")));
+			while(res2.next()){
+				this.ingredients.add(new Ingredient(res2.getInt("NUMINGREDIENT")));
 			}
 		}
-
+			
+		
 	}
 
-	public Plat(int numPlat, int prixU, String plat, String recette, java.util.Collection<Ingredient> ingredient) {
-		this.ingredient = ingredient;
-		this.nomPlat = plat;
-		this.numPlat = numPlat;
+	public Plat(String plat,
+			LinkedList<Ingredient> ingredient, float prixU) throws SQLException {
+		this.ingredients = ingredient;
+		this.nomPlat=plat;
 		this.prixU = prixU;
-		this.recette = recette;
 		this.create();
 	}
 
@@ -71,68 +73,62 @@ public class Plat extends PrixNourriture{
 		this.numPlat = numPlat;
 	}
 
-	public String getRecette() {
-		return recette;
+	public Collection<Ingredient> getRecette() {
+		return ingredients;
 	}
-
-	public void setRecette(String recette) {
-		this.recette = recette;
-	}
+	
 
 	public float getPrixU() {
 		return prixU;
 	}
 
-	public void setPrixU(int prixU) {
+	public void setPrixU(float prixU) {
 		this.prixU = prixU;
 	}
 
-	public void setIngredient(java.util.Collection<Ingredient> ingredient) {
-		this.ingredient = ingredient;
-	}
-
-	public void create() {
-		String sql = "INSERT INTO PLAT(`NUMPLAT`,`NOMPLAT`,`RECETTE`,`PRIXU`) VALUES (?,?,?,?)";
-		String sql2 = "INSERT INTO CONSTITUER(`NUMPLAT`,NUMINGREDIENT) VALUES (?,?)";
+	public void create() throws SQLException {
+		String sql = "INSERT INTO PLAT(`NUMPLAT`,`NOMPLAT`,`PRIXU`) VALUES (?,?,?)";
+		String sql2 = "SELECT MAX(NUMPLAT) FROM PLAT";
+		String sql3 = "INSERT INTO CONSTITUER(`NUMPLAT`,`NUMINGREDIENT`) VALUES (?,?)";
 		Plat.instance.prepare(sql);
-		Object[] data = { this.numPlat, this.ingredient, this.prixU, this.recette };
+		Object[] data = { this.numPlat, this.nomPlat, this.prixU,
+				};
 		Plat.instance.execute(data, true);
 		Plat.instance.prepare(sql2);
-		data = new Object[2];
-		for (Ingredient ing : this.ingredient) {
-			data[0] = this.numPlat;
-			data[1] = ing;
-			Plat.instance.execute(data, true);
+		ResultSet res = instance.execute();
+		if(res.next()){
+			this.numPlat = res.getInt(1);
 		}
-
+		Plat.instance.prepare(sql3);
+		data = new Object[2];
+		data[0] = this.numPlat;
+			for(Ingredient ing : this.ingredients){
+				data[1] = ing.getNumIngredient();
+				Plat.instance.execute(data, true);
+			}
+		
 	}
 
 	public void delete(int id) {
-		String sql = "DELETE PLAT WHERE NUMPLAT = ? ";
+		String sql = "DELETE FROM `PLAT` WHERE NUMPLAT = ? ";
 		Plat.instance.prepare(sql);
 		Object[] data = { id };
 		Plat.instance.execute(data, true);
 	}
-
-	public void modif() {
-		String sql = "UPDATE `PLAT` SET `NUMPLAT` = ?,`RECETTE` = ?,`PRIXU` = ?";
+	
+	public void delete() {
+		String sql = "DELETE FROM `PLAT` WHERE NUMPLAT = ? ";
 		Plat.instance.prepare(sql);
-		Object[] data = { this.numPlat, this.recette, this.prixU };
+		Object[] data = { this.numPlat };
 		Plat.instance.execute(data, true);
 	}
 
-	public static int getNumPlatByID(int id) {
-		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
+	public void modif() {
+		String sql = "UPDATE `PLAT` SET `NUMPLAT` = ?,`INGREDIENTS` = ?,`PRIXU` = ?";
 		Plat.instance.prepare(sql);
-		Object[] identifiant = { id };
-		ResultSet res = instance.execute(identifiant, false);
-		Object[] data = new Object[1];
-		try {
-			data[0] = res.getObject("`NUMPLAT`");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return (int) data[0];
+		Object[] data = { this.numPlat, this.ingredients, this.prixU
+				};
+		Plat.instance.execute(data, true);
 	}
 
 	public static int getPrixUByID(int id) {
@@ -144,6 +140,7 @@ public class Plat extends PrixNourriture{
 		try {
 			data[0] = res.getObject("`PRIXU`");
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return (int) data[0];
@@ -156,14 +153,15 @@ public class Plat extends PrixNourriture{
 		ResultSet res = instance.execute(identifiant, false);
 		Object[] data = new Object[1];
 		try {
-			data[0] = res.getObject("`RECETTE`");
+			data[0] = res.getObject("`INGREDIENTS`");
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return (String) data[0];
 	}
-
-	public static String getNomPlatByID(int id) {
+	
+	public static String getNomPlatByID(int id){
 		String sql = "SELECT * FROM PLAT WHERE `NUMPLAT`=?";
 		Plat.instance.prepare(sql);
 		Object[] identifiant = { id };
@@ -172,6 +170,7 @@ public class Plat extends PrixNourriture{
 		try {
 			data[0] = res.getObject("`NOMPLAT`");
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return (String) data[0];
@@ -190,19 +189,12 @@ public class Plat extends PrixNourriture{
 			// on instance notre retour grace a res.getRow() qui donne le nombre
 			// de ligne retourner
 			res.last();
-			if (res.getRow() > 1) {
-				retour = new Plat[res.getRow() - 1];
-				// on remet le curseur au debut
-				res.beforeFirst();
-				// pour chaque ligne on cree une nouvelle instance grace a l'id
-				for (int i = 0; res.next(); i++) {
-					int num = res.getInt(1);
-					if (num > 1) {
-						retour[i] = new Plat(num);
-					} else {
-						i--;
-					}
-				}
+			retour = new Plat[res.getRow()];
+			// on remet le curseur au debut
+			res.beforeFirst();
+			// pour chaque ligne on cree une nouvelle instance grace a l'id
+			for (int i = 0; res.next(); i++) {
+				retour[i] = new Plat(res.getInt(1));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -212,20 +204,39 @@ public class Plat extends PrixNourriture{
 	}
 
 	/** @pdGenerated default getter */
-	public java.util.Collection<Ingredient> getIngredient() {
-		if (ingredient == null)
-			ingredient = new java.util.HashSet<Ingredient>();
-		return ingredient;
+	public LinkedList<Ingredient> getIngredient() {
+		if (ingredients == null)
+			ingredients = new LinkedList<Ingredient>();
+		return ingredients;
+	}
+	
+	@Override
+	public String toString(){
+		return this.nomPlat;
 	}
 
 	@Override
-	public String toString() {
-		String res=this.getPrixU()+"    "+this.getNomPlat();
-		return res;
-	}
-	
-	public Boolean isPlat(){
-		return true;
+	public int compareTo(Plat o) {
+		int retour = 0;
+		if(o.numPlat < this.numPlat){
+			retour = -1; 
+		}
+		else 
+			retour = 1;
+		
+		return retour;
+		
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		boolean retour = false;
+		if(obj instanceof Plat){
+			Plat ing = (Plat) obj;
+			if(this.numPlat == ing.numPlat){
+				retour = true;
+			}
+		}
+		return retour;
+	}
 }

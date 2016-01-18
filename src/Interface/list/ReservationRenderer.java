@@ -6,11 +6,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+import LienBD.Etat;
 import LienBD.Reservation;
+import LienBD.Salles;
 
 public class ReservationRenderer implements ListCellRenderer<Reservation> {
 
@@ -22,8 +25,10 @@ public class ReservationRenderer implements ListCellRenderer<Reservation> {
 			boolean isSelected, boolean cellHasFocus) {
 
 		int numRes = value.getNumReservation();
+		int numTable = value.getNumTable();
 		Date dateRes = value.getDateReservation();
 		String nomClient = value.getNomClient();
+		String prenomClient = value.getPrenomClient();
 		int nbPers = value.getNbPers();
 
 		Date date = new Date();
@@ -31,9 +36,9 @@ public class ReservationRenderer implements ListCellRenderer<Reservation> {
 		if (dateRes.equals(cal.getTime())) {
 			this.label.setBorder(BorderFactory.createLineBorder(Color.red, 1));
 		}
-
-		this.label.setText(numRes + " : " + nomClient + " (" + nbPers
-				+ "personnes" + ") ");
+		this.label = new JLabel();
+		this.label.setText("Réservation n° " + numRes + " :  " + nomClient.toUpperCase() + " " + prenomClient + "        " + nbPers
+				+ " personnes" + "        " + "Table n° : " + numTable + "      le " + dateRes /*+ "   a " + heure + ":" + minutes*/);
 
 		if (isSelected) {
 			this.label.setBackground(list.getSelectionBackground());
@@ -51,7 +56,7 @@ public class ReservationRenderer implements ListCellRenderer<Reservation> {
 			// sinon on le retire
 			this.label.setBorder(null);
 		}
-		return null;
+		return this.label;
 	}
 
 }
