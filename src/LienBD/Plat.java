@@ -10,7 +10,7 @@ import java.util.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Plat {
+public class Plat extends PrixNourriture{
 
 	private int numPlat;
 	private String nomPlat;
@@ -220,7 +220,12 @@ public class Plat {
 
 	@Override
 	public String toString() {
-		return this.nomPlat;
+		String res=this.getPrixU()+"    "+this.getNomPlat();
+		return res;
+	}
+	
+	public Boolean isPlat(){
+		return true;
 	}
 
 }

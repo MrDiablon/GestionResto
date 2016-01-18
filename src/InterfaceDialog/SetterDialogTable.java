@@ -39,7 +39,7 @@ public class SetterDialogTable extends JDialog {
 		super(owner, modal);
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.table = table;
-
+ 
 		this.erreur = new JLabel();
 		this.add(erreur);
 

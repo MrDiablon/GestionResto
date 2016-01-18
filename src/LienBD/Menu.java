@@ -13,7 +13,7 @@ import com.mysql.jdbc.ResultSet;
 
 import LienBD.Plat;
 
-public class Menu implements Comparable<Menu> {
+public class Menu extends PrixNourriture implements Comparable<Menu> {
 
 	private int numMenu;
 	private String nom;
@@ -217,5 +217,15 @@ public class Menu implements Comparable<Menu> {
 	@Override
 	public int compareTo(Menu o) {
 		return this.nom.compareTo(o.nom);
+	}
+	
+	@Override
+	public String toString() {
+		String res=this.getPrix()+"    "+this.getNom();
+		return res;
+	}
+	
+	public Boolean isPlat(){
+		return false;
 	}
 }

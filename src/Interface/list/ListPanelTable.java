@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
 import Interface.PassFrame;
+import InterfaceDialog.SetterDialogCommande;
 import InterfaceDialog.SetterDialogTable;
 import LienBD.Salles;
 import LienBD.Table;
@@ -21,7 +22,7 @@ import LienBD.Table;
 public class ListPanelTable extends JPanel {
 
 	private PassFrame parent;
-	private JButton nouveau, supprimer, modifier;
+	private JButton nouveau, supprimer, modifier,commande;
 	private JList<Table> TableList;
 	private MyListModel<Table> modelList = new MyListModel<Table>();
 	private int numSalle;
@@ -40,10 +41,14 @@ public class ListPanelTable extends JPanel {
 		this.supprimer = new JButton("Supprimer", new ImageIcon(getClass()
 				.getResource("/img/delete.png")));
 		this.supprimer.addActionListener(e -> this.deleteSelectedItem());
+		this.commande = new JButton("Commander",new ImageIcon(getClass()
+				.getResource("/img/new.png")));
+		this.commande.addActionListener(e -> this.createCommande());
 		JToolBar barreOutils = new JToolBar();
 		barreOutils.add(this.nouveau);
 		barreOutils.add(this.modifier);
 		barreOutils.add(this.supprimer);
+		barreOutils.add(this.commande);
 		this.add(barreOutils, BorderLayout.NORTH);
 
 		try {
@@ -95,12 +100,26 @@ public class ListPanelTable extends JPanel {
 			}
 		}
 	}
+	
 
 	public void deleteSelectedItem() {
 		if (!this.TableList.isSelectionEmpty()) {
 			Table select = this.TableList.getSelectedValue();
 			this.modelList.remove(select);
 			select.delete();
+		}
+	}
+	
+	private void createCommande() {
+		if (!this.TableList.isSelectionEmpty()) {
+			Table modifTable = SetterDialogCommande.showContactDialog(this.parent,
+					"Modification", this.TableList.getSelectedValue());
+			this.modelList.remove(modifTable);
+			if (modifTable.getNumSalle() == this.numSalle) {
+				this.modelList.add(modifTable);
+				this.parent.update(new ListPanelTable(parent, modifTable
+						.getNumSalle()));
+			}
 		}
 	}
 }

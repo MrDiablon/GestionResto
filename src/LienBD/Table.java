@@ -3,6 +3,8 @@ package LienBD;
 import java.sql.SQLException;
 import java.util.*;
 
+import javax.swing.JList;
+
 import com.mysql.jdbc.ResultSet;
 
 public class Table implements Comparable<Table> {
@@ -305,6 +307,65 @@ public class Table implements Comparable<Table> {
 		}
 
 		return retour;
+	}
+	
+	public void addCommand(int numplat){
+		String sql = "INSERT INTO `COMMANDER`(NUMTABLE,NUMPLAT,QUANTITE) VALUES(?,?,?)";
+		instance.prepare(sql);
+		Object[] data = {this.num,numplat,1};
+		instance.execute(data, true);
+	}
+	
+	public void deleteCommand(){
+		String sql = "DELETE FROM COMMANDER WHERE NUMTABLE=?";
+		instance.prepare(sql);
+		Object[] data = {this.num};
+		instance.execute(data, true);
+	}
+	
+	/*public JList<Plat> getPlats(){
+		String sql="SELECT * FROM COMMANDER WHERE NUMTABLE = ?";
+		instance.prepare(sql);
+		Object[] data = {this.num};
+		ResultSet res=(ResultSet) instance.execute(data, false);
+		JList<Plat> ret=new JList<Plat>();
+		int length=ret.getHeight();
+		Plat[] plat = new Plat[length];
+			try {
+				for(int i=0;res.next();i++)
+					plat[i]=(Plat)res.getObject(i);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				return null;
+			}
+			
+	}*/
+	
+	public int getQt(int numplat){
+		String sql="SELECT QUANTITE FROM COMMANDER WHERE NUMTABLE=? AND NUMPLAT=?";
+		instance.prepare(sql);
+		Object[] data = {this.num,numplat};
+		ResultSet res=(ResultSet) instance.execute(data, false);
+		int ret=0;
+		try {
+			if(res.next()){
+				ret=res.getInt(1);
+			}else{
+				return 0;
+			}
+		} catch (SQLException e) {
+		}
+		return ret;
+	}
+	
+	public void setCommand(int numplat){
+		int qt= this.getQt(numplat);
+		System.out.println(qt);
+		String sql="UPDATE COMMANDER SET `QUANTITE` = " + (qt+1) + " WHERE NUMPLAT = " + numplat + " AND NUMTABLE = " + this.num;
+				 //"UPDATE INGREDIENT SET `ETATSI` = ?,`PRIXU` = ?,`STOCK` = ? , `NOM` = ? WHERE NUMINGREDIENT = ?"
+		instance.prepare(sql);
+		Object[] data = {};
+		instance.execute(data,true);
 	}
 
 }
