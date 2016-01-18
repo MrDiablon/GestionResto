@@ -16,6 +16,7 @@ import Interface.list.ListPanelIngredient;
 import Interface.list.ListPanelMenu;
 import Interface.list.ListPanelPersonnel;
 import Interface.list.ListPanelRoom;
+import panelAide.DroitPanel;
 
 public class PassFrame extends JFrame {
 
@@ -23,7 +24,7 @@ public class PassFrame extends JFrame {
 
 	public PassFrame(int droit) throws Exception {
 		// on verifie que les droit sont bon
-		if (droit == 1 || droit == 2) {
+		if (droit > 0 && droit <= 3) {
 			this.setTitle("Test de Page");
 			this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -32,35 +33,49 @@ public class PassFrame extends JFrame {
 			JMenu fichier = new JMenu("Fichier");
 			JMenu windows = new JMenu("Windows");
 			JMenu newWindows = new JMenu("Nouvelle Fenetre");
+			JMenu aide = new JMenu("Aide");
 			// JMenuItem
 			JMenuItem fermer = new JMenuItem("Fermer");
 			JMenuItem listeSalle = new JMenuItem("Liste des salles");
-			JMenuItem listeIngredientM = new JMenuItem("Liste des ingredients");
+
 			JMenuItem listeMenuM = new JMenuItem("Liste des menus");
-			JMenuItem listePersoM = new JMenuItem("Liste des employÃ©s");
+			JMenuItem aideDroit = new JMenuItem("droit");
 			// configuration des actionListener du menu
 			fermer.addActionListener(e -> this.dispose());
-			listeSalle.addActionListener(e -> this.addNewTab("Liste des salles", new ListPanelRoom(this),false));
-			listeIngredientM.addActionListener(
-					e -> this.addNewTab("Liste des ingredients", new ListPanelIngredient(this), false));
+			listeSalle.addActionListener(e -> this.addNewTab("Liste des salles", new ListPanelRoom(this), false));
 			listeMenuM.addActionListener(e -> this.addNewTab("Liste des menus", new ListPanelMenu(this), false));
-			listePersoM
-					.addActionListener(e -> this.addNewTab("Liste des employÃ©s", new ListPanelPersonnel(this), false));
+			aideDroit.addActionListener(e -> this.addNewTab("Aide droit", new DroitPanel(), true));
 			// ajout des item et sous menu
 			fichier.add(fermer);
 			windows.add(newWindows);
 			newWindows.add(listeSalle);
 			newWindows.add(listeMenuM);
+			if (droit >= 2) {
+				JMenuItem listeIngredientM = new JMenuItem("Liste des ingredients");
+				newWindows.add(listeIngredientM);
+				listeIngredientM.addActionListener(
+						e -> this.addNewTab("Liste des ingredients", new ListPanelIngredient(this), false));
+				if (droit >= 3) {
+					JMenuItem listePersoM = new JMenuItem("Liste des employés");
+					listePersoM.addActionListener(
+							e -> this.addNewTab("Liste des employés", new ListPanelPersonnel(this), false));
+					newWindows.add(listePersoM);
+				}
+			}
+			aide.add(aideDroit);
 			barre.add(fichier);
 			barre.add(windows);
+			barre.add(aide);
 
 			this.add(barre);
 
-			this.addNewTab("Liste des ingredients", new ListPanelIngredient(this));
-			this.addNewTab("Liste des salles", new ListPanelRoom(this), false);
-			if (droit == 2) {
+			this.addNewTab("Liste des salles", new ListPanelRoom(this));
+			if (droit >= 2) {
+				this.addNewTab("Liste des ingredients", new ListPanelIngredient(this),false);
 				this.addNewTab("Liste des menus", new ListPanelMenu(this), false);
-				this.addNewTab("Liste des employes", new ListPanelPersonnel(this),false);
+				if(droit >= 3 ){
+					this.addNewTab("Liste des employes", new ListPanelPersonnel(this), false);
+				}
 			}
 			this.setLayout(new GridLayout(1, 5));
 			this.setJMenuBar(barre);

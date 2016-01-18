@@ -1,14 +1,10 @@
 package Tools;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.LinkedList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,8 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
-import Interface.PassFrame;
 
 /**
  * Permet d'afficher graphiquement un calendrier
@@ -30,7 +24,7 @@ public class GraphicCalendar extends JPanel {
 
 	protected int nbDay, currentYear, currentMonth;
 	protected JPanel datePanel, dayPanel, weekPanel, choosePanel, centerPanel;
-	protected JButton[] buttonsDay;
+	protected LinkedList<JButton> buttonsDay;
 	protected String[] day = { "lun.", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim." }, month = { "Janvier", "Fevrier",
 			"Mars", "Avril", "Mai", "Juin", "Juillet", "Octobre", "Septembre", "Octobre", "Novembre", "Decembre" };
 	protected JLabel[] jLDay = new JLabel[8];
@@ -39,26 +33,23 @@ public class GraphicCalendar extends JPanel {
 	protected Calendar cal;
 	protected int posFirstDay = 0;
 
-	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
-
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				JFrame test = new JFrame("test Calendar");
-				test.add(new GraphicCalendar(2015, Calendar.DECEMBER));
+				test.add(new GraphicCalendar(2016, Calendar.MAY));
 				test.pack();
 				test.setVisible(true);
 			}
 		});
 
-		/*
-		 * Calendar cal = new GregorianCalendar(2016, 1, 1); Date d = new
-		 * Date(); d.setMonth(Calendar.NOVEMBER); // cal.setTime(d); //
-		 * System.out.println(d.toString());
-		 * System.out.println(cal.getTime().toString());
-		 * System.out.println(Calendar.DAY_OF_WEEK);
-		 * System.out.println(cal.get(Calendar.DAY_OF_WEEK) - 1);
-		 */
+	/*
+		 Calendar cal = new GregorianCalendar(2016, 0, 1); 
+		 System.out.println(cal.getTime().toString());
+		 System.out.println(cal.get(Calendar.DAY_OF_WEEK));
+		 System.out.println(Calendar.SATURDAY);*/
+		
 	}
 
 	public GraphicCalendar(int year, int month) {
@@ -119,18 +110,14 @@ public class GraphicCalendar extends JPanel {
 	}
 
 	private void generateDayPanel() {
-		this.nbDay = this.getNbDayByMonth(this.currentYear, this.currentMonth);
+		this.nbDay = this.getNbDayByMonth(this.currentYear, this.currentMonth+1);
 		this.cal = new GregorianCalendar(this.currentYear, currentMonth, 1);
-		if (this.cal.get(Calendar.DAY_OF_WEEK) - 1 == 0) {
-			this.posFirstDay = this.cal.get(Calendar.DAY_OF_WEEK);
+		if (this.cal.get(Calendar.DAY_OF_WEEK) == 1 ) {
+			this.posFirstDay = 6;
 		} else {
-			this.posFirstDay = this.cal.get(Calendar.DAY_OF_WEEK) - 1;
+			this.posFirstDay = this.cal.get(Calendar.DAY_OF_WEEK)-1;
 		}
-		// this.posFirstDay = (this.cal.get(Calendar.DAY_OF_WEEK) - 1 == 0) ? 7
-		// - this.cal.get(Calendar.DAY_OF_WEEK)
-		// : 7 - this.cal.get(Calendar.DAY_OF_WEEK) - 1;
-		System.out.println(this.cal.get(Calendar.DAY_OF_WEEK) - 1);
-		System.out.println(this.posFirstDay);
+
 		int week = this.getWeek();
 		GridLayout layout = new GridLayout(0, 7);
 		if (datePanel != null) {
@@ -146,11 +133,11 @@ public class GraphicCalendar extends JPanel {
 		}
 		this.centerPanel = new JPanel(new BorderLayout());
 		this.weekPanel = new JPanel(new GridLayout(0, 1));
-		this.buttonsDay = new JButton[this.nbDay];
+		this.buttonsDay = new LinkedList<JButton>();
 		if (this.posFirstDay > 0) {
-			for (int i = this.posFirstDay - 1; i > 0; i--) {
-				int beforeD = (this.currentMonth == 0) ? this.getNbDayByMonth(currentYear-1, 11)
-						: this.getNbDayByMonth(currentYear, currentMonth - 1);
+			int beforeD = (this.currentMonth == 0) ? this.getNbDayByMonth(currentYear-1, 11)
+					: this.getNbDayByMonth(currentYear, currentMonth);
+			for (int i = this.posFirstDay-1; i >= 0; i--) {
 				JButton tmp = new JButton("" + (beforeD - i ));
 				tmp.setEnabled(false);
 				this.datePanel.add(tmp);
@@ -160,8 +147,8 @@ public class GraphicCalendar extends JPanel {
 			if (i % 7 == 0) {
 				this.weekPanel.add(new JLabel("" + week++));
 			}
-			JButton tmp = this.buttonsDay[i];
-			tmp = new JButton("" + (i + 1));
+			JButton tmp = new JButton("" + (i + 1));
+			this.buttonsDay.add(tmp);
 			this.datePanel.add(tmp);
 		}
 		this.centerPanel.add(this.dayPanel, BorderLayout.NORTH);

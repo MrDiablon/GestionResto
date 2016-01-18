@@ -1,10 +1,11 @@
 package InterfaceDialog;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -12,33 +13,37 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JSpinner.NumberEditor;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 
-import org.jdom2.Document;
-
+import Interface.CalTimeCard;
+import LienBD.Droit;
 import LienBD.Personnel;
 import LienBD.Restaurant;
 import LienBD.Salles;
-import Tools.JDom;
+import resteau.config.ResteauConfig;
 
 @SuppressWarnings("serial")
 /**
- * Fenetre pop-up permetant de definir les information sur un objet de type LienBD.Personnel
+ * Fenetre pop-up permetant de definir les information sur un objet de type
+ * LienBD.Personnel
+ * 
  * @author Benjamin
  *
  */
 public class SetterDialogPerso extends JDialog {
 	private JLabel nomPerso, prenomPerso, adressePerso, numTelPerso, mailPerso, postePerso, sallePerso,
-			horairePrevPersoB, horairePrevPersoE, salairePerso, mdpPerso, restoPerso, droitPerso , erreur;
+			salairePerso, mdpPerso, restoPerso, droitPerso , erreur;
 	private JTextField nom, prenom, adresse, numTel, mail, poste, salaire;
-	private JSpinner droit, minutePrevB, heurePrevB, minutePrevE, heurePrevE;
 	private JComboBox<Restaurant> resto;
 	private JComboBox<Salles> salle;
+	private JComboBox<Droit> droit;
 	private JPasswordField mdp;
 	private Personnel perso;
 	private GridLayout grid = new GridLayout(1, 2);
+	private boolean persoIsTmp = false;
 
 	public SetterDialogPerso(Frame owner, boolean modal, Personnel perso) {
 		super(owner, modal);
@@ -54,12 +59,16 @@ public class SetterDialogPerso extends JDialog {
 		} else {
 			this.nom = new JTextField();
 		}
+		JPanel all = new JPanel();
+		JPanel infoPerso = new JPanel(new GridLayout(5, 1));
+		new JScrollPane(all);
 		JPanel boxNom = new JPanel();
 		boxNom.setLayout(this.grid);
 		boxNom.add(this.nomPerso);
 		boxNom.add(this.nom);
-		
-		this.prenomPerso = new JLabel("PrÃ©nom : ");
+		infoPerso.add(boxNom);
+
+		this.prenomPerso = new JLabel("Prénom : ");
 		if (perso != null) {
 			this.prenom = new JTextField(perso.getPRENOM());
 		} else {
@@ -69,6 +78,7 @@ public class SetterDialogPerso extends JDialog {
 		boxPrenom.setLayout(this.grid);
 		boxPrenom.add(this.prenomPerso);
 		boxPrenom.add(this.prenom);
+		infoPerso.add(boxPrenom);
 
 		this.adressePerso = new JLabel("Adresse : ");
 		if (perso != null) {
@@ -80,8 +90,9 @@ public class SetterDialogPerso extends JDialog {
 		boxAdresse.setLayout(this.grid);
 		boxAdresse.add(this.adressePerso);
 		boxAdresse.add(this.adresse);
+		infoPerso.add(boxAdresse);
 
-		this.numTelPerso = new JLabel("TÃ©lÃ©phone : ");
+		this.numTelPerso = new JLabel("Téléphone : ");
 		if (perso != null) {
 			this.numTel = new JTextField(perso.getNUMTEL());
 		} else {
@@ -91,6 +102,7 @@ public class SetterDialogPerso extends JDialog {
 		boxTel.setLayout(this.grid);
 		boxTel.add(this.numTelPerso);
 		boxTel.add(this.numTel);
+		infoPerso.add(boxTel);
 
 		this.mailPerso = new JLabel("Adresse Mail : ");
 		if (perso != null) {
@@ -102,8 +114,11 @@ public class SetterDialogPerso extends JDialog {
 		boxMail.setLayout(this.grid);
 		boxMail.add(this.mailPerso);
 		boxMail.add(this.mail);
+		infoPerso.add(boxMail);
 
-		this.postePerso = new JLabel("Poste OccupÃ© : ");
+		JPanel workPanel = new JPanel(new GridLayout(4, 1));
+
+		this.postePerso = new JLabel("Poste Occupé : ");
 		if (perso != null) {
 			this.poste = new JTextField(perso.getPOSTE());
 		} else {
@@ -113,6 +128,7 @@ public class SetterDialogPerso extends JDialog {
 		boxPoste.setLayout(this.grid);
 		boxPoste.add(this.postePerso);
 		boxPoste.add(this.poste);
+		workPanel.add(boxPoste);
 
 		this.restoPerso = new JLabel("Restaurtant");
 		this.resto = new JComboBox<Restaurant>(Restaurant.getAll());
@@ -121,10 +137,13 @@ public class SetterDialogPerso extends JDialog {
 		boxResto.setLayout(this.grid);
 		boxResto.add(this.restoPerso);
 		boxResto.add(this.resto);
+		workPanel.add(boxResto);
 
 		this.sallePerso = new JLabel("Salle de Travail : ");
+		Salles[] salles = null;
 		try {
-			this.salle = new JComboBox<Salles>(Salles.getAll());
+			salles = Salles.getAll();
+			this.salle = new JComboBox<Salles>(salles);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -134,42 +153,7 @@ public class SetterDialogPerso extends JDialog {
 		boxSalle.setLayout(this.grid);
 		boxSalle.add(this.sallePerso);
 		boxSalle.add(this.salle);
-
-		// recuperation des elements pour la fiche horaire heure|Minute arriver
-		this.horairePrevPersoB = new JLabel("Horaires PrÃ©vus (arriver): Heure|Minute");
-		this.minutePrevB = new JSpinner();
-		NumberEditor numberEditorBM = new NumberEditor(minutePrevB);
-		this.minutePrevB.setEditor(numberEditorBM);
-		numberEditorBM.getModel().setMaximum(60);
-		numberEditorBM.getModel().setMinimum(0);
-		this.heurePrevB = new JSpinner();
-		NumberEditor numberEditorBH = new NumberEditor(heurePrevB);
-		this.heurePrevB.setEditor(numberEditorBH);
-		numberEditorBH.getModel().setMaximum(24);
-		numberEditorBH.getModel().setMinimum(0);
-		JPanel boxHorPrevB = new JPanel();
-		boxHorPrevB.setLayout(new GridLayout(1, 3));
-		boxHorPrevB.add(this.horairePrevPersoB);
-		boxHorPrevB.add(this.heurePrevB);
-		boxHorPrevB.add(this.minutePrevB);
-
-		// recuperation des elements pour la fiche horaire heure|Minute (fin)
-		this.horairePrevPersoE = new JLabel("Horaires PrÃ©vus (depart): Heure|Minute");
-		this.minutePrevE = new JSpinner();
-		NumberEditor numberEditorEM = new NumberEditor(minutePrevE);
-		this.minutePrevE.setEditor(numberEditorEM);
-		numberEditorEM.getModel().setMaximum(60);
-		numberEditorEM.getModel().setMinimum(0);
-		this.heurePrevE = new JSpinner();
-		NumberEditor numberEditorEH = new NumberEditor(heurePrevE);
-		this.heurePrevE.setEditor(numberEditorEH);
-		numberEditorEH.getModel().setMaximum(24);
-		numberEditorEH.getModel().setMinimum(0);
-		JPanel boxHorPrevE = new JPanel();
-		boxHorPrevE.setLayout(new GridLayout(1, 3));
-		boxHorPrevE.add(this.horairePrevPersoE);
-		boxHorPrevE.add(this.heurePrevE);
-		boxHorPrevE.add(this.minutePrevE);
+		workPanel.add(boxSalle);
 
 		this.salairePerso = new JLabel("Salaire : ");
 		if (perso != null) {
@@ -182,28 +166,28 @@ public class SetterDialogPerso extends JDialog {
 		boxSalaire.setLayout(this.grid);
 		boxSalaire.add(this.salairePerso);
 		boxSalaire.add(this.salaire);
+		workPanel.add(boxSalaire);
 
 		this.mdpPerso = new JLabel("Mot de Passe : ");
-		if (this.perso != null) {
-			this.mdp = new JPasswordField();
-		} else {
-			this.mdp = new JPasswordField();
-		}
+		this.mdp = new JPasswordField();
+
+		JPanel logPerso = new JPanel(new GridLayout(2, 1));
+
 		JPanel boxMdp = new JPanel();
 		boxMdp.setLayout(this.grid);
 		boxMdp.add(this.mdpPerso);
 		boxMdp.add(this.mdp);
+		logPerso.add(boxMdp);
 
-		this.droitPerso = new JLabel("Droit : ");
-		this.droit = new JSpinner();
-		JSpinner.NumberEditor spinnerEditor2 = new JSpinner.NumberEditor(droit);
-		droit.setEditor(spinnerEditor2);
-		spinnerEditor2.getModel().setMinimum(0);
-		spinnerEditor2.getModel().setMaximum(1);
+		this.droitPerso = new JLabel("Droit : (?)");
+		this.droitPerso.setToolTipText("Le droit permet de définir les acces utilisateur (plus d'info : Aide > droit");
+		Droit[] d = {Droit.Serveur,Droit.Cuisinier,Droit.Administratif}; 
+		this.droit = new JComboBox<Droit>(d);
 		JPanel boxDroit = new JPanel();
 		boxDroit.setLayout(this.grid);
 		boxDroit.add(droitPerso);
 		boxDroit.add(droit);
+		logPerso.add(boxDroit);
 
 		JButton valider = new JButton("Valider");
 		valider.addActionListener(e -> {
@@ -212,30 +196,47 @@ public class SetterDialogPerso extends JDialog {
 				}
 		});
 		JButton annuler = new JButton("Annuler");
-		annuler.addActionListener(e -> this.dispose());
+		annuler.addActionListener(e -> {
+			if(delete()){
+				this.dispose();
+			}
+		});
 		JPanel bouton = new JPanel();
 		bouton.setLayout(grid);
 		bouton.add(valider);
 		bouton.add(annuler);
 
-		this.setLayout(new GridLayout(15, 1));
-		this.add(boxNom);
-		this.add(boxPrenom);
-		this.add(boxAdresse);
-		this.add(boxTel);
-		this.add(boxMail);
-		this.add(boxPoste);
-		this.add(boxResto);
-		this.add(boxSalle);
-		this.add(boxHorPrevB);
-		this.add(boxHorPrevE);
-		this.add(boxSalaire);
-		this.add(boxMdp);
-		this.add(boxDroit);
-		this.add(bouton);
-		this.pack();
-		this.minutePrevB.setSize(this.minutePrevB.getWidth() / 2, this.minutePrevB.getHeight());
-		this.heurePrevB.setSize(this.heurePrevB.getWidth() / 2, this.heurePrevB.getHeight());
+		JSplitPane splitp = new JSplitPane();
+
+		this.setLayout(new BorderLayout());
+		all.setLayout(new GridLayout(3, 1));
+		all.add(infoPerso);
+		all.add(workPanel);
+		all.add(logPerso);
+		splitp.setLeftComponent(all);
+
+		// recuperation des elements pour la fiche horaire heure|Minute arriver
+		Calendar cal = Calendar.getInstance();
+		JPanel panelCal = new JPanel(new BorderLayout());
+		CalTimeCard calG = null;
+		if (this.perso != null) {
+			calG = new CalTimeCard(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), this.perso.getHORAIREPREV());
+		} else {
+			try {
+				this.perso =new Personnel(ResteauConfig.getResteauID(),salles[1].getNumSalle(), "tmp", null, null, null, null, null, null, null, 0, 1,null);
+				this.persoIsTmp = true;
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			calG = new CalTimeCard(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), this.perso.getHORAIREPREV());
+		}
+		panelCal.add(calG, BorderLayout.CENTER);
+		JLabel calLabel = new JLabel("Gestion horaire : ");
+		panelCal.add(calLabel, BorderLayout.NORTH);
+		splitp.setRightComponent(panelCal);
+
+		this.add(bouton, BorderLayout.SOUTH);
+		this.add(splitp, BorderLayout.CENTER);
 		this.pack();
 	}
 
@@ -243,17 +244,16 @@ public class SetterDialogPerso extends JDialog {
 		SetterDialogPerso perso = new SetterDialogPerso(parent, true, personne);
 		perso.setVisible(true);
 		perso.setTitle(title);
+		if(perso.persoIsTmp){
+			return null;
+		}
 		Personnel retour = perso.perso;
 		return retour;
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean verif() {
 		boolean retour= true;
-		int beginMminute = (int) this.minutePrevB.getValue();
-		int beginHour = (int) this.heurePrevB.getValue();
-		int endMin = (int) this.minutePrevE.getValue();
-		int endHour = (int) this.heurePrevE.getValue();
-		Document timeCard = JDom.createTimeCard(beginHour, beginMminute, endMin, endHour);
 		Restaurant Resto = (Restaurant) this.resto.getSelectedItem();
 		int numResto = Resto.getNumResto();
 		Salles Salle = (Salles) this.salle.getSelectedItem();
@@ -272,14 +272,15 @@ public class SetterDialogPerso extends JDialog {
 			this.pack();
 			retour = false;
 		}		
-		int droitPerso = (int) this.droit.getValue();
+		Droit droitPersoD = (Droit) this.droit.getSelectedItem();
+		int droitPerso = droitPersoD.ordinal()+1;
 		String mdpPerso = this.mdp.getText(); 
 		if(nomPerso.equals("")){
 			this.erreur.setText("Le format du nom ne convient pas.");
 			this.pack();
 			retour = false;
 		}
-		if(this.perso != null){
+		if(this.perso != null && !this.persoIsTmp){
 			try {
 				this.perso.delete();
 			} catch (Exception e) {
@@ -288,8 +289,22 @@ public class SetterDialogPerso extends JDialog {
 			}
 		}
 		this.perso = new Personnel(numResto, numSalle, nomPerso, prenomPerso, postePerso, adressPerso, numTelPerso,
-				mailPerso, timeCard, null, salairePerso, droitPerso, mdpPerso);
+				mailPerso, null, null, salairePerso, droitPerso, mdpPerso);
+		this.persoIsTmp = false;
 		
+		return retour;
+	}
+	
+	public boolean delete(){
+		boolean retour = true;
+		if(this.persoIsTmp){
+			try {
+				this.perso.delete();
+			} catch (Exception e) {
+				this.erreur.setText("Une erreur serveur est survenue");
+				retour = false;
+			}
+		}
 		return retour;
 	}
 }
